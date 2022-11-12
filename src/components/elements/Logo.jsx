@@ -1,0 +1,26 @@
+import Image from "next/image";
+import Heading from "@/components/elements/Heading";
+import { classNames } from "../../utils/utils";
+
+const Logo = ({ headingClassName, divClass }) => {
+  return (
+    <div
+      className={classNames(
+        divClass,
+        "flex items-center gap-x-3 cursor-default"
+      )}
+    >
+      <Image src={"/assets/logo.svg"} alt="CCSIT-RIES" width={36} height={36} />
+      <Heading
+        as="h2"
+        className={classNames(
+          headingClassName ? headingClassName : "text-gray-800",
+          "text-sm font-bold hidden sm:block"
+        )}
+        title="CCSIT - RIES"
+      />
+    </div>
+  );
+};
+
+export default Logo;

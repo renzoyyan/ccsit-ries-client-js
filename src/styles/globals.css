@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("../../node_modules/react-date-picker/dist/DatePicker.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .wrapper {
+    @apply w-full sm:max-w-[640px] md:max-w-[900px] lg:max-w-[1024px] xl:max-w-[1440px]  mx-auto px-4;
+  }
+  #bg-overlay::before {
+    @apply block content-[''] bg-gray-900/95 h-full w-full absolute;
+  }
+
+  .form-control {
+    @apply w-full px-3 py-2 border-b-2 border-gray-300 outline-none bg-gray-50 focus-within:border-b-2 focus-within:border-bc-primary;
+  }
+
+  .form-error {
+    @apply border-red-500 focus-within:border-red-500;
+  }
+
+  .label {
+    @apply block text-sm text-gray-700;
+  }
+
+  .tbl {
+    @apply relative flex flex-col w-full mt-8;
+  }
+  .tbl-header {
+    @apply px-3 py-4 text-sm font-medium tracking-wide text-left text-gray-700 whitespace-nowrap;
+  }
+  .tbl-header-sr-only {
+    @apply relative py-3 pl-3 pr-32 text-right lg:pr-4 sm:pr-6;
+  }
+  .tbl-data {
+    @apply px-3 py-4 text-sm text-gray-600 capitalize;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center py-2 text-xs font-medium text-white border border-transparent rounded-md shadow-sm xs:text-sm bg-bc-primary hover:bg-bc-primary/95 focus:outline-none focus:ring-2 focus:ring-bc-primary focus:ring-offset-2 sm:w-auto gap-x-2;
+  }
+
+  .error-msg {
+    @apply text-sm text-red-500;
+  }
+
+  .detail-label {
+    @apply text-sm font-medium text-gray-500;
+  }
+}
