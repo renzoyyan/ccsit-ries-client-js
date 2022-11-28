@@ -14,9 +14,10 @@ const AgencyFieldArray = ({ name, label, validation, headingTitle }) => {
     formState: { errors },
   } = useFormContext();
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, prepend, remove } = useFieldArray({
     control,
     name,
+    rules: validation,
   });
 
   return (
@@ -30,7 +31,7 @@ const AgencyFieldArray = ({ name, label, validation, headingTitle }) => {
 
         <Button
           className="px-3 btn-primary xs:px-4"
-          onClick={() => append({ agency_name: "" })}
+          onClick={() => prepend({ agency_name: "" })}
         >
           <span>
             <PlusCircleIcon className="w-6 h-6 text-white" />
@@ -60,10 +61,10 @@ const AgencyFieldArray = ({ name, label, validation, headingTitle }) => {
         ))}
       </ul>
 
-      {errors[name] && (
-        <div className="error-msg">
-          <ErrorMessage errors={errors} name={name} />
-        </div>
+      {/* <span className="">{errors[name]?.root?.message}</span> */}
+
+      {errors[name]?.root && (
+        <div className="error-msg">{errors[name]?.root?.message}</div>
       )}
     </>
   );

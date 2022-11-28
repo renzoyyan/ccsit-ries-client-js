@@ -65,6 +65,7 @@ const ResearchInnovationDetails = ({ data }) => {
             <Detail.List
               label="Project Duration"
               text={project_duration ?? "N/A"}
+              listClassName="normal-case"
             />
             <Detail.List label="Proponents(s)">
               <dd className="mt-1 text-gray-900">

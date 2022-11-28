@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import MainContent from "@/components/modules/MainContent";
 import UserNavbar from "./UserNavbar";
+import { useAuth } from "@/context/AuthContext";
 
 const UserLayout = ({ children }) => {
   return (

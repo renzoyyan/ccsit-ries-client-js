@@ -1,4 +1,6 @@
+import StatusCard from "@/components/elements/StatusCard";
 import { classNames, formattedDate } from "@/utils/utils";
+import LogModal from "./modal/LogModal";
 
 const Logs = ({ logs }) => {
   return (
@@ -36,16 +38,27 @@ const Logs = ({ logs }) => {
                         </button>
                       </a>
                     ) : null}
+                    {log?.ongoing && (
+                      <span className="inline-block px-2 py-1 text-xs font-medium capitalize rounded-md bg-sky-100 text-sky-800">
+                        On going
+                      </span>
+                    )}
                   </div>
+
                   <div className="text-xs text-right text-gray-500 whitespace-nowrap space-y-0.5">
                     {/* <time dateTime={log.datetime}>{log.datetime}</time> */}
-                    <span>{formattedDate(log.created_at)}</span>
+
+                    {log?.date_completion && (
+                      <span>{formattedDate(log.date_completion)}</span>
+                    )}
                     <h4>
-                      Log by:{" "}
+                      by:{" "}
                       <span className="capitalize">
                         {`${log.created_by.first_name} ${log.created_by.last_name}`}
                       </span>
                     </h4>
+
+                    {/* {log?.ongoing && <LogModal {isOpen} />} */}
                   </div>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import { Fragment, useState, useCallback } from "react";
+import { Fragment, useState, useCallback, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import {
   CheckIcon,
@@ -21,6 +21,7 @@ const Select = ({
   validation,
   multiple = false,
   positionValue = "inside",
+  inputClassName = "",
 }) => {
   const [query, setQuery] = useState("");
   const {
@@ -31,10 +32,6 @@ const Select = ({
   } = useFormContext();
 
   const selectedValues = watch(name);
-
-  // const isMultipleValues = multiple
-  //   ? selectedValues?.map((value) => value._id)
-  //   : selectedValues;
 
   const filteredOptions =
     query === ""
@@ -71,7 +68,8 @@ const Select = ({
                 as="div"
                 className={classNames(
                   "flex items-center justify-between form-control",
-                  errors[name] && "form-error"
+                  errors[name] && "form-error",
+                  inputClassName
                 )}
               >
                 <Combobox.Input
@@ -165,7 +163,7 @@ const Select = ({
                   ?.map((option, idx) => (
                     <div
                       key={option.value}
-                      className="flex items-center gap-x-2.5 py-4 pl-4 pr-2 text-sm font-medium bg-gray-100 rounded-md shadow-md"
+                      className="flex items-center gap-x-2.5 py-4 pl-4 pr-2 text-sm font-medium bg-slate-200 rounded-md shadow-md"
                     >
                       <h3>{_.startCase(option.label)}</h3>
 

@@ -1,6 +1,6 @@
 import { classNames } from "@/utils/utils";
 
-const Group = ({ className, children }) => {
+const Group = ({ className = "", children }) => {
   return <div className={classNames(className, "space-y-2")}>{children}</div>;
 };
 

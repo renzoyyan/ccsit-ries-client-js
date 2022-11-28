@@ -14,7 +14,7 @@ const BeneficiaryFieldArray = ({ name, label, validation, headingTitle }) => {
     formState: { errors },
   } = useFormContext();
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, prepend, remove } = useFieldArray({
     control,
     name,
   });
@@ -30,7 +30,7 @@ const BeneficiaryFieldArray = ({ name, label, validation, headingTitle }) => {
 
         <Button
           className="px-3 btn-primary xs:px-4"
-          onClick={() => append({ beneficiary_name: "" })}
+          onClick={() => prepend({ beneficiary_name: "" })}
         >
           <span>
             <PlusCircleIcon className="w-6 h-6 text-white" />

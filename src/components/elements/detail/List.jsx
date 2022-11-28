@@ -13,7 +13,7 @@ const List = ({
       <dt className={classNames(labelClassName, "detail-label")}>{label}</dt>
       <dd
         className={classNames(
-          "mt-1 capitalize",
+          "mt-1",
           text !== "N/A"
             ? "text-gray-900"
             : "text-sm font-medium text-gray-600",

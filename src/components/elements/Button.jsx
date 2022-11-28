@@ -1,7 +1,7 @@
 import React from "react";
 import { classNames } from "../../utils/utils";
 
-const Button = ({ className, type, children, ...props }) => {
+const Button = ({ className = "", type = "", children, ...props }) => {
   return (
     <button
       className={classNames(className)}

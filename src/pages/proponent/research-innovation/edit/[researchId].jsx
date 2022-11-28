@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useCallback, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,16 +10,21 @@ import Button from "@/components/elements/Button";
 import FileUpload from "@/components/forms/FileUpload";
 import SectionHeader from "@/components/elements/SectionHeader";
 import * as Form from "@/components/forms";
-import { research_agenda_opts, Roles, statusOptions } from "@/utils/utils";
+import {
+  isFile,
+  NOTIFICATION_ACTION_TYPE,
+  research_agenda_opts,
+  Roles,
+  statusOptions,
+} from "@/utils/utils";
 import FormContainer from "@/components/elements/FormContainer";
 import KeywordsInput from "@/components/forms/KeywordsInput";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import useResearch from "@/hooks/useResearch";
 import useProponents from "@/hooks/useProponents";
-import api from "@/utils/api";
+import { SocketContext } from "@/context/SocketContext";
 import { useAuth } from "@/context/AuthContext";
-import { useRef } from "react";
 
 const defaultValues = {
   flag: "new",
@@ -38,8 +43,13 @@ const NewResearchInnovation = () => {
   const router = useRouter();
   const research_id = router.query.researchId;
   const notificationRef = useRef(null);
-
   const queryClient = useQueryClient();
+
+  // context
+  const { sendNotification } = useContext(SocketContext);
+  const { current_user } = useAuth();
+
+  // hooks
   const { getResearchById, updateResearchById } = useResearch();
   const { proponentOptions } = useProponents();
 
@@ -50,6 +60,7 @@ const NewResearchInnovation = () => {
     reset,
     formState: { isSubmitting },
   } = methods;
+
   const [statusValue] = watch(["status"]);
 
   const { data, isLoading } = useQuery({
@@ -61,6 +72,9 @@ const NewResearchInnovation = () => {
   const { proponents, ...others } = data ?? {};
 
   const proponentIds = proponents?.map((proponent) => proponent._id);
+  const receiverIds = proponents
+    ?.filter((proponent) => proponent._id !== current_user)
+    ?.map((p) => p._id);
 
   useEffect(() => {
     if (research_id && !isLoading) {
@@ -80,11 +94,23 @@ const NewResearchInnovation = () => {
       updateResearchById(research_id, updatedValues),
 
     onSuccess: (values) => {
-      queryClient.invalidateQueries({ queryKey: ["research", values._id] });
+      queryClient.invalidateQueries({
+        queryKey: ["research", values.currentResearch._id],
+      });
       router.replace(`/proponent/research-innovation/${research_id}`);
       toast.success("Successfully saved", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.PROJECT.UPDATED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;
@@ -95,7 +121,10 @@ const NewResearchInnovation = () => {
   });
 
   const onSubmit = async (values) => {
-    notificationRef.current = toast.loading("Uploading file please wait...");
+    notificationRef.current = isFile(values?.file)
+      ? toast.loading("Uploading file please wait...")
+      : toast.loading("Saving");
+
     await mutateAsync(values);
   };
 
@@ -207,14 +236,22 @@ const NewResearchInnovation = () => {
                   positionValue="outside"
                 />
               </Form.Group>
+
               {isStatusCompleted && (
                 <Form.Group>
                   <KeywordsInput
                     name="keywords"
                     label="Keywords"
-                    // validation={{
-                    //   required: "This field is required",
-                    // }}
+                    validation={{
+                      validate: {
+                        isCompleted: (value) => {
+                          if (!isStatusCompleted) {
+                            return !!value || "This field is required";
+                          }
+                          return true;
+                        },
+                      },
+                    }}
                   />
                 </Form.Group>
               )}
@@ -227,6 +264,10 @@ const NewResearchInnovation = () => {
                   label="Name"
                   headingTitle="Implementing Agency(ies)"
                   type="text"
+                  validation={{
+                    minLength: 1,
+                    required: "Please append at least 1 item",
+                  }}
                 />
               </Form.Group>
               <Form.Group>

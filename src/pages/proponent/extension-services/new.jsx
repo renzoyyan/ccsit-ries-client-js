@@ -244,6 +244,10 @@ const NewExtensionServices = () => {
                   name="implementing_agencies"
                   label="Agency name"
                   headingTitle="Implementing Agency(ies)"
+                  validation={{
+                    minLength: 1,
+                    required: "Please append at least 1 item",
+                  }}
                 />
               </Form.Group>
               <Form.Group>

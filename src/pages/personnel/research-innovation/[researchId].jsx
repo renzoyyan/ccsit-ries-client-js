@@ -1,9 +1,8 @@
 import React from "react";
-import { NextPage } from "next";
 
 import SectionHeader from "@/components/elements/SectionHeader";
 import Heading from "@/components/elements/Heading";
-import Comments from "@/components/modules/Comments";
+import Comments from "@/components/modules/comments/Comments";
 import ActivityLogs from "@/components/modules/logs/ActivityLogs";
 import ResearchInnovationDetails from "@/components/modules/ResearchInnovation/ResearchInnovationDetails";
 import BackLink from "@/components/elements/links/BackLink";
@@ -65,10 +64,8 @@ const SingleResearchInnovation = () => {
           />
 
           {/* Activity Feed */}
-          <div className="flow-root mt-4">
-            {proposalLogs?.length > 0 ? <Logs logs={proposalLogs} /> : null}
-            {/* <Logs status="ongoing" logs={onGoing} />
-            <Logs status="completed" logs={completed} />  */}
+          <div className="mt-8">
+            <Logs logs={logs} />
           </div>
         </ActivityLogs>
       </div>

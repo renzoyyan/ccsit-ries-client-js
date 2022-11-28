@@ -11,14 +11,15 @@ import { getAuthSession } from "@/utils/auth";
 import ResearchInnovationContent from "@/components/modules/ResearchInnovation/ResearchInnovationContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import { Roles } from "@/utils/utils";
+import researchApi from "@/services/research";
 import useResearch from "@/hooks/useResearch";
 
 const ResearchInnovation = () => {
   const { getCurrentUserResearchProjects } = useResearch();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["research"],
-    queryFn: () => getCurrentUserResearchProjects(),
+    queryFn: getCurrentUserResearchProjects,
   });
 
   const research = data?.docs;
@@ -65,6 +66,8 @@ const ResearchInnovation = () => {
           <p className="text-sm font-medium text-gray-400">No projects found</p>
         </div>
       ) : null}
+
+      {isError && <p>error</p>}
     </UserLayout>
   );
 };

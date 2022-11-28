@@ -21,7 +21,7 @@ module.exports = {
         "hero-pattern": "url('/assets/ccsit.svg')",
       },
       gridTemplateColumns: {
-        layout: "273px 1fr",
+        layout: "281px 1fr",
       },
     },
   },
@@ -29,5 +29,7 @@ module.exports = {
     require("@tailwindcss/forms")({
       strategy: "class",
     }),
+    require("tailwind-scrollbar-hide"),
+    require("tailwind-scrollbar")({ nocompatible: true }),
   ],
 };

@@ -6,13 +6,17 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
 
 import { AuthProvider } from "@/context/AuthContext";
+import ConfirmProvider from "@/context/ConfirmContext";
+import ConfirmModal from "@/components/elements/modal/ConfirmModal";
 import "../styles/globals.css";
 import "../styles/datepicker.css";
+import UserProvider from "@/context/UserContext";
+import { SocketProvider } from "@/context/SocketContext";
 
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false },
+    queries: { refetchOnWindowFocus: false, retry: 3 }, // refetch every 5mins
   },
 });
 
@@ -27,7 +31,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <Toaster
         position="top-center"
         toastOptions={{
-          duration: 3000,
+          duration: 5000,
           style: {
             paddingBlock: "1rem",
             paddingInline: "1rem",
@@ -41,13 +45,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         refetchOnWindowFocus={false}
         refetchInterval={30 * 60}
       >
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            <Component {...pageProps} />
-
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <SocketProvider>
+              <ConfirmProvider>
+                <Component {...pageProps} />
+                <ConfirmModal />
+              </ConfirmProvider>
+            </SocketProvider>
+          </AuthProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </SessionProvider>
     </>
   );

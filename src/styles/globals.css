@@ -13,8 +13,12 @@
     @apply block content-[''] bg-gray-900/95 h-full w-full absolute;
   }
 
+  /* .form-control {
+    @apply block w-full px-4 py-3 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md ring-1 ring-gray-300 focus:ring-bc-primary drop-shadow-sm focus:border-bc-primary focus-within:ring-bc-primary focus-within:border-bc-primary focus:outline-none;
+  } */
+
   .form-control {
-    @apply w-full px-3 py-2 border-b-2 border-gray-300 outline-none bg-gray-50 focus-within:border-b-2 focus-within:border-bc-primary;
+    @apply w-full px-4 py-2.5 text-sm text-gray-700 border-b-2 font-medium border-gray-300 outline-none bg-gray-50 focus-within:border-b-2 focus-within:border-bc-primary;
   }
 
   .form-error {
@@ -22,7 +26,7 @@
   }
 
   .label {
-    @apply block text-sm text-gray-700;
+    @apply inline-block text-sm text-gray-700;
   }
 
   .tbl {
@@ -40,6 +44,10 @@
 
   .btn-primary {
     @apply inline-flex items-center justify-center py-2 text-xs font-medium text-white border border-transparent rounded-md shadow-sm xs:text-sm bg-bc-primary hover:bg-bc-primary/95 focus:outline-none focus:ring-2 focus:ring-bc-primary focus:ring-offset-2 sm:w-auto gap-x-2;
+  }
+
+  .btn-success {
+    @apply px-10 py-3 bg-green-600 hover:bg-green-600/80 btn-primary focus:ring-green-500;
   }
 
   .error-msg {

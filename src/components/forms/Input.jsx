@@ -1,15 +1,15 @@
 import { classNames } from "@/utils/utils";
 import { ErrorMessage } from "@hookform/error-message";
-import React from "react";
+import { useId } from "react";
 import { useFormContext } from "react-hook-form";
 
 const Input = ({
-  label,
-  placeholder,
-  name,
-  type,
-  autoComplete,
-  className,
+  label = "",
+  placeholder = "",
+  name = "",
+  type = "",
+  autoComplete = "",
+  className = "",
   validation,
   ...inputProps
 }) => {
@@ -18,7 +18,29 @@ const Input = ({
     formState: { errors },
   } = useFormContext();
 
+  const randomId = useId();
+
   switch (type) {
+    case "checkbox":
+      return (
+        <label
+          htmlFor={label}
+          className={classNames("inline-flex items-center space-x-2")}
+        >
+          <input
+            {...register(name, validation)}
+            type="checkbox"
+            name={name}
+            id={label}
+            className={classNames(
+              "form-checkbox text-bc-primary rounded-md border-gray-500",
+              className ? className : "w-4 h-4"
+            )}
+            {...inputProps}
+          />
+          <span className={classNames("mt-1 text-xs sm:text-sm")}>{label}</span>
+        </label>
+      );
     case "radio":
       return (
         <label
@@ -43,9 +65,11 @@ const Input = ({
     default:
       return (
         <>
-          <label htmlFor={name} className="label">
-            {label}
-          </label>
+          {label ? (
+            <label htmlFor={randomId} className="label">
+              {label}
+            </label>
+          ) : null}
           <input
             {...register(name, validation)}
             type={type || "text"}
@@ -53,12 +77,13 @@ const Input = ({
             className={classNames(
               className,
               errors[name] && "form-error",
-              "form-control"
+              "form-control placeholder:text-gray-400"
             )}
             placeholder={placeholder}
             name={name}
-            id={name}
+            id={randomId}
             autoComplete={autoComplete || "off"}
+            aria-describedby={randomId}
             {...inputProps}
           />
 

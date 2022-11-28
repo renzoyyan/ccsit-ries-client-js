@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { createPortal } from "react-dom";
 import { FormProvider, useForm } from "react-hook-form";
+import moment from "moment";
 
 import * as Form from "@/components/forms";
 import FileUpload from "@/components/forms/FileUpload";
 import Button from "@/components/elements/Button";
-import Modal from "./Modal";
+import Modal from "@/components/elements/modal/Modal";
 import { classNames } from "@/utils/utils";
+import { useEffect } from "react";
 
 const defaultValues = {
   log_title: "",
   date_completion: "",
   file: null,
+  ongoing: false,
 };
 
 const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
@@ -22,7 +23,17 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
     handleSubmit,
     reset,
     formState: { isSubmitting },
+    watch,
+    setValue,
   } = methods;
+
+  const isOnGoing = watch("ongoing");
+
+  useEffect(() => {
+    if (!isOnGoing) return;
+
+    setValue("date_completion", "");
+  }, [setValue, isOnGoing]);
 
   const onSubmitLog = (values) => {
     onSubmit(values);
@@ -52,6 +63,9 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
             <div className="space-y-6">
               <FileUpload name="file" />
               <Form.Group>
+                <Form.Input type="checkbox" name="ongoing" label="On going" />
+              </Form.Group>
+              <Form.Group>
                 <Form.Input
                   name="log_title"
                   label="Log name"
@@ -61,16 +75,38 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
                 />
               </Form.Group>
 
-              <Form.Group>
-                <Form.Input
-                  type="date"
-                  name="date_completion"
-                  label="Date Completion"
-                  validation={{
-                    required: "This field is required",
-                  }}
-                />
-              </Form.Group>
+              {!isOnGoing && (
+                <Form.Group>
+                  <Form.Input
+                    type="date"
+                    name="date_completion"
+                    label="Date Completion"
+                    validation={{
+                      validate: {
+                        isEmpty: (value) => {
+                          if (!isOnGoing) {
+                            return !!value || "This field is required";
+                          }
+
+                          return true;
+                        },
+                        isSameOrAfter: (date) => {
+                          const today = moment(new Date());
+
+                          if (!isOnGoing) {
+                            return (
+                              today.isAfter(date) ||
+                              "This field must be either the other day or today"
+                            );
+                          }
+
+                          return true;
+                        },
+                      },
+                    }}
+                  />
+                </Form.Group>
+              )}
             </div>
 
             <div className="mt-10">
@@ -79,7 +115,7 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
                 className="w-full py-3 btn-primary"
                 disabled={isSubmitting}
               >
-                Submit
+                Save
               </Button>
             </div>
           </form>
@@ -90,13 +126,3 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
 };
 
 export default LogModal;
-
-const Portal = (props) => {
-  let { children } = props;
-  let [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-  return createPortal(children, document.body);
-};

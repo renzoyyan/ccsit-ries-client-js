@@ -1,7 +1,6 @@
 import SectionHeader from "@/components/elements/SectionHeader";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import React from "react";
-import { Chart as ChartJS, ArcElement, Legend, Title } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import Heading from "@/components/elements/Heading";
 import {
@@ -10,37 +9,21 @@ import {
 } from "@heroicons/react/24/outline";
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
+import BarChart from "@/components/modules/charts/BarChart";
+import useResearch from "@/hooks/useResearch";
+import { useQuery } from "@tanstack/react-query";
 
-ChartJS.register(ArcElement, Legend, Title);
-
-const plugin = {
-  beforeInit(chart) {
-    console.log("be");
-    // Get reference to the original fit function
-    const originalFit = chart.legend.fit;
-
-    // Override the fit function
-    chart.legend.fit = function fit() {
-      // Call original function and bind scope in order to use `this` correctly inside it
-      originalFit.bind(chart.legend)();
-      // Change the height as suggested in another answers
-      this.width += 30;
-    };
-  },
-};
-
-let labels = ["Proposal", "On Going", "Completed"];
-let values = [12, 19, 3];
-
+let labels = ["Pending", "Proposal", "On Going", "Completed"];
+const values = [1, 3, 0, 1];
 const customLabels = labels.map((label, index) => `${label}: ${values[index]}`);
 
 const data = {
   labels: customLabels,
   datasets: [
     {
-      label: "# of Votes",
-      data: [12, 19, 3],
-      backgroundColor: ["#FFBB28", "#0088FE", "#00C49F"],
+      label: "# of Research Project",
+      data: values,
+      backgroundColor: ["#ea580c", "#FFBB28", "#0088FE", "#00C49F"],
       borderWidth: 0,
     },
   ],
@@ -107,8 +90,8 @@ const Dashboard = () => {
           </header>
 
           <div className="mt-6 space-y-6">
-            <div className="flex gap-x-4">
-              <div className="w-2/5 p-4 rounded-md shadow-sm bg-gray-50">
+            <div className="flex flex-wrap gap-4 sm:flex-nowrap">
+              <div className="w-full p-4 rounded-md shadow-sm sm:w-2/5 bg-gray-50">
                 <div className="space-y-2">
                   <DocumentDuplicateIcon className="w-6 h-6 text-gray-500" />
                   <p className="text-sm text-gray-500">
@@ -116,21 +99,19 @@ const Dashboard = () => {
                   </p>
                 </div>
 
-                <h3 className="mt-6 text-2xl font-bold">18</h3>
+                <h3 className="mt-6 text-2xl font-bold">
+                  {/* {researchData?.length ?? ""} */}5
+                </h3>
               </div>
-              <div className="w-3/5 bg-gray-50">
-                <div className="h-[130px] my-4 mr-10">
-                  <Doughnut
-                    data={data}
-                    options={options}
-                    width={300}
-                    height={300}
-                  />
+              <div className="w-full sm:w-3/5 bg-gray-50">
+                <div className="h-[150px] my-4 mr-10">
+                  <BarChart data={data} options={options} />
+                  pie chart here
                 </div>
               </div>
             </div>
-            <div className="flex gap-x-4">
-              <div className="w-2/5 p-4 rounded-md shadow-sm bg-gray-50">
+            <div className="flex flex-wrap gap-4 sm:flex-nowrap">
+              <div className="w-full p-4 rounded-md shadow-sm sm:w-2/5 bg-gray-50">
                 <div className="space-y-2">
                   <RectangleStackIcon className="w-6 h-6 text-gray-500" />
                   <p className="pr-4 text-sm text-gray-500">
@@ -140,15 +121,8 @@ const Dashboard = () => {
 
                 <h3 className="mt-4 text-2xl font-bold">18</h3>
               </div>
-              <div className="w-3/5 bg-gray-50">
-                <div className="h-[130px] my-4 mr-10">
-                  <Doughnut
-                    data={data}
-                    options={options}
-                    width={300}
-                    height={300}
-                  />
-                </div>
+              <div className="w-full sm:w-3/5 bg-gray-50">
+                <div className="h-[150px] my-4 mr-10">pie chart here</div>
               </div>
             </div>
           </div>

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { BeatLoader } from "react-spinners";
 
 import Logo from "@/components/elements/Logo";
 import Button from "@/components/elements/Button";
@@ -10,7 +12,6 @@ import RightHero from "@/components/modules/RightHero";
 import Heading from "@/components/elements/Heading";
 import { getAuthSession } from "@/utils/auth";
 import api from "@/utils/api";
-import { signIn } from "next-auth/react";
 import { Roles } from "@/utils/utils";
 
 const RegisterPage = () => {
@@ -133,10 +134,14 @@ const RegisterPage = () => {
 
                   <Button
                     type="submit"
-                    className="w-full py-3 mt-8 text-sm text-white rounded-md bg-bc-primary"
+                    className="w-full py-3 mt-8 text-sm text-white rounded-md bg-bc-primary disabled:bg-bc-primary/80"
                     disabled={isSubmitting}
                   >
-                    Sign up
+                    {isSubmitting ? (
+                      <BeatLoader loading={true} size={6} color="white" />
+                    ) : (
+                      "Sign up"
+                    )}
                   </Button>
                 </form>
               </FormProvider>

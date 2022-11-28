@@ -10,7 +10,7 @@ const MobileLink = ({ item }) => {
   const classes = {
     current: "text-bc-primary border-bc-primary bg-indigo-50 rounded-md",
     default:
-      "text-gray-500 border-transparent hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700",
+      "text-gray-500 border-transparent hover:border-gray-300 hover:bg-gray-100 hover:text-gray-700 hover:rounded-md",
   };
 
   return (
@@ -21,7 +21,7 @@ const MobileLink = ({ item }) => {
           router.pathname.startsWith(item.href)
             ? classes.current
             : classes.default,
-          "block py-3 pl-3 pr-4 text-base font-medium"
+          "block py-3 pl-3 pr-4 text-base font-medium cursor-pointer"
         )}
       >
         {item.name}

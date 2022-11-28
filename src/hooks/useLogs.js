@@ -24,8 +24,6 @@ const useLogs = () => {
       }
     );
 
-    console.log([data, values]);
-
     return data;
   };
 

@@ -6,7 +6,14 @@ import { Fragment, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import _ from "lodash-es";
 
-const Listbox = ({ options = [], name = "", validation, disabled = false }) => {
+const Listbox = ({
+  options = [],
+  name = "",
+  validation,
+  disabled = false,
+  withCustomOnChange = false,
+  handleChange = () => {},
+}) => {
   const { control, setValue, watch } = useFormContext();
 
   const value = watch(name);
@@ -25,7 +32,10 @@ const Listbox = ({ options = [], name = "", validation, disabled = false }) => {
       render={({ field }) => (
         <ListBox
           value={field.value}
-          onChange={(e) => field.onChange(e)}
+          onChange={(e) => {
+            if (withCustomOnChange) return handleChange(e);
+            field.onChange(e);
+          }}
           disabled={disabled}
         >
           <div className="relative">

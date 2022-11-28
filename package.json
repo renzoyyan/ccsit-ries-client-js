@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prod": "next build && next start"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.3",
@@ -33,7 +34,12 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.38.0",
-    "react-hot-toast": "^2.4.0"
+    "react-hot-toast": "^2.4.0",
+    "react-spinners": "^0.13.6",
+    "react-timeago": "^7.1.0",
+    "socket.io-client": "^4.5.3",
+    "tailwind-scrollbar": "^2.0.1",
+    "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
     "@types/node": "18.11.9",

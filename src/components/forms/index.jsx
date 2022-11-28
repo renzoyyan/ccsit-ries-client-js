@@ -1,5 +1,6 @@
 export { default as Group } from "./Group";
 export { default as Input } from "./Input";
+export { default as Textarea } from "./Textarea";
 export { default as Select } from "./Select";
 export { default as Listbox } from "./Listbox";
 export { default as Datepicker } from "./Datepicker";

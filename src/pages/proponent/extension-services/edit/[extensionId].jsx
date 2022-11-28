@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useRef } from "react";
@@ -14,6 +14,8 @@ import * as Form from "@/components/forms";
 import FileUpload from "@/components/forms/FileUpload";
 import {
   extension_types_opts,
+  isFile,
+  NOTIFICATION_ACTION_TYPE,
   research_agenda_opts,
   Roles,
   statusOptions,
@@ -23,6 +25,8 @@ import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import useExtension from "@/hooks/useExtension";
 import useProponents from "@/hooks/useProponents";
+import { useAuth } from "@/context/AuthContext";
+import { SocketContext } from "@/context/SocketContext";
 
 const defaultValues = {
   file: null,
@@ -41,13 +45,19 @@ const defaultValues = {
   status: "proposal",
 };
 
-const EditExtensionServices = () => {
+const EditExtensionServicesPage = () => {
   const router = useRouter();
   const extension_id = router.query.extensionId;
 
   const notificationRef = useRef(null);
 
   const queryClient = useQueryClient();
+
+  // context
+  const { current_user } = useAuth();
+  const { sendNotification } = useContext(SocketContext);
+
+  // hooks
   const { getExtensionById, updateExtensionById } = useExtension();
   const { proponentOptions } = useProponents();
 
@@ -67,9 +77,13 @@ const EditExtensionServices = () => {
     reset,
     formState: { isSubmitting },
   } = methods;
-  const statusValue = watch("status");
 
+  const statusValue = watch("status");
   const isStatusCompleted = statusValue?.toLowerCase() === "completed";
+
+  const receiverIds = proponents
+    ?.filter((proponent) => proponent._id !== current_user)
+    ?.map((p) => p._id);
 
   useEffect(() => {
     if (extension_id && !isLoading) {
@@ -92,6 +106,16 @@ const EditExtensionServices = () => {
       toast.success("Updated successfully", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        extension_id,
+        action_type: NOTIFICATION_ACTION_TYPE.PROJECT.UPDATED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;
@@ -102,7 +126,10 @@ const EditExtensionServices = () => {
   });
 
   const onSubmit = async (values) => {
-    notificationRef.current = toast.loading("Uploading file please wait...");
+    notificationRef.current = isFile(values?.file)
+      ? toast.loading("Uploading file please wait...")
+      : toast.loading("Saving");
+
     await mutateAsync(values);
   };
 
@@ -110,7 +137,7 @@ const EditExtensionServices = () => {
     <UserLayout>
       <SectionHeader
         className="items-center justify-between mt-16 mb-8 sm:flex sm:mb-20"
-        title="New Extension"
+        title="Edit Details"
       >
         <div className="flex items-center justify-end mt-10 sm:mt-0 gap-x-10">
           <Link href={`/proponent/extension-services/${extension_id}`}>
@@ -280,7 +307,7 @@ const EditExtensionServices = () => {
   );
 };
 
-export default EditExtensionServices;
+export default EditExtensionServicesPage;
 
 export const getServerSideProps = async (ctx) => {
   const session = await getAuthSession(ctx);

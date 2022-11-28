@@ -2,7 +2,7 @@ import React from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import { Fragment } from "react";
 import Logo from "@/components/elements/Logo";
-import { adminNav, personnelNav, proponentNav } from "@/utils/utils";
+import { adminNav, personnelNav, proponentNav, Roles } from "@/utils/utils";
 import Button from "@/components/elements/Button";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import NavLink from "../../elements/links/NavLink";
@@ -13,23 +13,23 @@ const MobileMenu = ({ sidebarOpen, setSidebarOpen }) => {
 
   let navigationContent;
 
-  if (isProponent) {
-    navigationContent = proponentNav.map((item, idx) => (
-      <NavLink key={idx} item={item} />
-    ));
-  }
+  // if (isProponent) {
+  //   navigationContent = proponentNav.map((item, idx) => (
+  //     <NavLink key={idx} item={item} />
+  //   ));
+  // }
 
-  if (isPersonnel) {
-    navigationContent = personnelNav.map((item, idx) => (
-      <NavLink key={idx} item={item} />
-    ));
-  }
+  // if (isPersonnel) {
+  //   navigationContent = personnelNav.map((item, idx) => (
+  //     <NavLink key={idx} item={item} />
+  //   ));
+  // }
 
-  if (isAdmin) {
-    navigationContent = adminNav.map((item, idx) => (
-      <NavLink key={idx} item={item} />
-    ));
-  }
+  // if (isAdmin) {
+  //   navigationContent = adminNav.map((item, idx) => (
+  //     <NavLink key={idx} item={item} />
+  //   ));
+  // }
 
   return (
     <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -83,11 +83,15 @@ const MobileMenu = ({ sidebarOpen, setSidebarOpen }) => {
                   </Button>
                 </div>
               </Transition.Child>
-              <div className="flex items-center flex-shrink-0 px-4 mb-10">
+              <div className="flex items-center flex-shrink-0 px-6 mb-10">
                 <Logo headingClassName="text-gray-100" />
               </div>
               <div className="flex-1 h-0 mt-5 overflow-y-auto">
-                <nav className="px-2 space-y-5">{navigationContent}</nav>
+                <nav className="px-6 space-y-5">
+                  {adminNav.map((nav, idx) => (
+                    <NavLink key={idx} item={nav} role={Roles.ADMIN} />
+                  ))}
+                </nav>
               </div>
             </Dialog.Panel>
           </Transition.Child>

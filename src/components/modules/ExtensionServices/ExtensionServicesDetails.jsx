@@ -11,6 +11,8 @@ const attachments = [{ name: "resume_front_end_developer.pdf", href: "#" }];
 const ExtensionServicesDetails = ({ data }) => {
   const { isAdmin, isProponent } = useRoles();
 
+  const path = isAdmin ? "admin" : "proponent";
+
   return (
     <section aria-labelledby="research-innovation-basic-information">
       <div className="bg-white shadow sm:rounded-lg">
@@ -48,6 +50,7 @@ const ExtensionServicesDetails = ({ data }) => {
             <Detail.List
               label="Project Duration"
               text={data?.project_duration ?? "N/A"}
+              listClassName="normal-case"
             />
             <Detail.List
               label="SDG"
@@ -132,7 +135,7 @@ const ExtensionServicesDetails = ({ data }) => {
         </div>
         {(isProponent || isAdmin) && (
           <div>
-            <Link href={`/proponent/extension-services/edit/${data?._id}`}>
+            <Link href={`/${path}/extension-services/edit/${data?._id}`}>
               <a className="block px-4 py-4 font-semibold text-center text-gray-500 bg-gray-100 hover:text-gray-700 sm:rounded-b-lg">
                 Edit
               </a>

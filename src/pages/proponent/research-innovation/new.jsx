@@ -3,7 +3,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 
 import Heading from "@/components/elements/Heading";
 import Button from "@/components/elements/Button";
@@ -12,6 +12,7 @@ import SectionHeader from "@/components/elements/SectionHeader";
 import * as Form from "@/components/forms";
 import {
   classNames,
+  NOTIFICATION_ACTION_TYPE,
   research_agenda_opts,
   Roles,
   statusOptions,
@@ -22,6 +23,9 @@ import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import useProponents from "@/hooks/useProponents";
 import useResearch from "@/hooks/useResearch";
+import { useAuth } from "@/context/AuthContext";
+import { SocketContext } from "@/context/SocketContext";
+import { values } from "lodash-es";
 
 const defaultValues = {
   flag: "new",
@@ -39,8 +43,13 @@ const defaultValues = {
 const NewResearchInnovation = () => {
   const router = useRouter();
   const notificationRef = useRef(null);
-
   const queryClient = useQueryClient();
+
+  // context
+  const { sendNotification } = useContext(SocketContext);
+  const { current_user } = useAuth();
+
+  // hooks
   const { proponentOptions } = useProponents();
   const { createResearch } = useResearch();
 
@@ -50,17 +59,32 @@ const NewResearchInnovation = () => {
     watch,
     formState: { isSubmitting },
   } = methods;
-  const [statusValue, flagValue] = watch(["status", "flag"]);
+
+  const [statusValue, flagValue, proponentIds] = watch([
+    "status",
+    "flag",
+    "proponents",
+  ]);
   const isStatusCompleted = statusValue.toLowerCase() === "completed";
 
   const { mutateAsync } = useMutation({
     mutationFn: createResearch,
-    onSuccess: () => {
-      queryClient.invalidateQueries("research");
+    onSuccess: (values) => {
+      queryClient.invalidateQueries(["research"]);
       router.replace(`/proponent/research-innovation`);
       toast.success("New research saved", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: proponentIds,
+        research_id: values.new_research._id,
+        action_type: NOTIFICATION_ACTION_TYPE.PROJECT.CREATED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
 
     onError: (error) => {
@@ -72,7 +96,9 @@ const NewResearchInnovation = () => {
   });
 
   const onSubmit = async (values) => {
-    notificationRef.current = toast.loading("Uploading file please wait...");
+    notificationRef.current = toast.loading("Uploading file please wait...", {
+      duration: 6000,
+    });
     await mutateAsync(values);
   };
 
@@ -222,6 +248,10 @@ const NewResearchInnovation = () => {
                   label="Name"
                   headingTitle="Implementing Agency(ies)"
                   type="text"
+                  validation={{
+                    minLength: 1,
+                    required: "Please append at least 1 item",
+                  }}
                 />
               </Form.Group>
               <Form.Group>

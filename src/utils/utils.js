@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import {
   DocumentDuplicateIcon,
   RectangleStackIcon,
@@ -69,130 +70,6 @@ export const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 
-export const dummyResearchProjects = [
-  {
-    id: Math.floor(Math.random() * 10000),
-    research_proposal_format: "Information Technology",
-    research_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    research_agenda: "Transformative Learning",
-    status: "proposal",
-    date_created: "09-18-2022",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    research_proposal_format: "Biophysical Sciences Including Engineering",
-    research_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    research_agenda: "Livelihood Generation",
-    status: "ongoing",
-    date_created: "09-18-2022",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    research_proposal_format: "Social Sciences",
-    research_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    research_agenda: "Biodiversity Conservation",
-    status: "proposal",
-    date_created: "09-18-2022",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    research_proposal_format: "Biophysical Sciences Including Engineering",
-    research_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    research_agenda: "Climate Change Adaptation & Disaster Risk Management",
-    status: "completed",
-    date_created: "09-18-2022",
-  },
-];
-
-export const dummyExtensionProjects = [
-  {
-    id: Math.floor(Math.random() * 10000),
-    extension_type: "Program",
-    extension_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    project_agenda: "Transformative Learning",
-    status: "proposal",
-    date_created: "09-18-2022",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    extension_type: "Project",
-    extension_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    project_agenda: "Transformative Learning",
-    status: "ongoing",
-    date_created: "09-18-2022",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    extension_type: "Activity",
-    extension_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    project_agenda: "Transformative Learning",
-    status: "proposal",
-    date_created: "09-18-2022",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    extension_type: "Activity",
-    extension_title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    proponents: [
-      { name: "Jane Cooper" },
-      { name: "John Doe" },
-      { name: "Kate Wilson" },
-    ],
-    project_agenda: "Transformative Learning",
-    status: "completed",
-    date_created: "09-18-2022",
-  },
-];
-
-export const proposal_format_opts = [
-  "Information Technology",
-  "Biophysical Sciences Including Engineering",
-  "Social Sciences",
-];
-
-// export const research_agenda_opts = [
-//   "Transformative Learning",
-//   "Livelihood Generation",
-//   "Biodiversity Conservation",
-//   "Climate Change Adaptation & Disaster Risk Management",
-//   "Good Governance",
-// ];
-
 export const research_agenda_opts = [
   { value: "transformative learning", label: "Transformative Learning" },
   { value: "livelihood generation", label: "Livelihood Generation" },
@@ -209,67 +86,16 @@ export const extension_types_opts = [
   { value: "activity", label: "Activity" },
 ];
 
-export const dummy_proponents = ["John Doe", "Kate Wilson", "Jane Mendoza"];
-
-export const proponentsData = [
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "Alex",
-    last_name: "Bacalla",
-    doctorate_degree: "DIT",
-    position: "Position",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "James Brian",
-    last_name: "Flores",
-    doctorate_degree: "PhD",
-    position: "Position",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "Gilbert",
-    last_name: "Siega",
-    doctorate_degree: "MSIT",
-    position: "Position",
-  },
-];
-
-export const usersData = [
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "John",
-    last_name: "Doe",
-    username: "johndoe",
-    role: "Proponent",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "Jane",
-    last_name: "Mendoza",
-    username: "janemendoza",
-    role: "Proponent",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "Maine",
-    last_name: "Lapies",
-    username: "maine_lapies",
-    role: "Personnel",
-  },
-  {
-    id: Math.floor(Math.random() * 10000),
-    first_name: "Kyle",
-    last_name: "Styles",
-    username: "kylestyles21",
-    role: "Personnel",
-  },
-];
-
 export const statusOptions = [
   { value: "proposal", label: "Proposal" },
   { value: "ongoing", label: "Ongoing" },
   { value: "completed", label: "Completed" },
+];
+
+export const roleOptions = [
+  { value: "proponent", label: "Proponent" },
+  { value: "personnel", label: "Personnel" },
+  { value: "admin", label: "Admin" },
 ];
 
 export const formattedDate = (date) => {
@@ -282,6 +108,76 @@ export const Roles = {
   PERSONNEL: "personnel",
 };
 
+export const NOTIFICATION_ACTION_TYPE = {
+  PROJECT: {
+    CREATED: 101,
+    ADDED: 102,
+    UPDATED: 103,
+    DELETE: 104,
+  },
+  APPROVE: 200,
+  COMMENTED: 201,
+
+  LOG: {
+    ADDED: 301,
+    UPDATED: 302,
+    DELETE: 303,
+  },
+
+  CHANGE_STATUS: {
+    pending: 400,
+    proposal: 401,
+    ongoing: 402,
+    completed: 403,
+  },
+};
+
 export function isFile(FILE) {
   return "File" in (window || {}) && FILE instanceof File;
 }
+
+export const notificationActionMsg = (action_type) => {
+  switch (action_type) {
+    case 101:
+      return "created a new proposal";
+
+    case 102:
+      return "added you in";
+
+    case 103:
+      return "updated";
+
+    case 104:
+      return "deleted the";
+
+    case 200:
+      return "approved";
+
+    case 201:
+      return "commented in";
+
+    case 301:
+      return "added a new log in";
+
+    case 302:
+      return "updated a log in";
+
+    case 303:
+      return "deleted a log in";
+
+    case 400:
+      return "change status to pending on";
+
+    case 401:
+      return "change status to proposal on";
+
+    case 402:
+      return "change status to ongoing on";
+
+    case 403:
+      return "change status to completed on";
+
+    default:
+      return;
+  }
+};

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useForm, FormProvider } from "react-hook-form";
 import { getSession, signIn } from "next-auth/react";
+import { BeatLoader } from "react-spinners";
 
 import Logo from "@/components/elements/Logo";
 import Heading from "@/components/elements/Heading";
@@ -101,10 +102,18 @@ const LoginPage = () => {
 
                   <Button
                     type="submit"
-                    className="w-full py-3 mt-8 text-sm text-white rounded-md bg-bc-primary"
+                    className="w-full py-3 mt-8 text-sm text-white rounded-md bg-bc-primary disabled:bg-bc-primary/80"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Signing in" : "Sign in"}
+                    {isSubmitting ? (
+                      <BeatLoader
+                        loading={isSubmitting}
+                        size={6}
+                        color="white"
+                      />
+                    ) : (
+                      "Sign in"
+                    )}
                   </Button>
                 </form>
               </FormProvider>

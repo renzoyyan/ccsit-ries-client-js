@@ -5,6 +5,13 @@ import { isFile } from "@/utils/utils";
 const useExtension = () => {
   const { access_token } = useAuth();
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  };
+
+  // EXTENSION API
   const createExtension = async (values) => {
     const {
       file,
@@ -52,23 +59,13 @@ const useExtension = () => {
       JSON.stringify(target_beneficiaries)
     );
 
-    const res = await api.post("/api/extension/new", formData, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.post("/api/extension/new", formData, config);
 
-    console.log(res);
-    const data = res.data;
     return data;
   };
 
   const getAllExtension = async () => {
-    const { data } = await api.get("/api/extension", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.get("/api/extension", config);
 
     return data;
   };
@@ -76,11 +73,7 @@ const useExtension = () => {
   const getCurrentUserExtensionProjects = async () => {
     const { data } = await api.get(
       "/api/extension/user-extensions?page=1&limit=10",
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
+      config
     );
 
     return data;
@@ -146,11 +139,63 @@ const useExtension = () => {
     const { data } = await api.patch(
       `/api/extension/${extension_id}`,
       formData,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
+      config
+    );
+
+    return data;
+  };
+
+  const updateExtensionStatus = async (extension_id, status) => {
+    const { data } = await api.patch(
+      `/api/extension/change-status/${extension_id}`,
+      { status: status },
+      config
+    );
+
+    return data;
+  };
+
+  // EXTENSION LOG API
+  const createExtensionLog = async (extension_id, values) => {
+    const { log_title, date_completion, ongoing, file } = values;
+
+    let formData = new FormData();
+
+    formData.append("log_title", log_title);
+    formData.append("date_completion", date_completion);
+    formData.append("ongoing", ongoing);
+    if (isFile(file)) formData.append("file", file);
+
+    const { data } = await api.post(
+      `/api/log/new?extension_id=${extension_id}`,
+      formData,
+      config
+    );
+
+    return data;
+  };
+  const getExtensionLogsById = async (id) => {
+    const { data } = await api.get(`/api/log/extension/${id}`, config);
+
+    return data;
+  };
+
+  // EXTENSION COMMENTS API
+
+  const getComments = async (extension) => {
+    const { data } = await api.get(
+      `/api/comment/extension/${extension}`,
+      config
+    );
+
+    return data;
+  };
+
+  const createComment = async (extension, values) => {
+    const { data } = await api.post(
+      `/api/comment/extension/${extension}`,
+      values,
+      config
     );
 
     return data;
@@ -158,10 +203,15 @@ const useExtension = () => {
 
   return {
     createExtension,
+    createExtensionLog,
+    createComment,
     getAllExtension,
     getCurrentUserExtensionProjects,
     getExtensionById,
+    getComments,
+    getExtensionLogsById,
     updateExtensionById,
+    updateExtensionStatus,
   };
 };
 
