@@ -4,7 +4,7 @@ import SectionHeader from "@/components/elements/SectionHeader";
 import Heading from "@/components/elements/Heading";
 import Comments from "@/components/modules/comments/Comments";
 import ActivityLogs from "@/components/modules/logs/ActivityLogs";
-import ResearchInnovationDetails from "@/components/modules/ResearchInnovation/ResearchInnovationDetails";
+import ResearchInnovationDetails from "@/components/modules/research/ResearchInnovationDetails";
 import BackLink from "@/components/elements/links/BackLink";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import { Roles } from "@/utils/utils";

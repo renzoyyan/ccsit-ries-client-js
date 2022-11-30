@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
 import * as Table from "@/components/elements/table";
 import Image from "next/image";
 import Avatar from "@/assets/images/avatar.png";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowTopRightOnSquareIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/24/outline";
 import Button from "@/components/elements/Button";
-import { UserContext } from "@/context/UserContext";
+import Link from "next/link";
 
 const UsersContent = ({
   _id,
@@ -15,8 +17,6 @@ const UsersContent = ({
   role,
 }) => {
   const userName = `${first_name} ${last_name}`;
-
-  const { handleGetUserId, toggleModal } = useContext(UserContext);
 
   return (
     <Table.Row variant={"striped"}>
@@ -37,20 +37,17 @@ const UsersContent = ({
       </td>
       <td className="normal-case tbl-data whitespace-nowrap">{username}</td>
       <td className="tbl-data whitespace-nowrap">{role}</td>
-      {/* <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
-        <Table.Link href="/proponents/1" title={userName} />
-      </td> */}
-      <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <Button
-          type="button"
-          onClick={() => {
-            handleGetUserId(_id);
-            toggleModal();
-          }}
-        >
-          <PencilSquareIcon className="w-6 h-6 text-bc-primary hover:text-bc-tertiary" />
-        </Button>
+      <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
+        <Table.Link href={`/admin/users/${_id}`} title={userName} />
       </td>
+      {/* <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+        <Link href={`/users/${_id}`}>
+          <a className="inline-block text-bc-primary hover:text-bc-tertiary">
+            <ArrowTopRightOnSquareIcon className="w-6 h-6 text-bc-primary hover:text-bc-tertiary" />
+            <span className="sr-only">,View {userName}</span>
+          </a>
+        </Link>
+      </td> */}
     </Table.Row>
   );
 };

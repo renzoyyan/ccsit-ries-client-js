@@ -3,16 +3,15 @@ import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import Heading from "@/components/elements/Heading";
 import Link from "next/link";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import UsersTable from "@/components/modules/Users/UsersTable";
+import UsersTable from "@/components/modules/users/UsersTable";
 import { useQuery } from "@tanstack/react-query";
 import useUsers from "@/hooks/useUsers";
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
-import UsersContent from "@/components/modules/Users/UsersContent";
+import UsersContent from "@/components/modules/users/UsersContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import Image from "next/image";
-import UserModal from "@/components/modules/Users/UserModal";
-import UserProvider, { UserContext } from "@/context/UserContext";
+import UserModal from "@/components/modules/users/UserModal";
 
 const Users = () => {
   const { getUsers } = useUsers();
@@ -31,16 +30,6 @@ const Users = () => {
         </div>
 
         <UserModal />
-        {/* <>
-          <Link href="/proponent/research-innovation/new">
-            <a className="p-3 btn-primary xs:px-4">
-              <span>
-                <PlusCircleIcon className="w-5 h-5 text-white" />
-              </span>
-              <span>Add user</span>
-            </a>
-          </Link>
-        </> */}
       </div>
 
       <UsersTable>

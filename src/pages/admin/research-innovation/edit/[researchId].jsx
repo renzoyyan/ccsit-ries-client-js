@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -13,6 +13,7 @@ import SectionHeader from "@/components/elements/SectionHeader";
 import * as Form from "@/components/forms";
 import {
   isFile,
+  NOTIFICATION_ACTION_TYPE,
   proposal_format_opts,
   research_agenda_opts,
   Roles,
@@ -23,6 +24,8 @@ import useResearch from "@/hooks/useResearch";
 import useProponents from "@/hooks/useProponents";
 import KeywordsInput from "@/components/forms/KeywordsInput";
 import { getAuthSession } from "@/utils/auth";
+import { useAuth } from "@/context/AuthContext";
+import { SocketContext } from "@/context/SocketContext";
 
 const defaultValues = {
   flag: "new",
@@ -43,6 +46,12 @@ const NewResearchInnovation = () => {
   const notificationRef = useRef(null);
 
   const queryClient = useQueryClient();
+
+  // context
+  const { current_user } = useAuth();
+  const { sendNotification } = useContext(SocketContext);
+
+  // hooks
   const { getResearchById, updateResearchById } = useResearch();
   const { proponentOptions } = useProponents();
 
@@ -64,6 +73,9 @@ const NewResearchInnovation = () => {
   const { proponents, ...others } = data ?? {};
 
   const proponentIds = proponents?.map((proponent) => proponent._id);
+  const receiverIds = proponents
+    ?.filter((proponent) => proponent._id !== current_user)
+    ?.map((p) => p._id);
 
   useEffect(() => {
     if (research_id && !isLoading) {
@@ -88,6 +100,16 @@ const NewResearchInnovation = () => {
       toast.success("Successfully saved", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.PROJECT.UPDATED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;

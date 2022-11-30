@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import SectionHeader from "@/components/elements/SectionHeader";
 import Heading from "@/components/elements/Heading";
-import ExtensionServicesDetails from "@/components/modules/ExtensionServices/ExtensionServicesDetails";
+import ExtensionServicesDetails from "@/components/modules/extension/ExtensionServicesDetails";
 import Comments from "@/components/modules/comments/Comments";
 import ActivityLogs from "@/components/modules/logs/ActivityLogs";
 import BackLink from "@/components/elements/links/BackLink";
@@ -30,6 +30,10 @@ import useConfirm from "@/hooks/useConfirm";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
 import CommentForm from "@/components/modules/comments/CommentForm";
+
+const defaultValues = {
+  status: "",
+};
 
 const SingleExtensionServices = () => {
   const notificationRef = useRef(null);
@@ -64,7 +68,7 @@ const SingleExtensionServices = () => {
     queryFn: () => getComments(extension_id),
     enabled: !!extension_id,
   });
-  const methods = useForm({ defaultValues: { status: "" } });
+  const methods = useForm({ defaultValues });
 
   const status = methods.watch("status");
   const receiverIds = extension?.proponents?.map((p) => p._id);

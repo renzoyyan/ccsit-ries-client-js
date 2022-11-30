@@ -28,9 +28,8 @@ const UserModal = ({ disabled }) => {
   const notificationRef = useRef(null);
   const queryClient = useQueryClient();
 
-  const { selectedUserId, setSelectedUserId, isOpen, toggleModal } =
-    useContext(UserContext);
-  const { addUser, updateUserById, getUserById } = useUsers();
+  const { isOpen, toggleModal } = useModal();
+  const { addUser } = useUsers();
 
   const methods = useForm({ defaultValues });
 
@@ -41,11 +40,11 @@ const UserModal = ({ disabled }) => {
     formState: { isSubmitting },
   } = methods;
 
-  const { data: user } = useQuery({
-    queryKey: ["users", selectedUserId],
-    queryFn: () => getUserById(selectedUserId),
-    enabled: !!selectedUserId,
-  });
+  // const { data: user } = useQuery({
+  //   queryKey: ["users", selectedUserId],
+  //   queryFn: () => getUserById(selectedUserId),
+  //   enabled: !!selectedUserId,
+  // });
 
   const { mutateAsync: addNewUser } = useMutation({
     mutationFn: addUser,
@@ -67,47 +66,45 @@ const UserModal = ({ disabled }) => {
     },
   });
 
-  const { mutateAsync: updateUser } = useMutation({
-    mutationFn: (values) => updateUserById(selectedUserId, values),
+  // const { mutateAsync: updateUser } = useMutation({
+  //   mutationFn: (values) => updateUserById(selectedUserId, values),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries(["users"]);
-      toast.success("User updated", {
-        id: notificationRef.current,
-      });
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["users"]);
+  //     toast.success("User updated", {
+  //       id: notificationRef.current,
+  //     });
 
-      reset(defaultValues);
-      toggleModal();
-    },
+  //     reset(defaultValues);
+  //     toggleModal();
+  //   },
 
-    onError: (error) => {
-      const message = error?.response?.data?.message;
-      toast.error(message, {
-        id: notificationRef.current,
-      });
-    },
-  });
+  //   onError: (error) => {
+  //     const message = error?.response?.data?.message;
+  //     toast.error(message, {
+  //       id: notificationRef.current,
+  //     });
+  //   },
+  // });
 
-  useEffect(() => {
-    if (user) {
-      setValue("image", user?.image?.url);
-      setValue("role", user?.role);
-      setValue("username", user?.username);
-      setValue("first_name", user?.first_name);
-      setValue("last_name", user?.last_name);
-      setValue("doctorate_degree", user?.doctorate_degree);
-    }
-  }, [setValue, user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setValue("image", user?.image?.url);
+  //     setValue("role", user?.role);
+  //     setValue("username", user?.username);
+  //     setValue("first_name", user?.first_name);
+  //     setValue("last_name", user?.last_name);
+  //     setValue("doctorate_degree", user?.doctorate_degree);
+  //   }
+  // }, [setValue, user]);
 
   const onSubmitUser = async (values) => {
     notificationRef.current = isFile(values?.file)
       ? toast.loading("Uploading file please wait..")
       : toast.loading("Saving...");
 
-    if (selectedUserId !== null) {
-      return await updateUser(values);
-    }
-    return await addNewUser(values);
+    await addNewUser(values);
+    return;
   };
 
   return (
@@ -126,7 +123,6 @@ const UserModal = ({ disabled }) => {
         toggleModal={() => {
           toggleModal();
           reset(defaultValues);
-          setSelectedUserId(null);
         }}
         modalTitle="Add new user"
       >
@@ -156,22 +152,20 @@ const UserModal = ({ disabled }) => {
                 />
               </Form.Group>
 
-              {selectedUserId === null ? (
-                <Form.Group>
-                  <Form.Input
-                    type="password"
-                    name="password"
-                    label="Password"
-                    validation={{
-                      required: "This field is required",
-                      minLength: {
-                        value: 6,
-                        message: "Password must have at least 6 characters",
-                      },
-                    }}
-                  />
-                </Form.Group>
-              ) : null}
+              <Form.Group>
+                <Form.Input
+                  type="password"
+                  name="password"
+                  label="Temporary password"
+                  validation={{
+                    required: "This field is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must have at least 6 characters",
+                    },
+                  }}
+                />
+              </Form.Group>
 
               <Form.Group>
                 <Form.Input

@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
 
 import SectionHeader from "@/components/elements/SectionHeader";
-import ResearchInnovationDetails from "@/components/modules/ResearchInnovation/ResearchInnovationDetails";
+import ResearchInnovationDetails from "@/components/modules/research/ResearchInnovationDetails";
 import Comments from "@/components/modules/comments/Comments";
 import Heading from "@/components/elements/Heading";
 import UserLayout from "@/components/layouts/users/UserLayout";
@@ -30,18 +30,24 @@ import {
   statusOptions,
 } from "@/utils/utils";
 
+const defaultValues = {
+  status: "",
+};
+
 const SingleResearchInnovation = () => {
   const notificationRef = useRef(null);
   const queryClient = useQueryClient();
-  const { sendNotification } = useContext(SocketContext);
 
   const router = useRouter();
   const research_id = router.query.researchId;
 
+  // context
+  const { current_user } = useAuth();
+  const { sendNotification } = useContext(SocketContext);
+
   // hooks
   const { isOpen, toggleModal } = useModal();
   const { isConfirmed } = useConfirm();
-  const { current_user } = useAuth();
   const {
     getResearchById,
     getComments,
@@ -50,7 +56,7 @@ const SingleResearchInnovation = () => {
     createComment,
   } = useResearch();
 
-  const methods = useForm({ defaultValues: { status: "" } });
+  const methods = useForm({ defaultValues });
 
   const { data, isLoading } = useQuery({
     queryKey: ["research", research_id],

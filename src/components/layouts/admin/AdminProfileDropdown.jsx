@@ -9,7 +9,7 @@ import Image from "next/image";
 import Avatar from "@/assets/images/avatar.svg";
 import { useAuth } from "@/context/AuthContext";
 
-const UserProfileDropdown = () => {
+const AdminProfileDropdown = () => {
   const router = useRouter();
   const { user } = useAuth();
 
@@ -42,7 +42,7 @@ const UserProfileDropdown = () => {
             <Menu.Item>
               {({ active }) => (
                 <a
-                  onClick={() => router.push("/proponent/profile")}
+                  onClick={() => router.push("/admin/profile")}
                   className={classNames(
                     "flex items-center gap-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                   )}
@@ -70,4 +70,4 @@ const UserProfileDropdown = () => {
   );
 };
 
-export default UserProfileDropdown;
+export default AdminProfileDropdown;

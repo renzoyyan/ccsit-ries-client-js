@@ -1,30 +1,38 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 import SectionHeader from "@/components/elements/SectionHeader";
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
-import ResearchInnovationDetails from "@/components/modules/ResearchInnovation/ResearchInnovationDetails";
+import ResearchInnovationDetails from "@/components/modules/research/ResearchInnovationDetails";
 import Comments from "@/components/modules/comments/Comments";
 import ActivityLogs from "@/components/modules/logs/ActivityLogs";
 import Heading from "@/components/elements/Heading";
 import BackLink from "@/components/elements/links/BackLink";
 import useResearch from "@/hooks/useResearch";
-import useLogs from "@/hooks/useLogs";
 import useModal from "@/hooks/useModal";
 import LogModal from "@/components/modules/logs/modal/LogModal";
 import Logs from "@/components/modules/logs/Logs";
 import { getAuthSession } from "@/utils/auth";
-import { classNames, isFile, Roles, statusOptions } from "@/utils/utils";
+import {
+  classNames,
+  isFile,
+  NOTIFICATION_ACTION_TYPE,
+  Roles,
+  statusOptions,
+} from "@/utils/utils";
 import Button from "@/components/elements/Button";
-import { FormProvider, useForm } from "react-hook-form";
 import { Listbox } from "@/components/forms";
 import useConfirm from "@/hooks/useConfirm";
-import toast from "react-hot-toast";
-import { io } from "socket.io-client";
+import CommentForm from "@/components/modules/comments/CommentForm";
+import { useAuth } from "@/context/AuthContext";
+import { SocketContext } from "@/context/SocketContext";
 
-const socket = io.connect("http://localhost:5000");
+const defaultValues = {
+  status: "",
+};
 
 const SingleResearchInnovation = () => {
   const notificationRef = useRef(null);
@@ -33,10 +41,19 @@ const SingleResearchInnovation = () => {
   const router = useRouter();
   const research_id = router.query.researchId;
 
+  // context
+  const { current_user } = useAuth();
+  const { sendNotification } = useContext(SocketContext);
+
   // hooks
   const { isConfirmed } = useConfirm();
-  const { getResearchById, updateResearchStatus } = useResearch();
-  const { getResearchLogsById, createResearchLog } = useLogs();
+  const {
+    getResearchById,
+    getComments,
+    createComment,
+    createResearchLog,
+    updateResearchStatus,
+  } = useResearch();
   const { isOpen, toggleModal } = useModal();
 
   const { data, isLoading } = useQuery({
@@ -45,37 +62,72 @@ const SingleResearchInnovation = () => {
     enabled: !!research_id,
   });
 
-  const { data: logs } = useQuery({
-    queryKey: ["logs"],
-    queryFn: () => getResearchLogsById(research_id),
+  const { data: comments } = useQuery({
+    queryKey: ["comments", research_id],
+    queryFn: () => getComments(research_id),
     enabled: !!research_id,
   });
 
-  const status = data?.status;
+  const receiverIds = data?.proponents?.map((p) => p._id);
 
-  const methods = useForm();
+  const methods = useForm({ defaultValues });
 
-  useEffect(() => {
-    socket.emit("join_project", research_id);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const status = methods.watch("status");
 
   useEffect(() => {
-    methods.setValue("status", status);
-  }, [methods, status]);
+    if (data) {
+      methods.setValue("status", data?.status);
+    }
+  }, [methods, data]);
 
   const { mutateAsync: addLog } = useMutation({
     mutationFn: (values) => createResearchLog(research_id, values),
 
     onSuccess: () => {
-      queryClient.invalidateQueries("logs");
+      queryClient.invalidateQueries(["research", research_id]);
       toast.success("New log saved", {
         id: notificationRef.current,
       });
       toggleModal();
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.LOG.ADDED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
 
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message, {
+        id: notificationRef.current,
+      });
+    },
+  });
+
+  const { mutateAsync: approveProposal } = useMutation({
+    mutationFn: (status) => updateResearchStatus(research_id, status),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["research", research_id] });
+      toast.success("Successfully saved", {
+        id: notificationRef.current,
+      });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.APPROVE,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
+    },
     onError: (error) => {
       const message = error.response.data.message;
       toast.error(message, {
@@ -88,16 +140,52 @@ const SingleResearchInnovation = () => {
     mutationFn: (status) => updateResearchStatus(research_id, status),
 
     onSuccess: (values) => {
-      queryClient.invalidateQueries({ queryKey: ["research", values._id] });
+      queryClient.invalidateQueries({ queryKey: ["research", research_id] });
       toast.success("Successfully saved", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.CHANGE_STATUS[values.status],
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;
       toast.error(message, {
         id: notificationRef.current,
       });
+    },
+  });
+
+  const { mutateAsync: sendNewComment } = useMutation({
+    mutationFn: (values) => createComment(research_id, values),
+
+    onSuccess: (values) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", research_id],
+      });
+      toast.success("New comment added");
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.COMMENTED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
+    },
+
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message);
     },
   });
 
@@ -118,7 +206,20 @@ const SingleResearchInnovation = () => {
     if (confirm) {
       const status = "proposal";
 
-      await updateStatus(status);
+      await approveProposal(status);
+    }
+  };
+
+  const handleChangeStatus = async (val) => {
+    if (status === val) return;
+
+    const confirm = await isConfirmed(
+      "Are you sure you want to update the status?",
+      "Change status"
+    );
+
+    if (confirm) {
+      await updateStatus(val);
     }
   };
 
@@ -158,13 +259,17 @@ const SingleResearchInnovation = () => {
             options={statusOptions}
             name="status"
             disabled={status === "pending"}
+            withCustomOnChange
+            handleChange={handleChangeStatus}
           />
         </div>
       </FormProvider>
       <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
         <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
           <ResearchInnovationDetails data={data} />
-          <Comments isView={false} />
+          <Comments research_id={research_id} data={comments}>
+            <CommentForm onSubmitComment={sendNewComment} />
+          </Comments>
         </div>
 
         <ActivityLogs>
@@ -185,7 +290,7 @@ const SingleResearchInnovation = () => {
 
           {/* Activity Feed */}
           <div className="mt-8">
-            <Logs logs={logs} />
+            <Logs logs={data?.logs} />
           </div>
         </ActivityLogs>
       </div>

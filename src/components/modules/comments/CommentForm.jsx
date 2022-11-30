@@ -15,7 +15,7 @@ const defaultValues = {
 };
 const CommentForm = ({ onSubmitComment }) => {
   const methods = useForm({ defaultValues });
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, watch } = methods;
 
   const { user } = useAuth();
 
@@ -23,34 +23,9 @@ const CommentForm = ({ onSubmitComment }) => {
     await onSubmitComment(values);
 
     reset();
-
-    // const path = research_id
-    //   ? `/api/comment/research/${research_id}`
-    //   : `/api/comment/extension/${extension_id}`;
-
-    // try {
-    //   const { data } = await api.post(path, values, {
-    //     headers: {
-    //       Authorization: `Bearer ${access_token}`,
-    //     },
-    //   });
-
-    // sendNewComment(data);
-    // socket.emit("comments", data);
-    // socket.emit("send_comment", {
-    //   research_id,
-    //   comment_by: {
-    //     first_name: user?.first_name,
-    //     last_name: user?.last_name,
-    //     image: {
-    //       url: user?.image?.url,
-    //     },
-    //   },
-    //   created_at: Date.now(),
-    //   content: values.content,
-    //   // socketId: socket.id,
-    // });
   };
+
+  const content = watch("content");
 
   return (
     <div className="px-4 py-6 bg-gray-50 sm:px-6">
@@ -78,6 +53,7 @@ const CommentForm = ({ onSubmitComment }) => {
                   type="submit"
                   className="px-4 py-2 text-sm btn-primary"
                   onClick={handleSubmit(sendComment)}
+                  disabled={content === ""}
                 >
                   Comment
                 </Button>

@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import Heading from "@/components/elements/Heading";
 import SearchBar from "@/components/elements/SearchBar";
-import ExtensionServicesTable from "@/components/modules/ExtensionServices/ExtensionServicesTable";
+import ExtensionServicesTable from "@/components/modules/extension/ExtensionServicesTable";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
 import useExtension from "@/hooks/useExtension";
-import ExtensionServicesContent from "@/components/modules/ExtensionServices/ExtensionServicesContent";
+import ExtensionServicesContent from "@/components/modules/extension/ExtensionServicesContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import Image from "next/image";
 

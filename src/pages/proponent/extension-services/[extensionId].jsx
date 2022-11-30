@@ -7,7 +7,7 @@ import { BeatLoader } from "react-spinners";
 
 import SectionHeader from "@/components/elements/SectionHeader";
 import Heading from "@/components/elements/Heading";
-import ExtensionServicesDetails from "@/components/modules/ExtensionServices/ExtensionServicesDetails";
+import ExtensionServicesDetails from "@/components/modules/extension/ExtensionServicesDetails";
 import Comments from "@/components/modules/comments/Comments";
 import BackLink from "@/components/elements/links/BackLink";
 import UserLayout from "@/components/layouts/users/UserLayout";
@@ -29,6 +29,10 @@ import {
   Roles,
   statusOptions,
 } from "@/utils/utils";
+
+const defaultValues = {
+  status: "",
+};
 
 const SingleExtensionServices = () => {
   const notificationRef = useRef(null);
@@ -64,7 +68,7 @@ const SingleExtensionServices = () => {
     enabled: !!extension_id,
   });
 
-  const methods = useForm({ defaultValues: { status: "" } });
+  const methods = useForm({ defaultValues });
 
   const status = methods.watch("status");
   const receiverIds = extension?.proponents

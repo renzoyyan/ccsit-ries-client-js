@@ -3,8 +3,9 @@ import { Bars3BottomLeftIcon, BellIcon } from "@heroicons/react/24/outline";
 
 import MobileMenu from "./MobileMenu";
 import Button from "@/components/elements/Button";
-import ProfileDropdown from "@/components/modules/ProfileDropdown";
+import ProfileDropdown from "@/components/layouts/users/ProfileDropdown";
 import AdminNotification from "./AdminNotification";
+import AdminProfileDropdown from "./AdminProfileDropdown";
 
 const AdminNavbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,15 +22,10 @@ const AdminNavbar = () => {
         </Button>
         <div className="flex justify-end flex-1 pl-4 md:px-0">
           <div className="flex items-center ml-4 md:ml-6">
-            {/* <Button className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-bc-tertiary focus:ring-offset-2">
-              <span className="sr-only">View notifications</span>
-              <BellIcon className="w-6 h-6" aria-hidden="true" />
-            </Button> */}
-
             <AdminNotification />
 
             {/* Profile dropdown */}
-            <ProfileDropdown />
+            <AdminProfileDropdown />
           </div>
         </div>
       </header>

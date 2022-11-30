@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import FileUpload from "@/components/forms/FileUpload";
 import {
   extension_types_opts,
   isFile,
+  NOTIFICATION_ACTION_TYPE,
   research_agenda_opts,
   Roles,
   statusOptions,
@@ -23,6 +24,8 @@ import KeywordsInput from "@/components/forms/KeywordsInput";
 import useProponents from "@/hooks/useProponents";
 import useExtension from "@/hooks/useExtension";
 import { getAuthSession } from "@/utils/auth";
+import { useAuth } from "@/context/AuthContext";
+import { SocketContext } from "@/context/SocketContext";
 
 const defaultValues = {
   file: null,
@@ -48,6 +51,10 @@ const EditExtensionServicePage = () => {
   const notificationRef = useRef(null);
   const queryClient = useQueryClient();
 
+  // context
+  const { current_user } = useAuth();
+  const { sendNotification } = useContext(SocketContext);
+
   // hooks
   const { getExtensionById, updateExtensionById } = useExtension();
   const { proponentOptions } = useProponents();
@@ -57,14 +64,18 @@ const EditExtensionServicePage = () => {
     queryFn: () => getExtensionById(extension_id),
     enabled: !!extension_id,
   });
+
   const { proponents, ...rest } = data ?? {};
   const proponentIds = proponents?.map((proponent) => proponent._id);
+  const receiverIds = proponents
+    ?.filter((proponent) => proponent._id !== current_user)
+    ?.map((p) => p._id);
 
   const methods = useForm({ defaultValues });
 
   const { handleSubmit, watch, reset } = methods;
-  const statusValue = watch("status");
 
+  const statusValue = watch("status");
   const isStatusCompleted = statusValue?.toLowerCase() === "completed";
 
   useEffect(() => {
@@ -88,6 +99,16 @@ const EditExtensionServicePage = () => {
       toast.success("Updated successfully", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        extension_id,
+        action_type: NOTIFICATION_ACTION_TYPE.PROJECT.UPDATED,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;

@@ -21,6 +21,7 @@ const SingleFileUpload = ({
   imgHeight,
   disabled = false,
   withLabel = false,
+  withIcon = true,
 }) => {
   const { control, watch } = useFormContext();
   const currentFile = watch(name);
@@ -96,9 +97,13 @@ const SingleFileUpload = ({
             />
 
             <div className="flex items-center gap-x-2">
-              <span className={classNames(btnColor !== "primary" && "hidden")}>
-                <PlusCircleIcon className="w-5 h-5" aria-hidden="true" />
-              </span>
+              {withIcon && (
+                <span
+                  className={classNames(btnColor !== "primary" && "hidden")}
+                >
+                  <PlusCircleIcon className="w-5 h-5" aria-hidden="true" />
+                </span>
+              )}
               <span>{btnText}</span>
             </div>
           </label>

@@ -1,6 +1,6 @@
 import { Popover, Transition } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { Fragment, useContext, useEffect } from "react";
 import TimeAgo from "react-timeago";
@@ -18,7 +18,7 @@ const UserNotification = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { getUserNotifications } = useNotification();
+  const { getUserNotifications, updateNotification } = useNotification();
 
   const { data } = useQuery({
     queryKey: ["user-notification"],
@@ -37,7 +37,20 @@ const UserNotification = () => {
     return () => unsub;
   }, [socket, queryClient]);
 
-  const unreadNotifications = data?.map((v) => v.isRead === false)?.length;
+  const unreadNotifications = data?.filter((v) => v.isRead === false)?.length;
+
+  const { mutateAsync: updateNotificationRead } = useMutation({
+    mutationFn: (notification_id) => updateNotification(notification_id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["user-notification"]);
+    },
+
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message);
+    },
+  });
 
   return (
     <Popover className="relative">
@@ -118,12 +131,14 @@ const UserNotification = () => {
                       className={classNames(
                         "flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       )}
-                      onClick={() => {
+                      onClick={async () => {
                         let path = item?.research_id
                           ? `/proponent/research-innovation/${item?.research_id?._id}`
                           : `/proponent/extension-services/${item?.extension_id?._id}`;
 
                         router.push(path);
+
+                        await updateNotificationRead(item._id);
                       }}
                     >
                       <div

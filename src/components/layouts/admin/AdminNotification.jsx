@@ -1,6 +1,6 @@
 import { Popover, Transition } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { Fragment, useContext, useEffect } from "react";
 import TimeAgo from "react-timeago";
@@ -12,13 +12,16 @@ import Avatar from "@/assets/images/avatar.svg";
 import NotificationBell from "@/assets/images/notification-bell.svg";
 import { SocketContext } from "@/context/SocketContext";
 import useNotification from "@/hooks/useNotification";
+import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 const AdminNotification = () => {
   const { socket } = useContext(SocketContext);
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { getNotifications } = useNotification();
+  const { getNotifications, updateNotification } = useNotification();
+  const { current_user } = useAuth();
 
   const { data } = useQuery({
     queryKey: ["admin-notification"],
@@ -36,7 +39,25 @@ const AdminNotification = () => {
     return () => unsub;
   }, [socket, queryClient]);
 
-  const unreadNotifications = data?.map((v) => v.isRead === false)?.length;
+  const filteredNotifications = data?.filter(
+    (v) => v.sender._id !== current_user
+  );
+  const unreadNotifications = filteredNotifications?.filter(
+    (v) => v.isRead === false
+  )?.length;
+
+  const { mutateAsync: updateNotificationRead } = useMutation({
+    mutationFn: (notification_id) => updateNotification(notification_id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-notification"]);
+    },
+
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message);
+    },
+  });
 
   return (
     <Popover className="relative">
@@ -88,7 +109,7 @@ const AdminNotification = () => {
                   </Button>
                 </div>
 
-                {data?.length === 0 ? (
+                {filteredNotifications?.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-sm text-center">
                     <div className="p-8 bg-blue-100 rounded-full">
                       <Image
@@ -111,18 +132,19 @@ const AdminNotification = () => {
                     </div>
                   </div>
                 ) : (
-                  data?.map((item, idx) => (
+                  filteredNotifications?.map((item, idx) => (
                     <Button
                       key={item._id}
                       className={classNames(
                         "flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       )}
-                      onClick={() => {
+                      onClick={async () => {
                         let path = item?.research_id
-                          ? `/proponent/research-innovation/${item?.research_id?._id}`
-                          : `/proponent/extension-services/${item?.extension_id?._id}`;
+                          ? `/admin/research-innovation/${item?.research_id?._id}`
+                          : `/admin/extension-services/${item?.extension_id?._id}`;
 
                         router.push(path);
+                        await updateNotificationRead(item._id);
                       }}
                     >
                       <div

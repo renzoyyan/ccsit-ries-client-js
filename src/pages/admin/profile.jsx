@@ -1,19 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-
-import UserLayout from "@/components/layouts/users/UserLayout";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import * as Form from "@/components/forms";
 import Button from "@/components/elements/Button";
 import SingleFileUpload from "@/components/forms/SingleFileUpload";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useUsers from "@/hooks/useUsers";
 import { useAuth } from "@/context/AuthContext";
 import useEditMode from "@/hooks/useEditMode";
 import PasswordResetModal from "@/components/modules/proponents/PasswordResetModal";
 import { getAuthSession } from "@/utils/auth";
 import { isFile, Roles } from "@/utils/utils";
-import toast from "react-hot-toast";
+import AdminLayout from "@/components/layouts/admin/AdminLayout";
 
 const personalDefaultValues = {
   first_name: "",
@@ -111,7 +110,7 @@ const ProponentProfile = () => {
   };
 
   return (
-    <UserLayout>
+    <AdminLayout>
       <div className="mt-10 sm:mt-20">
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
@@ -293,86 +292,7 @@ const ProponentProfile = () => {
           </div>
         </div>
       </div>
-
-      {/* <div className="divide-y divide-gray-200 divide">
-        <div className="grid grid-cols-1 pb-20 mt-6 xl:grid-cols-2">
-          <Heading
-            as="h2"
-            title="Personal Information"
-            className="font-medium"
-          />
-
-          <div className="bg-white rounded-md shadow-sm ">
-            <FormProvider {...personalMethods}>
-              <div className="p-8 space-y-6">
-                <Form.Group>
-                  <Form.Input name="first_name" label="First name" disabled />
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Input name="last_name" label="Last name" disabled />
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Input
-                    name="suffix"
-                    label="Suffix (optional)"
-                    disabled
-                  />
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Input
-                    name="doctorate_degree"
-                    label="Doctorate degree (optional)"
-                    disabled
-                  />
-                </Form.Group>
-              </div>
-
-              <div className="px-8 py-4 text-right bg-gray-100">
-                <Button className="px-5 btn-primary">Edit</Button>
-              </div>
-            </FormProvider>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 pt-20 xl:grid-cols-2">
-          <div>
-            <Heading
-              as="h2"
-              title="Account Information"
-              className="font-medium"
-            />
-            <span className="text-sm text-gray-400">
-              Don&apos;t share your account information to anyone
-            </span>
-          </div>
-          <div className="bg-white rounded-md shadow-sm ">
-            <FormProvider {...accountMethods}>
-              <div className="p-8 space-y-6">
-                <Form.Group>
-                  <Form.Input name="username" label="Username" disabled />
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Input
-                    type="password"
-                    name="password"
-                    label="Password"
-                    disabled
-                  />
-                </Form.Group>
-              </div>
-
-              <div className="px-8 py-4 text-right bg-gray-100">
-                <Button className="px-5 btn-primary">Edit</Button>
-              </div>
-            </FormProvider>
-          </div>
-        </div>
-      </div> */}
-    </UserLayout>
+    </AdminLayout>
   );
 };
 
@@ -391,7 +311,7 @@ export const getServerSideProps = async (ctx) => {
     };
   }
 
-  if (session && role !== Roles.PROPONENT) {
+  if (session && role !== Roles.ADMIN) {
     return {
       redirect: {
         destination: "/",

@@ -6,12 +6,13 @@ import NavLink from "@/components/elements/links/NavLink";
 import Logo from "@/components/elements/Logo";
 import useRoles from "@/hooks/useRoles";
 import { personnelNav, proponentNav, Roles } from "@/utils/utils";
-import ProfileDropdown from "@/components/modules/ProfileDropdown";
+import ProfileDropdown from "@/components/layouts/users/ProfileDropdown";
 import { signOut } from "next-auth/react";
 import UserNotification from "./UserNotification";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useRef } from "react";
 import socketIO from "socket.io-client";
+import UserProfileDropdown from "./UserProfileDropdown";
 
 const SOCKET_IO_SERVER = "http://localhost:5000";
 const UserNavbar = () => {
@@ -85,7 +86,7 @@ const UserNavbar = () => {
 
                 {/* Profile dropdown */}
                 {isProponent ? (
-                  <ProfileDropdown />
+                  <UserProfileDropdown />
                 ) : (
                   <button
                     type="button"

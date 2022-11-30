@@ -3,7 +3,7 @@ import Heading from "@/components/elements/Heading";
 import ActivityLogs from "@/components/modules/logs/ActivityLogs";
 import Comments from "@/components/modules/comments/Comments";
 import BackLink from "@/components/elements/links/BackLink";
-import ExtensionServicesDetails from "@/components/modules/ExtensionServices/ExtensionServicesDetails";
+import ExtensionServicesDetails from "@/components/modules/extension/ExtensionServicesDetails";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";

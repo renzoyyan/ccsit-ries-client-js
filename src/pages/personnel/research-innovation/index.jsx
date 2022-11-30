@@ -3,12 +3,12 @@ import Image from "next/image";
 
 import Heading from "@/components/elements/Heading";
 import SearchBar from "@/components/elements/SearchBar";
-import ResearchInnovationTable from "@/components/modules/ResearchInnovation/ResearchInnovationTable";
+import ResearchInnovationTable from "@/components/modules/research/ResearchInnovationTable";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
 import useResearch from "@/hooks/useResearch";
-import ResearchInnovationContent from "@/components/modules/ResearchInnovation/ResearchInnovationContent";
+import ResearchInnovationContent from "@/components/modules/research/ResearchInnovationContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 
 const ResearchInnovation = () => {
