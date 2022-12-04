@@ -92,7 +92,22 @@ export const statusOptions = [
   { value: "completed", label: "Completed" },
 ];
 
+export const filterStatusOptions = [
+  { value: "all", label: "All" },
+  { value: "pending", label: "Pending" },
+  { value: "proposal", label: "Proposal" },
+  { value: "ongoing", label: "Ongoing" },
+  { value: "completed", label: "Completed" },
+];
+
 export const roleOptions = [
+  { value: "proponent", label: "Proponent" },
+  { value: "personnel", label: "Personnel" },
+  { value: "admin", label: "Admin" },
+];
+
+export const filterRoleOptions = [
+  { value: "all", label: "All" },
   { value: "proponent", label: "Proponent" },
   { value: "personnel", label: "Personnel" },
   { value: "admin", label: "Admin" },

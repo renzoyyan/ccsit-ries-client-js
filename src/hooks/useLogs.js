@@ -5,73 +5,36 @@ import { isFile } from "@/utils/utils";
 const useLogs = () => {
   const { access_token } = useAuth();
 
-  const createResearchLog = async (research_id, values) => {
-    const { log_title, date_completion, file } = values;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  };
+
+  const getLogById = async (log_id) => {
+    const { data } = await api.get(`/api/log/${log_id}`, config);
+
+    return data;
+  };
+
+  const updateLogById = async (log_id, values) => {
+    const { log_title, date_completion, ongoing, file } = values;
 
     let formData = new FormData();
 
     formData.append("log_title", log_title);
     formData.append("date_completion", date_completion);
+    formData.append("ongoing", ongoing);
     if (isFile(file)) formData.append("file", file);
 
-    const { data } = await api.post(
-      `/api/log/new?research_id=${research_id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    return data;
-  };
-
-  const createExtensionLog = async (extension_id, values) => {
-    const { log_title, date_completion, file } = values;
-
-    let formData = new FormData();
-
-    formData.append("log_title", log_title);
-    formData.append("date_completion", date_completion);
-    if (isFile(file)) formData.append("file", file);
-
-    const { data } = await api.post(
-      `/api/log/new?extension_id=${extension_id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    return data;
-  };
-  const getResearchLogsById = async (id) => {
-    const { data } = await api.get(`/api/log/research/${id}`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-
-    return data;
-  };
-  const getExtensionLogsById = async (id) => {
-    const { data } = await api.get(`/api/log/extension/${id}`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.patch(`/api/log/${log_id}`, formData, config);
 
     return data;
   };
 
   return {
-    getResearchLogsById,
-    getExtensionLogsById,
-    createResearchLog,
-    createExtensionLog,
+    getLogById,
+    updateLogById,
   };
 };
 

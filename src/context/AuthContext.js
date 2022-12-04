@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/utils/api";
@@ -7,7 +7,6 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const { data: session } = useSession();
-  const socketRef = useRef(null);
 
   const access_token = session?.user?.access_token;
   const current_user = session?.user?.user_details?._id;

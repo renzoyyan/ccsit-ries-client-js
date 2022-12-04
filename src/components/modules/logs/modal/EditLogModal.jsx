@@ -1,4 +1,3 @@
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { FormProvider, useForm } from "react-hook-form";
 import moment from "moment";
 import { useEffect } from "react";
@@ -7,7 +6,10 @@ import * as Form from "@/components/forms";
 import FileUpload from "@/components/forms/FileUpload";
 import Button from "@/components/elements/Button";
 import Modal from "@/components/elements/modal/Modal";
-import { classNames } from "@/utils/utils";
+import useModal from "@/hooks/useModal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import useLogs from "@/hooks/useLogs";
+import toast from "react-hot-toast";
 
 const defaultValues = {
   log_title: "",
@@ -16,7 +18,11 @@ const defaultValues = {
   ongoing: false,
 };
 
-const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
+const EditLogModal = ({ logId }) => {
+  const { isOpen, toggleModal } = useModal();
+  const { getLogById, updateLogById } = useLogs();
+  const queryClient = useQueryClient();
+
   const methods = useForm({ defaultValues });
 
   const {
@@ -29,26 +35,54 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
 
   const isOnGoing = watch("ongoing");
 
+  const { data } = useQuery({
+    queryKey: ["log", logId],
+    queryFn: () => getLogById(logId),
+    enabled: !!isOpen,
+  });
+
   useEffect(() => {
     if (!isOnGoing) return;
 
     setValue("date_completion", "");
   }, [setValue, isOnGoing]);
 
-  const onSubmitLog = (values) => {
-    onSubmit(values);
-    reset();
-  };
+  useEffect(() => {
+    if (!data) return;
+
+    reset(data);
+  }, [reset, data]);
+
+  const { mutateAsync } = useMutation({
+    mutationFn: (values) => updateLogById(logId, values),
+
+    onSuccess: (values) => {
+      if (values.log.research_id) {
+        queryClient.invalidateQueries(["research", values.log.research_id]);
+      } else {
+        queryClient.invalidateQueries(["extension", values.log.extension_id]);
+      }
+
+      toast.success("Updated log successfully");
+      toggleModal();
+      reset();
+    },
+
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message);
+    },
+  });
+
+  const onSubmitLog = async (values) => await mutateAsync(values);
 
   return (
     <>
-      <Button type="button" onClick={toggleModal} disabled={disabled}>
-        <PlusCircleIcon
-          className={classNames(
-            "w-6 h-6 text-gray-900",
-            disabled ? "text-gray-500" : ""
-          )}
-        />
+      <Button
+        className="text-xs font-medium cursor-pointer hover:underline text-bc-tertiary"
+        onClick={toggleModal}
+      >
+        Update log
       </Button>
       <Modal
         isOpen={isOpen}
@@ -125,4 +159,4 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
   );
 };
 
-export default LogModal;
+export default EditLogModal;

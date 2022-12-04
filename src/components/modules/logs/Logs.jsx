@@ -1,5 +1,7 @@
+import Button from "@/components/elements/Button";
 import StatusCard from "@/components/elements/StatusCard";
 import { classNames, formattedDate } from "@/utils/utils";
+import EditLogModal from "./modal/EditLogModal";
 import LogModal from "./modal/LogModal";
 
 const Logs = ({ logs }) => {
@@ -39,9 +41,15 @@ const Logs = ({ logs }) => {
                       </a>
                     ) : null}
                     {log?.ongoing && (
-                      <span className="inline-block px-2 py-1 text-xs font-medium capitalize rounded-md bg-sky-100 text-sky-800">
-                        On going
-                      </span>
+                      <div className="space-x-2">
+                        <span className="inline-block px-2 py-1 text-xs font-medium capitalize rounded-md bg-sky-100 text-sky-800">
+                          On going
+                        </span>
+                        {/* <Button className="text-xs font-medium cursor-pointer hover:underline text-bc-tertiary">
+                          Update log
+                        </Button> */}
+                        <EditLogModal logId={log?._id} />
+                      </div>
                     )}
                   </div>
 

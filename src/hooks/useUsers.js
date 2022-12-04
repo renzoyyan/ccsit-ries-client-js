@@ -5,22 +5,23 @@ import { isFile } from "@/utils/utils";
 const useUsers = () => {
   const { access_token } = useAuth();
 
-  const getUsers = async () => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  };
+
+  const getUsers = async (params) => {
     const { data } = await api.get("/api/users?page=1&limit=10", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
+      params,
+      ...config,
     });
 
     return data;
   };
 
   const getUserById = async (user_id) => {
-    const { data } = await api.get(`/api/users/${user_id}`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.get(`/api/users/${user_id}`, config);
 
     return data;
   };
@@ -48,11 +49,7 @@ const useUsers = () => {
     formData.append("password", password);
     if (isFile(image)) formData.append("image", image);
 
-    const { data } = await api.post(`/api/users/new`, formData, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.post(`/api/users/new`, formData, config);
 
     return data;
   };
@@ -78,22 +75,14 @@ const useUsers = () => {
     formData.append("username", username);
     if (isFile(image)) formData.append("image", image);
 
-    const { data } = await api.patch(`/api/users/${user_id}`, formData, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.patch(`/api/users/${user_id}`, formData, config);
 
     return data;
   };
 
   // update user by id without file or image
   const updateUserDetails = async (user_id, values) => {
-    const { data } = await api.patch(`/api/users/${user_id}`, values, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const { data } = await api.patch(`/api/users/${user_id}`, values, config);
 
     return data;
   };

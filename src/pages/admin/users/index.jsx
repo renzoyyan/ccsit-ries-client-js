@@ -1,24 +1,35 @@
-import React, { useContext } from "react";
+import React from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import Heading from "@/components/elements/Heading";
-import Link from "next/link";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import UsersTable from "@/components/modules/users/UsersTable";
-import { useQuery } from "@tanstack/react-query";
 import useUsers from "@/hooks/useUsers";
 import { getAuthSession } from "@/utils/auth";
-import { Roles } from "@/utils/utils";
+import { filterRoleOptions, Roles } from "@/utils/utils";
 import UsersContent from "@/components/modules/users/UsersContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
-import Image from "next/image";
 import UserModal from "@/components/modules/users/UserModal";
+import * as Form from "@/components/forms";
+
+const defaultValues = {
+  role: "all",
+};
 
 const Users = () => {
   const { getUsers } = useUsers();
 
+  const methods = useForm({ defaultValues });
+
+  const [role] = methods.watch(["role"]);
+  const filterRole = role === "all" ? null : role;
+
   const { data, isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+    queryKey: ["users", role],
+    queryFn: () => getUsers({ role: filterRole }),
+    keepPreviousData: true,
   });
 
   const users = data?.docs;
@@ -31,6 +42,17 @@ const Users = () => {
 
         <UserModal />
       </div>
+
+      <FormProvider {...methods}>
+        <Form.Group className="flex items-center gap-x-4 !space-y-0">
+          <Heading
+            as="h3"
+            title="Role"
+            className="text-lg font-medium text-gray-700"
+          />
+          <Form.Listbox options={filterRoleOptions} name="role" />
+        </Form.Group>
+      </FormProvider>
 
       <UsersTable>
         {users?.length > 0 && !isLoading ? (

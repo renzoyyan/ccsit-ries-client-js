@@ -8,16 +8,28 @@ import useResearch from "@/hooks/useResearch";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import ResearchInnovationContent from "@/components/modules/research/ResearchInnovationContent";
 import Image from "next/image";
-import { Roles } from "@/utils/utils";
+import { filterStatusOptions, Roles } from "@/utils/utils";
 import { getAuthSession } from "@/utils/auth";
-import { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import * as Form from "@/components/forms";
+
+const defaultValues = {
+  status: "all",
+};
 
 const ResearchInnovation = () => {
   const { getAllResearch } = useResearch();
 
+  const methods = useForm({ defaultValues });
+
+  const [status] = methods.watch(["status"]);
+
+  const filterStatus = status === "all" ? null : status;
+
   const { data, isLoading } = useQuery({
-    queryKey: ["research"],
-    queryFn: getAllResearch,
+    queryKey: ["research", status],
+    queryFn: () => getAllResearch({ status: filterStatus }),
+    keepPreviousData: true,
   });
 
   const research = data?.docs;
@@ -32,7 +44,20 @@ const ResearchInnovation = () => {
         />
       </div>
 
-      <SearchBar />
+      <div className="flex items-center justify-between">
+        <SearchBar />
+
+        <FormProvider {...methods}>
+          <Form.Group className="flex items-center gap-x-4 !space-y-0">
+            <Heading
+              as="h3"
+              title="Status"
+              className="text-lg font-medium text-gray-700"
+            />
+            <Form.Listbox options={filterStatusOptions} name="status" />
+          </Form.Group>
+        </FormProvider>
+      </div>
       <ResearchInnovationTable>
         {research?.length > 0 && !isLoading ? (
           research?.map((research, idx) => (

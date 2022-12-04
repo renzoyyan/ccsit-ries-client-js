@@ -53,17 +53,20 @@ const useResearch = () => {
     return data;
   };
 
-  const getAllResearch = async () => {
-    const { data } = await api.get("/api/research", config);
+  const getAllResearch = async (params) => {
+    const { data } = await api.get("/api/research", {
+      params,
+      ...config,
+    });
 
     return data;
   };
 
-  const getCurrentUserResearchProjects = async () => {
-    const { data } = await api.get(
-      "/api/research/current-user?page=1&limit=10",
-      config
-    );
+  const getCurrentUserResearchProjects = async (params) => {
+    const { data } = await api.get("/api/research/user-research", {
+      params,
+      ...config,
+    });
 
     return data;
   };
@@ -75,41 +78,9 @@ const useResearch = () => {
   };
 
   const updateResearchById = async (research_id, values) => {
-    const {
-      flag,
-      file,
-      research_title,
-      research_agenda,
-      proponents,
-      project_duration,
-      project_budget,
-      implementing_agencies,
-      collaborating_agencies,
-      status,
-    } = values;
-
-    let formData = new FormData();
-
-    if (isFile(file)) formData.append("file", file);
-    formData.append("flag", flag);
-    formData.append("research_title", research_title);
-    formData.append("research_agenda", research_agenda);
-    formData.append("proponents", JSON.stringify(proponents));
-    formData.append("project_duration", project_duration);
-    formData.append("project_budget", project_budget);
-    formData.append(
-      "implementing_agencies",
-      JSON.stringify(implementing_agencies)
-    );
-    formData.append(
-      "collaborating_agencies",
-      JSON.stringify(collaborating_agencies)
-    );
-    formData.append("status", status);
-
     const { data } = await api.patch(
       `/api/research/${research_id}`,
-      formData,
+      values,
       config
     );
 

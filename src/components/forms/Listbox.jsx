@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { classNames } from "@/utils/utils";
 import { Fragment, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import _ from "lodash-es";
+import { capitalize } from "lodash-es";
 
 const Listbox = ({
   options = [],
@@ -41,7 +41,7 @@ const Listbox = ({
           <div className="relative">
             <ListBox.Button
               className={classNames(
-                "relative flex items-center justify-between w-full gap-2 px-4 py-2 text-left bg-white rounded-lg focus:outline-none focus-visible:border-bc-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-bc-primary sm:text-sm ring-1 ring-gray-300",
+                "relative flex items-center justify-between w-full gap-2 px-4 gap-x-6 py-2 text-left bg-white rounded-lg focus:outline-none focus-visible:border-bc-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-bc-primary sm:text-sm ring-1 ring-gray-300",
                 disabled ? "cursor-default" : "cursor-pointer"
               )}
             >
@@ -50,12 +50,12 @@ const Listbox = ({
                   disabled ? "text-gray-500" : "text-gray-700"
                 }`}
               >
-                {_.capitalize(value)}
+                {capitalize(value)}
               </span>
               <span className="flex items-center flex-shrink-0 pointer-events-none ">
                 <ChevronDownIcon
                   className={`w-5 h-5 ${
-                    disabled ? "text-gray-500" : "text-gray-900"
+                    disabled ? "text-gray-500" : "text-gray-700"
                   }`}
                   aria-hidden="true"
                 />

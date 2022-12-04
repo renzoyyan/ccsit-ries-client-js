@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
+import { FormProvider, useForm } from "react-hook-form";
 
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import Heading from "@/components/elements/Heading";
@@ -9,14 +10,26 @@ import useExtension from "@/hooks/useExtension";
 import ExtensionServicesContent from "@/components/modules/extension/ExtensionServicesContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import { getAuthSession } from "@/utils/auth";
-import { Roles } from "@/utils/utils";
+import { filterStatusOptions, Roles } from "@/utils/utils";
+import * as Form from "@/components/forms";
+
+const defaultValues = {
+  status: "all",
+};
 
 const ExtensionServicesPage = () => {
   const { getAllExtension } = useExtension();
 
+  const methods = useForm({ defaultValues });
+
+  const [status] = methods.watch(["status"]);
+
+  const filterStatus = status === "all" ? null : status;
+
   const { data, isLoading } = useQuery({
-    queryKey: ["extension"],
-    queryFn: getAllExtension,
+    queryKey: ["extension", status],
+    queryFn: () => getAllExtension({ status: filterStatus }),
+    keepPreviousData: true,
   });
 
   const extension = data?.docs;
@@ -31,7 +44,20 @@ const ExtensionServicesPage = () => {
         />
       </div>
 
-      <SearchBar />
+      <div className="flex items-center justify-between">
+        <SearchBar />
+
+        <FormProvider {...methods}>
+          <Form.Group className="flex items-center gap-x-4 !space-y-0">
+            <Heading
+              as="h3"
+              title="Status"
+              className="text-lg font-medium text-gray-700"
+            />
+            <Form.Listbox options={filterStatusOptions} name="status" />
+          </Form.Group>
+        </FormProvider>
+      </div>
       <ExtensionServicesTable>
         {extension?.length > 0 && !isLoading ? (
           extension?.map((exec, idx) => (

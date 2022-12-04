@@ -80,7 +80,6 @@ const NewResearchInnovation = () => {
     if (research_id && !isLoading) {
       reset({
         proponents: proponentIds,
-        file: data?.research_file?.file,
         ...others,
       });
     }
@@ -189,7 +188,7 @@ const NewResearchInnovation = () => {
               </Form.Group>
             </div>
 
-            <FileUpload name="file" />
+            {/* <FileUpload name="file" /> */}
 
             <div className="grid items-start grid-cols-1 mt-12 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
               <Form.Group className="md:col-span-2">

@@ -89,7 +89,7 @@ const EditExtensionServicesPage = () => {
     if (extension_id && !isLoading) {
       reset({
         proponents: proponentIds,
-        file: data?.extension_file?.file,
+        // file: data?.extension_file?.file,
         ...rest,
       });
     }
@@ -194,7 +194,7 @@ const EditExtensionServicesPage = () => {
               </Form.Group>
             </div>
 
-            <FileUpload name="file" />
+            {/* <FileUpload name="file" /> */}
 
             <div className="grid items-start mt-12 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
               <Form.Group>
