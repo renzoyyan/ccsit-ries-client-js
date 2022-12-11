@@ -104,9 +104,9 @@ const AdminNotification = () => {
                       {unreadNotifications}
                     </span>
                   </div>
-                  <Button className="text-sm text-bc-tertiary hover:underline">
+                  {/* <Button className="text-sm text-bc-tertiary hover:underline">
                     Mark all as read
-                  </Button>
+                  </Button> */}
                 </div>
 
                 {filteredNotifications?.length === 0 ? (

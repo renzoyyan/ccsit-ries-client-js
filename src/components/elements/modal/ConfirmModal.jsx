@@ -1,4 +1,4 @@
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Button from "../Button";
@@ -54,13 +54,10 @@ export default function ConfirmModal() {
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900"
                       >
-                        {title || "Proposal Approval"}
+                        {title || ""}
                       </Dialog.Title>
                       <div className="my-4">
-                        <p className="text-sm text-gray-500">
-                          {prompt ||
-                            "Are you sure you want to approve this proposal? Once approved status will be automatically change to proposal."}
-                        </p>
+                        <p className="text-sm text-gray-500">{prompt || ""}</p>
                       </div>
                     </div>
                   </div>

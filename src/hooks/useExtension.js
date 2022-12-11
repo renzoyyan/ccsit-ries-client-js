@@ -73,10 +73,10 @@ const useExtension = () => {
     return data;
   };
 
-  const getCurrentUserExtensionProjects = async () => {
+  const getCurrentUserExtensionProjects = async (params) => {
     const { data } = await api.get(
       "/api/extension/user-extensions?page=1&limit=10",
-      config
+      { params, ...config }
     );
 
     return data;

@@ -12,11 +12,11 @@ export function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export const proponentNav = [
-  {
-    name: "Dashboard",
-    href: "/proponent/dashboard",
-    // icon: Squares2X2Icon,
-  },
+  // {
+  //   name: "Dashboard",
+  //   href: "/proponent/dashboard",
+  //   // icon: Squares2X2Icon,
+  // },
   {
     name: "Research & Innovation",
     href: "/proponent/research-innovation",

@@ -8,10 +8,12 @@ import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Avatar from "@/assets/images/avatar.svg";
 import { useAuth } from "@/context/AuthContext";
+import useRoles from "@/hooks/useRoles";
 
 const UserProfileDropdown = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { isProponent } = useRoles();
 
   return (
     <Menu as="div" className="relative ml-3">
@@ -42,7 +44,11 @@ const UserProfileDropdown = () => {
             <Menu.Item>
               {({ active }) => (
                 <a
-                  onClick={() => router.push("/proponent/profile")}
+                  onClick={() => {
+                    if (!isProponent) return router.push("/personnel/profile");
+
+                    router.push("/proponent/profile");
+                  }}
                   className={classNames(
                     "flex items-center gap-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                   )}

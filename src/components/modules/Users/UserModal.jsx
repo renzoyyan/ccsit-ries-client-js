@@ -40,14 +40,8 @@ const UserModal = ({ disabled }) => {
     formState: { isSubmitting },
   } = methods;
 
-  // const { data: user } = useQuery({
-  //   queryKey: ["users", selectedUserId],
-  //   queryFn: () => getUserById(selectedUserId),
-  //   enabled: !!selectedUserId,
-  // });
-
   const { mutateAsync: addNewUser } = useMutation({
-    mutationFn: addUser,
+    mutationFn: (values) => addUser(values),
 
     onSuccess: () => {
       queryClient.invalidateQueries("users");
@@ -65,38 +59,6 @@ const UserModal = ({ disabled }) => {
       });
     },
   });
-
-  // const { mutateAsync: updateUser } = useMutation({
-  //   mutationFn: (values) => updateUserById(selectedUserId, values),
-
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(["users"]);
-  //     toast.success("User updated", {
-  //       id: notificationRef.current,
-  //     });
-
-  //     reset(defaultValues);
-  //     toggleModal();
-  //   },
-
-  //   onError: (error) => {
-  //     const message = error?.response?.data?.message;
-  //     toast.error(message, {
-  //       id: notificationRef.current,
-  //     });
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   if (user) {
-  //     setValue("image", user?.image?.url);
-  //     setValue("role", user?.role);
-  //     setValue("username", user?.username);
-  //     setValue("first_name", user?.first_name);
-  //     setValue("last_name", user?.last_name);
-  //     setValue("doctorate_degree", user?.doctorate_degree);
-  //   }
-  // }, [setValue, user]);
 
   const onSubmitUser = async (values) => {
     notificationRef.current = isFile(values?.file)
@@ -128,9 +90,8 @@ const UserModal = ({ disabled }) => {
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmitUser)}>
-            <div className="space-y-6">
-              <SingleFileUpload name="image" />
-
+            <SingleFileUpload name="image" />
+            <div className="grid gap-6 mt-6 sm:grid-cols-2">
               <Form.Group>
                 <Form.Select
                   name="role"
@@ -138,6 +99,21 @@ const UserModal = ({ disabled }) => {
                   label="Role"
                   validation={{
                     required: "This field is required",
+                  }}
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Input
+                  type="email"
+                  name="email"
+                  label="Email address"
+                  validation={{
+                    required: "This field is required",
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: "Email is not valid",
+                    },
                   }}
                 />
               </Form.Group>

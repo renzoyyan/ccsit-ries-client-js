@@ -18,6 +18,7 @@ const ResearchInnovationDetails = ({ data }) => {
     collaborating_agencies,
     implementing_agencies,
     created_by,
+    keywords,
   } = data ?? {};
 
   const createdBy = `${created_by?.first_name} ${created_by?.last_name}`;
@@ -97,12 +98,34 @@ const ResearchInnovationDetails = ({ data }) => {
                 </ul>
               </dd>
             </Detail.List>
+
             <Detail.List label="Collaborating Agency(ies)">
               <dd className="mt-1 text-gray-900">
                 <ul role="list">
                   {collaborating_agencies?.length ? (
                     collaborating_agencies?.map((item, idx) => (
                       <li key={idx}>{item.agency_name}</li>
+                    ))
+                  ) : (
+                    <span className="text-sm font-medium text-gray-600">
+                      N/A
+                    </span>
+                  )}
+                </ul>
+              </dd>
+            </Detail.List>
+
+            <Detail.List label="Collaborating Agency(ies)">
+              <dd className="mt-1 text-gray-900">
+                <ul role="list" className="flex items-center gap-2">
+                  {keywords?.length ? (
+                    keywords?.map((keyword, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gray-300 text-com2 inline-flex items-center gap-x-2.5 px-2 py-1 rounded-md whitespace-nowrap"
+                      >
+                        <span className="text-sm">{keyword}</span>
+                      </div>
                     ))
                   ) : (
                     <span className="text-sm font-medium text-gray-600">

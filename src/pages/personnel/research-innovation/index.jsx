@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
+import { FormProvider, useForm } from "react-hook-form";
+import { Pagination } from "@mui/material";
 
 import Heading from "@/components/elements/Heading";
 import SearchBar from "@/components/elements/SearchBar";
@@ -10,13 +12,35 @@ import { Roles } from "@/utils/utils";
 import useResearch from "@/hooks/useResearch";
 import ResearchInnovationContent from "@/components/modules/research/ResearchInnovationContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
+import StatusDropdown from "@/components/modules/StatusDropdown";
+import useDebounce from "@/hooks/useDebounce";
+import usePagination from "@/hooks/usePagination";
+
+const defaultValues = {
+  status: "all",
+  search: null,
+};
 
 const ResearchInnovation = () => {
+  const methods = useForm({ defaultValues });
+  const [status, search] = methods.watch(["status", "search"]);
+
   const { getAllResearch } = useResearch();
+  const { page, limit, handlePagination } = usePagination();
+  const debouncedSearch = useDebounce(search, 500);
+  const filterStatus = status === "all" ? null : status;
+
+  let filters = {
+    page,
+    limit,
+    status: filterStatus,
+    search: debouncedSearch,
+  };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["research"],
-    queryFn: () => getAllResearch(),
+    queryKey: ["research", filters],
+    queryFn: () => getAllResearch(filters),
+    keepPreviousData: true,
   });
 
   const research = data?.docs;
@@ -29,7 +53,13 @@ const ResearchInnovation = () => {
         </div>
       </div>
 
-      <SearchBar />
+      <div className="flex items-center justify-between">
+        <FormProvider {...methods}>
+          <SearchBar />
+          <StatusDropdown />
+        </FormProvider>
+      </div>
+
       <ResearchInnovationTable>
         {research?.length > 0 && !isLoading ? (
           research.map((data) => (
@@ -39,6 +69,20 @@ const ResearchInnovation = () => {
           <Skeleton columns={7} rows={5} isLoading={isLoading} />
         )}
       </ResearchInnovationTable>
+
+      {data?.totalPages > 1 && (
+        <Pagination
+          count={data?.totalPages}
+          size="large"
+          classes={{
+            ul: "justify-center",
+            root: "mt-4",
+          }}
+          onChange={handlePagination}
+          showFirstButton
+          showLastButton
+        />
+      )}
 
       {research?.length === 0 && !isLoading ? (
         <div className="grid mt-10 space-y-6 text-center place-content-center">

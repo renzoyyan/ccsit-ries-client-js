@@ -9,28 +9,6 @@ import NavLink from "../../elements/links/NavLink";
 import useRoles from "@/hooks/useRoles";
 
 const MobileMenu = ({ sidebarOpen, setSidebarOpen }) => {
-  const { isAdmin, isPersonnel, isProponent } = useRoles();
-
-  let navigationContent;
-
-  // if (isProponent) {
-  //   navigationContent = proponentNav.map((item, idx) => (
-  //     <NavLink key={idx} item={item} />
-  //   ));
-  // }
-
-  // if (isPersonnel) {
-  //   navigationContent = personnelNav.map((item, idx) => (
-  //     <NavLink key={idx} item={item} />
-  //   ));
-  // }
-
-  // if (isAdmin) {
-  //   navigationContent = adminNav.map((item, idx) => (
-  //     <NavLink key={idx} item={item} />
-  //   ));
-  // }
-
   return (
     <Transition.Root show={sidebarOpen} as={Fragment}>
       <Dialog

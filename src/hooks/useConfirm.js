@@ -17,7 +17,13 @@ const useConfirm = () => {
     });
 
     const reset = () => {
-      setConfirm({ prompt: "", proceed: null, cancel: null, isOpen: false });
+      setConfirm({
+        prompt,
+        title,
+        proceed: null,
+        cancel: null,
+        isOpen: false,
+      });
       setNeedsCleanup(false);
     };
 

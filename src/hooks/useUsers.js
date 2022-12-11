@@ -36,6 +36,7 @@ const useUsers = () => {
       doctorate_degree,
       username,
       password,
+      email,
     } = values;
 
     let formData = new FormData();
@@ -47,6 +48,7 @@ const useUsers = () => {
     formData.append("doctorate_degree", doctorate_degree);
     formData.append("username", username);
     formData.append("password", password);
+    formData.append("email", email);
     if (isFile(image)) formData.append("image", image);
 
     const { data } = await api.post(`/api/users/new`, formData, config);
@@ -87,12 +89,23 @@ const useUsers = () => {
     return data;
   };
 
+  const sendEmailVerificationLink = async (email) => {
+    const { data } = await api.post(
+      `/api/users/send/email-verification`,
+      { email },
+      config
+    );
+
+    return data;
+  };
+
   return {
     getUsers,
     getUserById,
     addUser,
     updateUserById,
     updateUserDetails,
+    sendEmailVerificationLink,
   };
 };
 

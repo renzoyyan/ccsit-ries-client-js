@@ -3,7 +3,8 @@ import * as Table from "@/components/elements/table";
 import useRoles from "@/hooks/useRoles";
 import StatusCard, { TStatusCardProps } from "@/components/elements/StatusCard";
 import { formattedDate } from "@/utils/utils";
-import _ from "lodash-es";
+import { capitalize } from "lodash-es";
+import { Avatar, AvatarGroup } from "@mui/material";
 
 const ResearchInnovationContent = ({
   _id,
@@ -11,6 +12,7 @@ const ResearchInnovationContent = ({
   research_title,
   proponents,
   research_agenda,
+  project_duration,
   status,
   created_at,
 }) => {
@@ -48,17 +50,27 @@ const ResearchInnovationContent = ({
   return (
     <Table.Row variant={"striped"}>
       <td className="tbl-data sm:pl-6">{flag}</td>
-      <td className="tbl-data">{research_title}</td>
+      <td className="tbl-data" style={{ whiteSpace: "unset" }}>
+        {research_title}
+      </td>
       <td className="tbl-data">
-        <ul>
+        <AvatarGroup className="justify-end" max={3}>
           {proponents.map((value, idx) => {
             const name = `${value.first_name} ${value.last_name}`;
 
-            return <li key={value._id}>{name}</li>;
+            return (
+              <Avatar
+                key={value._id}
+                title={capitalize(name)}
+                src={value?.image?.url}
+                alt={capitalize(name)}
+              />
+            );
           })}
-        </ul>
+        </AvatarGroup>
       </td>
       <td className="tbl-data">{research_agenda}</td>
+      <td className="lowercase tbl-data">{project_duration}</td>
       <td className="tbl-data">{formattedDate(created_at)}</td>
       <td className="tbl-data">
         <StatusCard status={status} withLabel={false} />

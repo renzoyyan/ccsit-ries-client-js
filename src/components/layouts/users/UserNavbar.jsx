@@ -85,17 +85,7 @@ const UserNavbar = () => {
                 ) : null}
 
                 {/* Profile dropdown */}
-                {isProponent ? (
-                  <UserProfileDropdown />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => signOut()}
-                    className="text-sm font-medium text-red-500 hover:underline"
-                  >
-                    Logout
-                  </button>
-                )}
+                <UserProfileDropdown />
               </div>
             </div>
           </div>

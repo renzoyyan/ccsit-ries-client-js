@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { FormProvider, useForm } from "react-hook-form";
 
 import Heading from "@/components/elements/Heading";
 import SearchBar from "@/components/elements/SearchBar";
@@ -9,14 +11,35 @@ import { Roles } from "@/utils/utils";
 import useExtension from "@/hooks/useExtension";
 import ExtensionServicesContent from "@/components/modules/extension/ExtensionServicesContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
-import Image from "next/image";
+import StatusDropdown from "@/components/modules/StatusDropdown";
+import usePagination from "@/hooks/usePagination";
+import useDebounce from "@/hooks/useDebounce";
+import { Pagination } from "@mui/material";
 
+const defaultValues = {
+  status: "all",
+  search: null,
+};
 const ExtensionServices = () => {
+  const methods = useForm({ defaultValues });
+  const [status, search] = methods.watch(["status", "search"]);
+
   const { getAllExtension } = useExtension();
+  const { page, limit, handlePagination } = usePagination();
+  const debouncedSearch = useDebounce(search, 500);
+
+  const filterStatus = status === "all" ? null : status;
+
+  let filters = {
+    page,
+    limit,
+    status: filterStatus,
+    search: debouncedSearch,
+  };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["extenstion"],
-    queryFn: () => getAllExtension(),
+    queryKey: ["extenstion", filters],
+    queryFn: () => getAllExtension(filters),
   });
 
   const extension = data?.docs;
@@ -29,7 +52,13 @@ const ExtensionServices = () => {
         </div>
       </div>
 
-      <SearchBar />
+      <div className="flex items-center justify-between">
+        <FormProvider {...methods}>
+          <SearchBar />
+          <StatusDropdown />
+        </FormProvider>
+      </div>
+
       <ExtensionServicesTable>
         {extension?.length > 0 && !isLoading ? (
           extension?.map((exec, idx) => (
@@ -39,6 +68,20 @@ const ExtensionServices = () => {
           <Skeleton columns={7} rows={5} isLoading={isLoading} />
         )}
       </ExtensionServicesTable>
+
+      {data?.totalPages > 1 && (
+        <Pagination
+          count={data?.totalPages}
+          size="large"
+          classes={{
+            ul: "justify-center",
+            root: "mt-4",
+          }}
+          onChange={handlePagination}
+          showFirstButton
+          showLastButton
+        />
+      )}
 
       {extension?.length === 0 && !isLoading ? (
         <div className="grid mt-10 space-y-6 text-center place-content-center">

@@ -11,6 +11,9 @@ import RightHero from "@/components/modules/RightHero";
 import * as Form from "@/components/forms";
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
+import Link from "next/link";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import ErrorMessage from "@/components/modules/ErrorMessage";
 
 const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,9 +46,9 @@ const LoginPage = () => {
       const role = session?.user?.user_details?.role;
 
       if (role === Roles.ADMIN) router.replace("/admin/dashboard");
-      if (role === Roles.PROPONENT) router.replace("/proponent/dashboard");
-      if (role === Roles.PERSONNEL)
-        router.replace("/personnel/research-innovation");
+      if (role === Roles.PROPONENT)
+        router.replace("/proponent/research-innovation");
+      if (role === Roles.PERSONNEL) router.replace("/personnel/dashboard");
 
       setErrorMessage("");
       return res;
@@ -71,7 +74,7 @@ const LoginPage = () => {
                 title="Log in"
               />
 
-              {errorMessage && <p className="mb-2 error-msg">{errorMessage}</p>}
+              {errorMessage && <ErrorMessage message={errorMessage} />}
 
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(handleLogin)}>
@@ -94,10 +97,22 @@ const LoginPage = () => {
                         label="Password"
                         validation={{
                           required: "This field is required",
+                          minLength: {
+                            value: 6,
+                            message: "Password must have at least 6 characters",
+                          },
                         }}
                         className="bg-gray-100"
                       />
                     </Form.Group>
+                  </div>
+
+                  <div className="mt-2 text-right">
+                    <Link href="/forgot-password">
+                      <a className="text-sm font-medium text-bc-primary hover:underline">
+                        Forgot password?
+                      </a>
+                    </Link>
                   </div>
 
                   <Button
@@ -144,7 +159,7 @@ export const getServerSideProps = async (ctx) => {
   if (session && role === Roles.PROPONENT) {
     return {
       redirect: {
-        destination: "/proponent/dashboard",
+        destination: "/proponent/research-innovation",
         permanent: false,
       },
       props: { session },
@@ -153,7 +168,7 @@ export const getServerSideProps = async (ctx) => {
   if (session && role === Roles.PERSONNEL) {
     return {
       redirect: {
-        destination: "/personnel/research-innovation",
+        destination: "/personnel/dashboard",
         permanent: false,
       },
       props: { session },

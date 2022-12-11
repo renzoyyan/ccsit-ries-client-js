@@ -2,6 +2,7 @@ import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
+import { Pagination } from "@mui/material";
 
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import Heading from "@/components/elements/Heading";
@@ -13,12 +14,14 @@ import UsersContent from "@/components/modules/users/UsersContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import UserModal from "@/components/modules/users/UserModal";
 import * as Form from "@/components/forms";
+import usePagination from "@/hooks/usePagination";
 
 const defaultValues = {
   role: "all",
 };
 
 const Users = () => {
+  const { page, limit, handlePagination } = usePagination();
   const { getUsers } = useUsers();
 
   const methods = useForm({ defaultValues });
@@ -26,9 +29,15 @@ const Users = () => {
   const [role] = methods.watch(["role"]);
   const filterRole = role === "all" ? null : role;
 
+  let filters = {
+    page,
+    limit,
+    role: filterRole,
+  };
+
   const { data, isLoading } = useQuery({
-    queryKey: ["users", role],
-    queryFn: () => getUsers({ role: filterRole }),
+    queryKey: ["users", filters],
+    queryFn: () => getUsers(filters),
     keepPreviousData: true,
   });
 
@@ -61,6 +70,20 @@ const Users = () => {
           <Skeleton columns={7} rows={5} isLoading={isLoading} />
         )}
       </UsersTable>
+
+      {data?.totalPages > 1 && (
+        <Pagination
+          count={data?.totalPages}
+          size="large"
+          classes={{
+            ul: "justify-center",
+            root: "mt-4",
+          }}
+          onChange={handlePagination}
+          showFirstButton
+          showLastButton
+        />
+      )}
 
       {users?.length === 0 && !isLoading ? (
         <div className="grid mt-10 space-y-6 text-center place-content-center">

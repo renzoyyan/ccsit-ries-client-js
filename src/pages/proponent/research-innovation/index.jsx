@@ -3,6 +3,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Image from "next/future/image";
 import { useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
+import { Pagination } from "@mui/material";
 
 import Heading from "@/components/elements/Heading";
 import SearchBar from "@/components/elements/SearchBar";
@@ -13,39 +14,40 @@ import ResearchInnovationContent from "@/components/modules/research/ResearchInn
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import { filterStatusOptions, Roles } from "@/utils/utils";
 import useResearch from "@/hooks/useResearch";
-import * as Form from "@/components/forms";
-import { Pagination } from "@mui/material";
-import { useState } from "react";
+
+import usePagination from "@/hooks/usePagination";
+import useDebounce from "@/hooks/useDebounce";
+import StatusDropdown from "@/components/modules/StatusDropdown";
 
 const defaultValues = {
   status: "all",
+  search: null,
 };
 
 const ResearchInnovation = () => {
-  const [page, setPage] = useState(1);
+  const methods = useForm({ defaultValues });
+  const [status, search] = methods.watch(["status", "search"]);
+
+  const debouncedSearch = useDebounce(search, 500);
+  const { page, limit, handlePagination } = usePagination();
   const { getCurrentUserResearchProjects } = useResearch();
 
-  const methods = useForm({ defaultValues });
-
-  const [status] = methods.watch(["status"]);
   const filterStatus = status === "all" ? null : status;
 
   let filters = {
     page,
-    limit: 2,
+    limit,
     status: filterStatus,
+    search: debouncedSearch,
   };
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["research", filters],
     queryFn: () => getCurrentUserResearchProjects(filters),
+    keepPreviousData: true,
   });
 
   const research = data?.docs;
-
-  const handlePagination = (event, value) => {
-    setPage(value);
-  };
 
   return (
     <UserLayout>
@@ -68,17 +70,9 @@ const ResearchInnovation = () => {
       </div>
 
       <div className="flex items-center justify-between">
-        <SearchBar />
-
         <FormProvider {...methods}>
-          <Form.Group className="flex items-center gap-x-4 !space-y-0">
-            <Heading
-              as="h3"
-              title="Status"
-              className="text-lg font-medium text-gray-700"
-            />
-            <Form.Listbox options={filterStatusOptions} name="status" />
-          </Form.Group>
+          <SearchBar />
+          <StatusDropdown />
         </FormProvider>
       </div>
       <ResearchInnovationTable>
@@ -93,10 +87,11 @@ const ResearchInnovation = () => {
 
       {data?.totalPages > 1 && (
         <Pagination
-          count={totalPages}
+          count={data?.totalPages}
           size="large"
           classes={{
             ul: "justify-center",
+            root: "mt-4",
           }}
           onChange={handlePagination}
           showFirstButton

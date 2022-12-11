@@ -161,7 +161,7 @@ export const getServerSideProps = async (ctx) => {
     };
   }
 
-  if (session && role !== Roles.PROPONENT) {
+  if (session && role !== Roles.PERSONNEL) {
     return {
       redirect: {
         destination: "/",

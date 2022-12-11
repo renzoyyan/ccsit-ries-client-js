@@ -36,9 +36,11 @@ const Modal = ({ modalTitle = "", isOpen, toggleModal, children }) => {
                     className="flex items-center justify-between mb-5 text-lg font-semibold text-darkgray"
                   >
                     <span>{modalTitle}</span>
-                    <span onClick={toggleModal}>
-                      <PlusIcon className="w-6 h-6 rotate-45 cursor-pointer text-darkgray" />
-                    </span>
+                    {toggleModal && (
+                      <span onClick={toggleModal}>
+                        <PlusIcon className="w-6 h-6 rotate-45 cursor-pointer text-darkgray" />
+                      </span>
+                    )}
                   </Dialog.Title>
                   <div>{children}</div>
                 </Dialog.Panel>
