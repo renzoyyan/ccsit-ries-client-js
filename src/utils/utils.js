@@ -30,6 +30,11 @@ export const proponentNav = [
 ];
 export const personnelNav = [
   {
+    name: "Dashboard",
+    href: "/personnel/dashboard",
+    // icon: DocumentDuplicateIcon,
+  },
+  {
     name: "Research & Innovation",
     href: "/personnel/research-innovation",
     // icon: DocumentDuplicateIcon,

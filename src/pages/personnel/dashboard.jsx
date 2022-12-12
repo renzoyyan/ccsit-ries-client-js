@@ -1,144 +1,182 @@
+import { CalendarIcon, PlusIcon } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
+import React, { useState } from "react";
+
 import SectionHeader from "@/components/elements/SectionHeader";
 import UserLayout from "@/components/layouts/users/UserLayout";
-import React from "react";
-import { Doughnut } from "react-chartjs-2";
 import Heading from "@/components/elements/Heading";
-import {
-  DocumentDuplicateIcon,
-  RectangleStackIcon,
-} from "@heroicons/react/24/outline";
+
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
 import BarChart from "@/components/modules/charts/BarChart";
-import useResearch from "@/hooks/useResearch";
-import { useQuery } from "@tanstack/react-query";
 
-let labels = ["Pending", "Proposal", "On Going", "Completed"];
-const values = [1, 3, 0, 1];
-const customLabels = labels.map((label, index) => `${label}: ${values[index]}`);
+const DatePicker = dynamic(
+  () => import("react-date-picker/dist/entry.nostyle"),
+  {
+    ssr: false,
+  }
+);
 
-const data = {
-  labels: customLabels,
-  datasets: [
-    {
-      label: "# of Research Project",
-      data: values,
-      backgroundColor: ["#ea580c", "#FFBB28", "#0088FE", "#00C49F"],
-      borderWidth: 0,
-    },
-  ],
-};
-
-export const options = {
-  plugins: {
-    legend: {
-      position: "right",
-      labels: {
-        usePointStyle: true,
-        pointStyle: "circle",
-        padding: 20,
-      },
-    },
+export const barData = [
+  {
+    month: "January",
+    pending: 4,
+    proposal: 2,
+    ongoing: 1,
+    completed: 2,
   },
-  datalabels: {
-    display: true,
-    color: "white",
+  {
+    month: "February",
+    pending: 1,
+    proposal: 1,
+    ongoing: 1,
+    completed: 1,
   },
-
-  spacing: 2,
-  responsive: true,
-  maintainAspectRatio: false,
-  cutout: 30,
-};
-
-const RecentProject = () => {
-  return (
-    <div className="flex justify-between p-4 text-sm rounded-md bg-gray-50">
-      <div className="flex flex-col">
-        <p className="font-medium text-gray-700">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </p>
-        <p className="text-xs text-gray-400">
-          Transformative Learning | Research Innovation
-        </p>
-      </div>
-      <div className="flex flex-col items-end text-xs">
-        <p className="text-gray-500">09-18-2022</p>
-        <p className="text-gray-400 t">
-          Created by: <span>John Doe</span>
-        </p>
-      </div>
-    </div>
-  );
-};
+  {
+    month: "March",
+    pending: 2,
+    proposal: 3,
+    ongoing: 1,
+    completed: 1,
+  },
+  {
+    month: "April",
+    pending: 1,
+    proposal: 2,
+    ongoing: 3,
+    completed: 2,
+  },
+  {
+    month: "May",
+    pending: 2,
+    proposal: 1,
+    ongoing: 0,
+    completed: 0,
+  },
+  {
+    month: "June",
+    pending: 1,
+    proposal: 2,
+    ongoing: 0,
+    completed: 1,
+  },
+  {
+    month: "July",
+    pending: 0,
+    proposal: 1,
+    ongoing: 1,
+    completed: 1,
+  },
+  {
+    month: "August",
+    pending: 0,
+    proposal: 1,
+    ongoing: 2,
+    completed: 3,
+  },
+  {
+    month: "Sept",
+    pending: 2,
+    proposal: 0,
+    ongoing: 1,
+    completed: 0,
+  },
+  {
+    month: "October",
+    pending: 3,
+    proposal: 1,
+    ongoing: 0,
+    completed: 0,
+  },
+  {
+    month: "November",
+    pending: 1,
+    proposal: 3,
+    ongoing: 2,
+    completed: 4,
+  },
+  {
+    month: "December",
+    pending: 1,
+    proposal: 2,
+    ongoing: 3,
+    completed: 4,
+  },
+];
 
 const Dashboard = () => {
+  const [value, onChange] = useState(new Date());
+
   return (
     <UserLayout>
-      <SectionHeader title="Dashboard" className="mt-16" />
-      <div className="grid grid-cols-1 mt-10 lg:grid-cols-2 gap-x-6">
-        <div className="px-6 pt-4 pb-6 bg-white rounded-md">
-          <header>
-            <Heading
-              as="h2"
-              title="Project Summary"
-              className="text-lg font-medium"
-            />
-            <p className="text-sm text-gray-400">
-              Here&apos;s your recent progress of different projects. &apos;
-            </p>
-          </header>
+      <SectionHeader title="Dashboard" className="mt-16 mb-10" />
+      <div className="flex items-center gap-x-2">
+        <p className="font-medium text-gray-600">Filter by year</p>
+        <DatePicker
+          onChange={onChange}
+          value={value}
+          format="y"
+          maxDetail="decade"
+          calendarClassName="border-none mt-2"
+          calendarIcon={
+            <CalendarIcon className="w-5 h-5 text-gray-500 hover:text-bc-primary" />
+          }
+          clearIcon={
+            <PlusIcon className="w-6 h-6 text-gray-500 rotate-45 hover:text-bc-primary" />
+          }
+        />
+      </div>
 
-          <div className="mt-6 space-y-6">
-            <div className="flex flex-wrap gap-4 sm:flex-nowrap">
-              <div className="w-full p-4 rounded-md shadow-sm sm:w-2/5 bg-gray-50">
-                <div className="space-y-2">
-                  <DocumentDuplicateIcon className="w-6 h-6 text-gray-500" />
-                  <p className="text-sm text-gray-500">
-                    Total research & innovation projects
-                  </p>
-                </div>
+      <div className="grid grid-cols-4 gap-6 mt-10">
+        <div class="bg-gradient-to-r from-[#007FC6] to-[#053e85] p-6 rounded-md shadow-md">
+          <h4 className="mb-4 text-xl font-semibold text-white lg:text-3xl">
+            10
+          </h4>
 
-                <h3 className="mt-6 text-2xl font-bold">
-                  {/* {researchData?.length ?? ""} */}5
-                </h3>
-              </div>
-              <div className="w-full sm:w-3/5 bg-gray-50">
-                <div className="h-[150px] my-4 mr-10">
-                  <BarChart data={data} options={options} />
-                  pie chart here
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-4 sm:flex-nowrap">
-              <div className="w-full p-4 rounded-md shadow-sm sm:w-2/5 bg-gray-50">
-                <div className="space-y-2">
-                  <RectangleStackIcon className="w-6 h-6 text-gray-500" />
-                  <p className="pr-4 text-sm text-gray-500">
-                    Total extension services projects
-                  </p>
-                </div>
+          <p className="text-sm font-medium text-white">
+            Total Research & Innovation Projects
+          </p>
 
-                <h3 className="mt-4 text-2xl font-bold">18</h3>
-              </div>
-              <div className="w-full sm:w-3/5 bg-gray-50">
-                <div className="h-[150px] my-4 mr-10">pie chart here</div>
-              </div>
-            </div>
+          <div className="grid grid-cols-2">
+            {/* <ChartBarIcon className="w-8 h-8 text-white" /> */}
           </div>
         </div>
-        <div className="px-6 pt-4 pb-6 bg-white rounded-md">
+
+        <div class="bg-gradient-to-r from-[#053e85] to-blue-500 p-6 rounded-md shadow-md">
+          <h4 className="mb-4 text-xl font-semibold text-white lg:text-3xl">
+            10
+          </h4>
+
+          <p className="text-sm font-medium text-white">
+            Total Extension Services Projects
+          </p>
+
+          <div className="grid grid-cols-2">
+            {/* <ChartBarIcon className="w-8 h-8 text-white" /> */}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-10 space-y-6">
+        <div className="bg-white rounded-md shadow-md">
           <Heading
             as="h2"
-            title="Recent Projects"
-            className="text-lg font-medium"
+            title="Research and Innovation Summary"
+            className="pt-8 pl-8 font-medium text-gray-800"
           />
+          <div className="w-full xl:max-w-5xl h-[418px]">
+            <BarChart data={barData} />
+          </div>
+        </div>
 
-          <div className="mt-8 space-y-5">
-            <RecentProject />
-            <RecentProject />
-            <RecentProject />
-            <RecentProject />
+        <div className="bg-white rounded-md shadow-md">
+          <Heading
+            as="h2"
+            title="Extension Services Summary"
+            className="pt-8 pl-8 font-medium text-gray-800"
+          />
+          <div className="w-full xl:max-w-5xl h-[418px]">
+            <BarChart data={barData} />
           </div>
         </div>
       </div>

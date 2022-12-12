@@ -8,10 +8,12 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context/AuthContext";
 import ConfirmProvider from "@/context/ConfirmContext";
 import ConfirmModal from "@/components/elements/modal/ConfirmModal";
+import { SocketProvider } from "@/context/SocketContext";
+
 import "../styles/globals.css";
 import "../styles/datepicker.css";
-import UserProvider from "@/context/UserContext";
-import { SocketProvider } from "@/context/SocketContext";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
 
 // Create a client
 const queryClient = new QueryClient({

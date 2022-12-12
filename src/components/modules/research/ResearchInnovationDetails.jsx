@@ -115,7 +115,7 @@ const ResearchInnovationDetails = ({ data }) => {
               </dd>
             </Detail.List>
 
-            <Detail.List label="Collaborating Agency(ies)">
+            <Detail.List label="Keywords">
               <dd className="mt-1 text-gray-900">
                 <ul role="list" className="flex items-center gap-2">
                   {keywords?.length ? (
