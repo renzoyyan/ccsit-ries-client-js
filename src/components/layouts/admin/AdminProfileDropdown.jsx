@@ -1,10 +1,13 @@
 import { Menu, Transition } from "@headlessui/react";
 import React from "react";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon, UserIcon } from "@heroicons/react/24/solid";
 import { classNames } from "@/utils/utils";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftOnRectangleIcon,
+  PowerIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Avatar from "@/assets/images/avatar.svg";
 import { useAuth } from "@/context/AuthContext";
@@ -15,17 +18,28 @@ const AdminProfileDropdown = () => {
 
   return (
     <Menu as="div" className="relative ml-3">
-      <div>
-        <Menu.Button className="flex text-lg bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-bc-primary focus:ring-offset-2">
+      <div className="">
+        <Menu.Button className="flex items-center bg-white rounded-full gap-x-2 focus:outline-none focus:ring-2 focus:ring-bc-primary focus:ring-offset-2">
           <span className="sr-only">Open user menu</span>
           <Image
-            width={32}
-            height={32}
+            width={38}
+            height={38}
             className="rounded-full"
             src={user?.image?.url ?? Avatar}
             alt={user?.first_name + " " + user?.last_name}
             objectFit="cover"
           />
+
+          <div className="text-left capitalize">
+            <h4 className="-mb-1 text-sm font-medium">{`${
+              user?.first_name ?? ""
+            } ${user?.last_name ?? ""}`}</h4>
+            <span className="inline-block text-xs text-gray-500">
+              {user?.role ?? ""}
+            </span>
+          </div>
+
+          <ChevronDownIcon className="w-5 h-5 text-gray-600" />
         </Menu.Button>
       </div>
       <Transition
@@ -59,7 +73,7 @@ const AdminProfileDropdown = () => {
                 )}
                 onClick={() => signOut()}
               >
-                <ArrowLeftOnRectangleIcon className="w-5 h-5 text-gray-700" />
+                <PowerIcon className="w-5 h-5 text-gray-700" />
                 <span className="flex-1">Sign out</span>
               </a>
             </Menu.Item>

@@ -46,8 +46,7 @@ const LoginPage = () => {
       const role = session?.user?.user_details?.role;
 
       if (role === Roles.ADMIN) router.replace("/admin/dashboard");
-      if (role === Roles.PROPONENT)
-        router.replace("/proponent/research-innovation");
+      if (role === Roles.PROPONENT) router.replace("/proponent");
       if (role === Roles.PERSONNEL) router.replace("/personnel/dashboard");
 
       setErrorMessage("");
@@ -159,7 +158,7 @@ export const getServerSideProps = async (ctx) => {
   if (session && role === Roles.PROPONENT) {
     return {
       redirect: {
-        destination: "/proponent/research-innovation",
+        destination: "/proponent",
         permanent: false,
       },
       props: { session },

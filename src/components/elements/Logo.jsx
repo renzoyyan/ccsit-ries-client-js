@@ -15,7 +15,7 @@ const Logo = ({ headingClassName, divClass }) => {
         as="h2"
         className={classNames(
           headingClassName ? headingClassName : "text-gray-800",
-          "text-sm font-bold hidden sm:block"
+          "text-sm font-bold"
         )}
         title="CCSIT - RIES"
       />

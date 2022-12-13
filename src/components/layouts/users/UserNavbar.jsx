@@ -6,16 +6,10 @@ import NavLink from "@/components/elements/links/NavLink";
 import Logo from "@/components/elements/Logo";
 import useRoles from "@/hooks/useRoles";
 import { personnelNav, proponentNav, Roles } from "@/utils/utils";
-import ProfileDropdown from "@/components/layouts/users/ProfileDropdown";
-import { signOut } from "next-auth/react";
 import UserNotification from "./UserNotification";
-import { useAuth } from "@/context/AuthContext";
-import { useEffect, useRef } from "react";
-import socketIO from "socket.io-client";
 import UserProfileDropdown from "./UserProfileDropdown";
 
-const SOCKET_IO_SERVER = "http://localhost:5000";
-const UserNavbar = () => {
+const UserNavbar = ({ showLinks = true }) => {
   const { isPersonnel, isProponent } = useRoles();
 
   let navigationContent;
@@ -32,23 +26,8 @@ const UserNavbar = () => {
     ));
   }
 
-  // const { user, access_token } = useAuth();
-  // const socketRef = useRef();
-
-  // useEffect(() => {
-  //   if (user) {
-  //     socketRef.current = socketIO(SOCKET_IO_SERVER, {
-  //       extraHeaders: {
-  //         Authorization: `Bearer ${access_token}`,
-  //       },
-  //     });
-
-  //     socketRef.current.emit("new_user", user);
-  //   }
-  // }, [user, access_token]);
-
   return (
-    <Disclosure as="nav" className="bg-white shadow">
+    <Disclosure as="nav" className="bg-white border-b border-gray-200 shadow">
       {({ open }) => (
         <>
           <div className="wrapper">
@@ -69,20 +48,11 @@ const UserNavbar = () => {
                   <Logo />
                 </div>
                 <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
-                  {navigationContent}
+                  {showLinks ? navigationContent : null}
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
-                {isProponent ? (
-                  // <button
-                  //   type="button"
-                  //   className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-bc-primary focus:ring-offset-2"
-                  // >
-                  //   <span className="sr-only">View notifications</span>
-                  //   <BellIcon className="w-6 h-6" aria-hidden="true" />
-                  // </button>
-                  <UserNotification />
-                ) : null}
+                {isProponent ? <UserNotification /> : null}
 
                 {/* Profile dropdown */}
                 <UserProfileDropdown />

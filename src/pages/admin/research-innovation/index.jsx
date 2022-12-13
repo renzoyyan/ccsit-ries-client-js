@@ -52,7 +52,7 @@ const ResearchInnovation = () => {
         <Heading
           as="h1"
           title="Research & Innovation"
-          className="text-2xl font-bold"
+          className="text-xl font-bold lg:text-2xl"
         />
       </div>
 

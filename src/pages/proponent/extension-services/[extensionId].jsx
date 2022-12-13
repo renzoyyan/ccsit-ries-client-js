@@ -90,7 +90,6 @@ const SingleExtensionServices = () => {
       toast.success("New log saved", {
         id: notificationRef.current,
       });
-      toggleModal();
 
       const sendNotif = {
         sender: current_user,
@@ -128,6 +127,12 @@ const SingleExtensionServices = () => {
       };
 
       sendNotification(sendNotif);
+
+      addLog({
+        log_title: `Change status to ${values.status}`,
+        date_completion: new Date(),
+        ongoing: false,
+      });
     },
 
     onError: (error) => {
@@ -170,6 +175,7 @@ const SingleExtensionServices = () => {
       : toast.loading("Saving...");
 
     await addLog(values);
+    toggleModal();
   };
 
   const handleChangeStatus = async (val) => {
@@ -197,7 +203,7 @@ const SingleExtensionServices = () => {
           <SectionHeader className="items-center justify-between mt-16 mb-8 sm:flex sm:mb-20">
             <Heading
               as="h3"
-              className="text-2xl font-bold text-bc-primary"
+              className="max-w-xl text-xl font-bold lg:text-2xl text-bc-primary"
               title={extension?.extension_title ?? ""}
             />
             <BackLink href="/proponent/extension-services" />

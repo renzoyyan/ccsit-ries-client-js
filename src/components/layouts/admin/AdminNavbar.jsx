@@ -11,8 +11,8 @@ const AdminNavbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="relative">
-      <header className="sticky top-0 z-10 flex flex-shrink-0 h-16 pt-4 bg-transparent lg:pt-8">
+    <div className="relative pb-4 bg-white border-b border-gray-200">
+      <header className="sticky top-0 z-10 flex flex-shrink-0 h-16 pt-4 lg:px-10 wrapper">
         <Button
           className="pr-4 text-gray-500 focus:outline-none lg:hidden"
           onClick={() => setSidebarOpen((prev) => !prev)}

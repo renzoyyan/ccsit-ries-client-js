@@ -12,15 +12,18 @@ const NavLink = ({ item, role }) => {
           <a
             className={classNames(
               router.pathname.startsWith(item.href)
-                ? "bg-gray-800"
-                : "hover:bg-gray-800 hover:text-white",
-              "group rounded-md py-3 px-6 flex items-center text-sm font-medium text-white"
+                ? "bg-sky-100 border-bc-primary font-semibold text-bc-primary"
+                : "hover:bg-sky-100",
+              "group py-4 px-6 flex items-center text-sm font-medium rounded-md text-gray-900"
             )}
           >
             {item.icon && (
               <item.icon
                 className={classNames(
-                  "mr-3 flex-shrink-0 h-6 w-6 text-bc-secondary group-hover:text-bc-secondary"
+                  "mr-3 flex-shrink-0 h-6 w-6",
+                  router.pathname.startsWith(item.href)
+                    ? "text-bc-primary"
+                    : "text-gray-400 group-hover:text-bc-primary"
                 )}
                 aria-hidden="true"
               />

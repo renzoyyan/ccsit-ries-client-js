@@ -4,11 +4,14 @@ import React, { useState } from "react";
 
 import SectionHeader from "@/components/elements/SectionHeader";
 import UserLayout from "@/components/layouts/users/UserLayout";
-import Heading from "@/components/elements/Heading";
 
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
-import BarChart from "@/components/modules/charts/BarChart";
+
+import ResearchBarChart from "@/components/modules/research/ResearchBarChart";
+import ExtensionBarChart from "@/components/modules/extension/ExtensionBarChart";
+import useAnalytics from "@/hooks/useAnalytics";
+import DashboardCard from "@/components/modules/DashboardCard";
 
 const DatePicker = dynamic(
   () => import("react-date-picker/dist/entry.nostyle"),
@@ -105,16 +108,32 @@ export const barData = [
 ];
 
 const Dashboard = () => {
-  const [value, onChange] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+
+  const { totalResearch, totalExtension } = useAnalytics(date);
 
   return (
     <UserLayout>
       <SectionHeader title="Dashboard" className="mt-16 mb-10" />
-      <div className="flex items-center gap-x-2">
+
+      <div className="grid gap-6 mt-10 md:grid-cols-2 xl:grid-cols-4">
+        <DashboardCard
+          className="from-sky-500 to-[#053e85]"
+          title="Total Research & Innovation Projects"
+          value={totalResearch}
+        />
+        <DashboardCard
+          className="from-[#053e85] to-sky-500"
+          title="Total Extension Services Projects"
+          value={totalExtension}
+        />
+      </div>
+
+      <div className="flex items-center mt-10 gap-x-2">
         <p className="font-medium text-gray-600">Filter by year</p>
         <DatePicker
-          onChange={onChange}
-          value={value}
+          onChange={setDate}
+          value={date}
           format="y"
           maxDetail="decade"
           calendarClassName="border-none mt-2"
@@ -127,58 +146,9 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-4 gap-6 mt-10">
-        <div class="bg-gradient-to-r from-[#007FC6] to-[#053e85] p-6 rounded-md shadow-md">
-          <h4 className="mb-4 text-xl font-semibold text-white lg:text-3xl">
-            10
-          </h4>
-
-          <p className="text-sm font-medium text-white">
-            Total Research & Innovation Projects
-          </p>
-
-          <div className="grid grid-cols-2">
-            {/* <ChartBarIcon className="w-8 h-8 text-white" /> */}
-          </div>
-        </div>
-
-        <div class="bg-gradient-to-r from-[#053e85] to-blue-500 p-6 rounded-md shadow-md">
-          <h4 className="mb-4 text-xl font-semibold text-white lg:text-3xl">
-            10
-          </h4>
-
-          <p className="text-sm font-medium text-white">
-            Total Extension Services Projects
-          </p>
-
-          <div className="grid grid-cols-2">
-            {/* <ChartBarIcon className="w-8 h-8 text-white" /> */}
-          </div>
-        </div>
-      </div>
-
       <div className="mt-10 space-y-6">
-        <div className="bg-white rounded-md shadow-md">
-          <Heading
-            as="h2"
-            title="Research and Innovation Summary"
-            className="pt-8 pl-8 font-medium text-gray-800"
-          />
-          <div className="w-full xl:max-w-5xl h-[418px]">
-            <BarChart data={barData} />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-md shadow-md">
-          <Heading
-            as="h2"
-            title="Extension Services Summary"
-            className="pt-8 pl-8 font-medium text-gray-800"
-          />
-          <div className="w-full xl:max-w-5xl h-[418px]">
-            <BarChart data={barData} />
-          </div>
-        </div>
+        <ResearchBarChart date={date} />
+        <ExtensionBarChart date={date} />
       </div>
     </UserLayout>
   );

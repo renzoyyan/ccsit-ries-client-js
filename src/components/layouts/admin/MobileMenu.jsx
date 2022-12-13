@@ -4,7 +4,10 @@ import { Fragment } from "react";
 import Logo from "@/components/elements/Logo";
 import { adminNav, personnelNav, proponentNav, Roles } from "@/utils/utils";
 import Button from "@/components/elements/Button";
-import { ChevronLeftIcon } from "@heroicons/react/24/solid";
+import {
+  Bars3BottomLeftIcon,
+  ChevronLeftIcon,
+} from "@heroicons/react/24/solid";
 import NavLink from "../../elements/links/NavLink";
 import useRoles from "@/hooks/useRoles";
 
@@ -38,7 +41,7 @@ const MobileMenu = ({ sidebarOpen, setSidebarOpen }) => {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <Dialog.Panel className="relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-gray-900">
+            <Dialog.Panel className="relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-white">
               <Transition.Child
                 as={Fragment}
                 enter="ease-in-out duration-300"
@@ -48,24 +51,20 @@ const MobileMenu = ({ sidebarOpen, setSidebarOpen }) => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <div className="absolute top-0 right-0 pt-4 -mr-5">
-                  <Button
-                    className="flex items-center justify-center w-10 h-10 ml-1 rounded-full bg-bc-tertiary focus:outline-none focus:ring-2 focus:ring-inset focus:bg-bc-tertiary active:bg-white focus:ring-bc-tertiary"
-                    onClick={() => setSidebarOpen(false)}
-                  >
+                <div className="flex items-center justify-between flex-shrink-0 px-6 mb-10">
+                  <Logo />
+                  <Button onClick={() => setSidebarOpen(false)}>
                     <span className="sr-only">Close sidebar</span>
-                    <ChevronLeftIcon
-                      className="w-5 h-5 -ml-0.5 text-white"
+                    <Bars3BottomLeftIcon
+                      className="w-6 h-6"
                       aria-hidden="true"
                     />
                   </Button>
                 </div>
               </Transition.Child>
-              <div className="flex items-center flex-shrink-0 px-6 mb-10">
-                <Logo headingClassName="text-gray-100" />
-              </div>
+
               <div className="flex-1 h-0 mt-5 overflow-y-auto">
-                <nav className="px-6 space-y-5">
+                <nav className="px-4 space-y-4">
                   {adminNav.map((nav, idx) => (
                     <NavLink key={idx} item={nav} role={Roles.ADMIN} />
                   ))}

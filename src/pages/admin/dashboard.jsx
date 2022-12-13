@@ -1,14 +1,18 @@
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
-import BarChart from "@/components/modules/charts/BarChart";
+
 import { getAuthSession } from "@/utils/auth";
 import { Roles } from "@/utils/utils";
 import { useState } from "react";
-import Heading from "@/components/elements/Heading";
+
 import SectionHeader from "@/components/elements/SectionHeader";
 import { CalendarIcon, PlusIcon } from "@heroicons/react/24/solid";
 import dynamic from "next/dynamic";
-import { barData } from "../personnel/dashboard";
+
 import DashboardCard from "@/components/modules/DashboardCard";
+
+import useAnalytics from "@/hooks/useAnalytics";
+import ResearchBarChart from "@/components/modules/research/ResearchBarChart";
+import ExtensionBarChart from "@/components/modules/extension/ExtensionBarChart";
 
 const DatePicker = dynamic(
   () => import("react-date-picker/dist/entry.nostyle"),
@@ -18,16 +22,43 @@ const DatePicker = dynamic(
 );
 
 const Dashboard = () => {
-  const [value, onChange] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+
+  const { totalResearch, totalExtension, totalUsers, verifiedUsers } =
+    useAnalytics(date);
 
   return (
     <AdminLayout>
       <SectionHeader title="Dashboard" className="mt-16 mb-10" />
-      <div className="flex items-center gap-x-2">
+
+      <div className="grid gap-6 mt-10 md:grid-cols-2 xl:grid-cols-4">
+        <DashboardCard
+          className="from-sky-500 to-[#053e85]"
+          title="Total Research & Innovation Projects"
+          value={totalResearch}
+        />
+        <DashboardCard
+          className="from-[#053e85] to-sky-500"
+          title="Total Extension Services Projects"
+          value={totalExtension}
+        />
+        <DashboardCard
+          className="from-sky-500 via-indigo-500 to-purple-500"
+          title="Registered Users"
+          value={totalUsers}
+        />
+        <DashboardCard
+          className="from-purple-500 via-indigo-500 to-sky-500 "
+          title="Verified Users"
+          value={verifiedUsers}
+        />
+      </div>
+
+      <div className="flex items-center mt-10 gap-x-2">
         <p className="font-medium text-gray-600">Filter by year</p>
         <DatePicker
-          onChange={onChange}
-          value={value}
+          onChange={setDate}
+          value={date}
           format="y"
           maxDetail="decade"
           calendarClassName="border-none mt-2"
@@ -40,51 +71,9 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-4 gap-6 mt-10">
-        <DashboardCard
-          className="from-[#007FC6] to-[#053e85]"
-          title="Total Research & Innovation Projects"
-          value={10}
-        />
-        <DashboardCard
-          className="from-[#053e85] to-blue-500"
-          title="Total Extension Services Projects"
-          value={10}
-        />
-        <DashboardCard
-          className="from-blue-500 to-sky-500"
-          title="Registered Users"
-          value={10}
-        />
-        <DashboardCard
-          className="from-sky-500 to-[#053e85]"
-          title="Verified Users"
-          value={10}
-        />
-      </div>
-
       <div className="mt-10 space-y-6">
-        <div className="bg-white rounded-md shadow-md">
-          <Heading
-            as="h2"
-            title="Research and Innovation Summary"
-            className="pt-8 pl-8 font-medium text-gray-800"
-          />
-          <div className="w-full xl:max-w-5xl h-[418px]">
-            <BarChart data={barData} />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-md shadow-md">
-          <Heading
-            as="h2"
-            title="Extension Services Summary"
-            className="pt-8 pl-8 font-medium text-gray-800"
-          />
-          <div className="w-full xl:max-w-5xl h-[418px]">
-            <BarChart data={barData} />
-          </div>
-        </div>
+        <ResearchBarChart date={date} />
+        <ExtensionBarChart date={date} />
       </div>
     </AdminLayout>
   );

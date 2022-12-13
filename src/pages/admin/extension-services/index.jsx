@@ -53,7 +53,7 @@ const ExtensionServicesPage = () => {
         <Heading
           as="h1"
           title="Extension Services"
-          className="text-2xl font-bold"
+          className="text-xl font-bold lg:text-2xl"
         />
       </div>
 

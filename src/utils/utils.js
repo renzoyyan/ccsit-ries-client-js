@@ -3,9 +3,10 @@ import {
   DocumentDuplicateIcon,
   RectangleStackIcon,
   Squares2X2Icon,
+  SquaresPlusIcon,
   UserGroupIcon,
   UsersIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/outline";
 import moment from "moment";
 
 export function classNames(...classes) {
@@ -50,7 +51,7 @@ export const adminNav = [
   {
     name: "Dashboard",
     href: "/admin/dashboard",
-    icon: Squares2X2Icon,
+    icon: SquaresPlusIcon,
   },
   {
     name: "Research & Innovation",
@@ -201,3 +202,18 @@ export const notificationActionMsg = (action_type) => {
       return;
   }
 };
+
+export const labels = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
