@@ -13,7 +13,7 @@ const NavLink = ({ item, role }) => {
             className={classNames(
               router.pathname.startsWith(item.href)
                 ? "bg-sky-100 border-bc-primary font-semibold text-bc-primary"
-                : "hover:bg-sky-100",
+                : "hover:bg-sky-100 hover:text-bc-primary",
               "group py-4 px-6 flex items-center text-sm font-medium rounded-md text-gray-900"
             )}
           >

@@ -102,9 +102,7 @@ const FileUpload = ({
                     </span>
                     or drag and drop
                   </div>
-                  <span className="text-xs text-gray-500">
-                    PDF, DOCX up to 10MB
-                  </span>
+                  <span className="text-xs text-gray-500">PDF, DOCX</span>
                 </div>
               </div>
 

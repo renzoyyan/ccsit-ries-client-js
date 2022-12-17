@@ -84,7 +84,7 @@ const ProponentProfile = () => {
 
     onSuccess: (values) => {
       queryClient.invalidateQueries({ queryKey: ["user", values._id] });
-      toast.success("Personal Information updated");
+      toast.success("Successfully updated");
     },
 
     onError: (error) => {

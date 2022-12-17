@@ -20,11 +20,11 @@ const useProponents = () => {
     queryFn: () => getAllProponents(),
   });
 
-  const filteredProponents = data?.docs?.filter(
-    (proponent) => proponent._id !== current_user
+  const filteredVerified = data?.docs?.filter(
+    (proponent) => proponent.email_verified !== false
   );
 
-  const proponentOptions = filteredProponents?.map((proponent) => {
+  const proponentOptions = filteredVerified?.map((proponent) => {
     const name = `${proponent.first_name} ${proponent.last_name}`;
 
     return { value: String(proponent._id), label: name };

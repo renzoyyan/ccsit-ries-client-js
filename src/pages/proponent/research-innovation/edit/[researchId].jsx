@@ -218,12 +218,22 @@ const NewResearchInnovation = () => {
                   label="Project Budget"
                   validation={{
                     required: "This field is required",
+                    pattern: {
+                      value: /^\d+$/,
+                      message: "This field should have digits only",
+                    },
                   }}
                 />
               </Form.Group>
 
               <Form.Group>
-                <Form.Input name="project_duration" label="Project Duration" />
+                <Form.Input
+                  name="project_duration"
+                  label="Project Duration"
+                  validation={{
+                    required: "This field is required",
+                  }}
+                />
               </Form.Group>
 
               <Form.Group>

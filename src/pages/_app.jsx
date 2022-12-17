@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
               </ConfirmProvider>
             </SocketProvider>
           </AuthProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
       </SessionProvider>
     </>

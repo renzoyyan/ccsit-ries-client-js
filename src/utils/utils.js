@@ -138,7 +138,7 @@ export const NOTIFICATION_ACTION_TYPE = {
   },
   APPROVE: 200,
   COMMENTED: 201,
-
+  KEYWORDS: 202,
   LOG: {
     ADDED: 301,
     UPDATED: 302,
@@ -176,6 +176,9 @@ export const notificationActionMsg = (action_type) => {
 
     case 201:
       return "commented in";
+
+    case 202:
+      return "added keywords in";
 
     case 301:
       return "added a new log in";

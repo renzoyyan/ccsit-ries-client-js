@@ -4,6 +4,8 @@ import * as Table from "@/components/elements/table";
 import useRoles from "@/hooks/useRoles";
 import StatusCard from "@/components/elements/StatusCard";
 import { formattedDate } from "@/utils/utils";
+import { Avatar, AvatarGroup } from "@mui/material";
+import { startCase } from "lodash-es";
 
 const ExtensionServicesContent = ({
   _id,
@@ -13,6 +15,7 @@ const ExtensionServicesContent = ({
   extension_agenda,
   status,
   created_at,
+  project_duration,
 }) => {
   const { isAdmin, isPersonnel, isProponent } = useRoles();
 
@@ -50,15 +53,23 @@ const ExtensionServicesContent = ({
       <td className="tbl-data sm:pl-6">{extension_type}</td>
       <td className="tbl-data">{extension_title}</td>
       <td className="tbl-data">
-        <ul>
+        <AvatarGroup className="justify-end" max={3}>
           {proponents.map((value, idx) => {
             const name = `${value.first_name} ${value.last_name}`;
 
-            return <li key={value._id}>{name}</li>;
+            return (
+              <Avatar
+                key={value._id}
+                title={startCase(name)}
+                src={value?.image?.url}
+                alt={startCase(name)}
+              />
+            );
           })}
-        </ul>
+        </AvatarGroup>
       </td>
       <td className="tbl-data">{extension_agenda}</td>
+      <td className="lowercase tbl-data">{project_duration}</td>
       <td className="tbl-data">{formattedDate(created_at)}</td>
       <td className="tbl-data">
         <StatusCard status={status} withLabel={false} />

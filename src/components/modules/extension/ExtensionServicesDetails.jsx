@@ -89,8 +89,8 @@ const ExtensionServicesDetails = ({ data }) => {
             <Detail.List label="Collaborating Agency(ies)">
               <dd className="mt-1 text-gray-900">
                 <ul role="list">
-                  {data?.collaborating_agenicies?.length ? (
-                    data?.collaborating_agenicies?.map((item, idx) => (
+                  {data?.collaborating_agencies?.length > 0 ? (
+                    data?.collaborating_agencies?.map((item, idx) => (
                       <li key={idx}>{item.agency_name}</li>
                     ))
                   ) : (
@@ -106,7 +106,7 @@ const ExtensionServicesDetails = ({ data }) => {
                 <ul role="list">
                   {data?.project_sites?.length ? (
                     data?.project_sites?.map((item, idx) => (
-                      <li key={idx}>{item.agency_name}</li>
+                      <li key={idx}>{item.site_name}</li>
                     ))
                   ) : (
                     <span className="text-sm font-medium text-gray-600">
@@ -121,7 +121,7 @@ const ExtensionServicesDetails = ({ data }) => {
                 <ul role="list">
                   {data?.target_beneficiaries?.length ? (
                     data?.target_beneficiaries?.map((item, idx) => (
-                      <li key={idx}>{item.agency_name}</li>
+                      <li key={idx}>{item.beneficiary_name}</li>
                     ))
                   ) : (
                     <span className="text-sm font-medium text-gray-600">

@@ -49,7 +49,11 @@ const ResearchInnovation = () => {
     <UserLayout>
       <div className="flex items-center justify-between mt-20 mb-20">
         <div className="sm:flex-auto">
-          <Heading as="h1" title="Projects" className="text-3xl font-bold" />
+          <Heading
+            as="h1"
+            title="Research & Innovation"
+            className="text-2xl font-bold"
+          />
         </div>
       </div>
 
@@ -66,7 +70,7 @@ const ResearchInnovation = () => {
             <ResearchInnovationContent key={data._id} {...data} />
           ))
         ) : (
-          <Skeleton columns={7} rows={5} isLoading={isLoading} />
+          <Skeleton columns={8} rows={5} isLoading={isLoading} />
         )}
       </ResearchInnovationTable>
 

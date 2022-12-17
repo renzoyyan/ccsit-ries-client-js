@@ -81,7 +81,7 @@ const ResearchInnovation = () => {
             <ResearchInnovationContent key={research._id} {...research} />
           ))
         ) : (
-          <Skeleton columns={7} rows={5} isLoading={isLoading} />
+          <Skeleton columns={8} rows={5} isLoading={isLoading} />
         )}
       </ResearchInnovationTable>
 

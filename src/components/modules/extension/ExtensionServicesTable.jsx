@@ -16,6 +16,7 @@ const ExtensionServicesTable = ({ children }) => {
             className="pr-20 xl:w-[250px] tbl-header"
             title="Extension Service Agenda"
           />
+          <Table.Header className="pr-10 tbl-header" title="Duration" />
           <Table.Header className="pr-10 tbl-header" title="Date Created" />
           <Table.Header className="pr-10 tbl-header" title="Status" />
 

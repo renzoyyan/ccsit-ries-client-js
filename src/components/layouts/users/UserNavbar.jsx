@@ -45,7 +45,7 @@ const UserNavbar = ({ showLinks = true }) => {
               </div>
               <div className="flex items-center justify-center flex-1 lg:items-stretch lg:justify-start">
                 <div className="flex items-center flex-shrink-0">
-                  <Logo />
+                  {showLinks ? <Logo /> : null}
                 </div>
                 <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
                   {showLinks ? navigationContent : null}

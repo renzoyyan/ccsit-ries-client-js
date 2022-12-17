@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import Logs from "@/components/modules/logs/Logs";
 
 const SingleResearchInnovation = () => {
-  const { getResearchById, getComments } = useResearch();
+  const { getResearchById } = useResearch();
 
   const router = useRouter();
   const research_id = router.query.researchId;
@@ -24,12 +24,6 @@ const SingleResearchInnovation = () => {
   const { data: research } = useQuery({
     queryKey: ["research", research_id],
     queryFn: () => getResearchById(research_id),
-    enabled: !!research_id,
-  });
-
-  const { data: comments } = useQuery({
-    queryKey: ["comments", research_id],
-    queryFn: () => getComments(research_id),
     enabled: !!research_id,
   });
 
@@ -58,7 +52,7 @@ const SingleResearchInnovation = () => {
       <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
         <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
           <ResearchInnovationDetails data={research} />
-          <Comments isView data={comments} />
+          <Comments isView data={research?.comments} />
         </div>
 
         <ActivityLogs>

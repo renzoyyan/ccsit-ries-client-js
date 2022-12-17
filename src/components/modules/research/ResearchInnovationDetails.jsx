@@ -3,6 +3,7 @@ import * as Detail from "@/components/elements/detail";
 import useRoles from "@/hooks/useRoles";
 import EditLink from "../../elements/links/EditLink";
 import _ from "lodash-es";
+import { NumericFormat } from "react-number-format";
 
 const ResearchInnovationDetails = ({ data }) => {
   const { isProponent, isAdmin } = useRoles();
@@ -58,10 +59,15 @@ const ResearchInnovationDetails = ({ data }) => {
               className="pr-4"
             />
 
-            <Detail.List
-              label="Project Budget"
-              text={project_budget ?? "N/A"}
-            />
+            <Detail.List label="Project Budget">
+              <NumericFormat
+                value={project_budget}
+                allowLeadingZeros
+                thousandSeparator=","
+                disabled
+                className="bg-white"
+              />
+            </Detail.List>
 
             <Detail.List
               label="Project Duration"

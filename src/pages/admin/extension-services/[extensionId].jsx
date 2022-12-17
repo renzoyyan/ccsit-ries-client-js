@@ -30,6 +30,7 @@ import useConfirm from "@/hooks/useConfirm";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
 import CommentForm from "@/components/modules/comments/CommentForm";
+import KeywordsModal from "@/components/elements/modal/KeywordsModal";
 
 const defaultValues = {
   status: "",

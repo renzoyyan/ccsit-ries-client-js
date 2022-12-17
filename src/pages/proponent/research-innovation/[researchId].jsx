@@ -29,6 +29,7 @@ import {
   Roles,
   statusOptions,
 } from "@/utils/utils";
+import KeywordsModal from "@/components/elements/modal/KeywordsModal";
 
 const defaultValues = {
   status: "",
@@ -50,10 +51,10 @@ const SingleResearchInnovation = () => {
   const { isConfirmed } = useConfirm();
   const {
     getResearchById,
-    getComments,
     createResearchLog,
     updateResearchStatus,
     createComment,
+    updateResearchById,
   } = useResearch();
 
   const methods = useForm({ defaultValues });
@@ -61,12 +62,6 @@ const SingleResearchInnovation = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["research", research_id],
     queryFn: () => getResearchById(research_id),
-    enabled: !!research_id,
-  });
-
-  const { data: comments } = useQuery({
-    queryKey: ["comments", research_id],
-    queryFn: () => getComments(research_id),
     enabled: !!research_id,
   });
 
@@ -151,7 +146,7 @@ const SingleResearchInnovation = () => {
 
     onSuccess: (values) => {
       queryClient.invalidateQueries({
-        queryKey: ["comments", values.research_id],
+        queryKey: ["research", research_id],
       });
       toast.success("New comment added");
 
@@ -169,6 +164,34 @@ const SingleResearchInnovation = () => {
     onError: (error) => {
       const message = error.response.data.message;
       toast.error(message);
+    },
+  });
+
+  const { mutateAsync: addKeywords } = useMutation({
+    mutationFn: (updatedValues) =>
+      updateResearchById(research_id, { keywords: updatedValues }),
+
+    onSuccess: (values) => {
+      queryClient.invalidateQueries({ queryKey: ["research", research_id] });
+      toast.success("Updated successfully", {
+        id: notificationRef.current,
+      });
+
+      // const sendNotif = {
+      //   sender: current_user,
+      //   receiver: receiverIds,
+      //   research_id,
+      //   action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
+      //   isRead: false,
+      // };
+
+      // sendNotification(sendNotif);
+    },
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message, {
+        id: notificationRef.current,
+      });
     },
   });
 
@@ -192,6 +215,10 @@ const SingleResearchInnovation = () => {
     if (confirm) {
       await updateStatus(val);
     }
+  };
+
+  const handleAddKeywords = async (values) => {
+    await addKeywords(values);
   };
 
   return (
@@ -218,9 +245,8 @@ const SingleResearchInnovation = () => {
               Back
             </Button>
           </SectionHeader>
-
-          <FormProvider {...methods}>
-            <div className="flex items-center gap-x-4">
+          <div className="flex items-center gap-x-4">
+            <FormProvider {...methods}>
               <Heading
                 as="h4"
                 title="Status"
@@ -233,12 +259,19 @@ const SingleResearchInnovation = () => {
                 withCustomOnChange
                 handleChange={handleChangeStatus}
               />
-            </div>
-          </FormProvider>
+            </FormProvider>
+
+            {status === "completed" ? (
+              <KeywordsModal
+                onSubmit={handleAddKeywords}
+                previousKeywords={data?.keywords}
+              />
+            ) : null}
+          </div>
           <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
             <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
               <ResearchInnovationDetails data={data} />
-              <Comments research_id={research_id} data={comments}>
+              <Comments research_id={research_id} data={data?.comments}>
                 <CommentForm onSubmitComment={sendNewComment} />
               </Comments>
             </div>

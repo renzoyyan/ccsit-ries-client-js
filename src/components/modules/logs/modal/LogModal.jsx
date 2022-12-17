@@ -62,9 +62,9 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
           <form onSubmit={handleSubmit(onSubmitLog)}>
             <div className="space-y-6">
               <FileUpload name="file" />
-              <Form.Group>
+              {/* <Form.Group>
                 <Form.Input type="checkbox" name="ongoing" label="On going" />
-              </Form.Group>
+              </Form.Group> */}
               <Form.Group>
                 <Form.Input
                   name="log_title"

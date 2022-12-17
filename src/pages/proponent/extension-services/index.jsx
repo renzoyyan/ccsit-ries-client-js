@@ -83,7 +83,7 @@ const ExtensionServices = () => {
             <ExtensionServicesContent key={exec._id} {...exec} />
           ))
         ) : (
-          <Skeleton columns={7} rows={5} isLoading={isLoading} />
+          <Skeleton columns={8} rows={5} isLoading={isLoading} />
         )}
       </ExtensionServicesTable>
 

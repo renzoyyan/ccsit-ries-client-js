@@ -23,6 +23,7 @@ import CommentForm from "@/components/modules/comments/CommentForm";
 import { useAuth } from "@/context/AuthContext";
 import useConfirm from "@/hooks/useConfirm";
 import { SocketContext } from "@/context/SocketContext";
+import KeywordsModal from "@/components/elements/modal/KeywordsModal";
 import {
   isFile,
   NOTIFICATION_ACTION_TYPE,
@@ -50,21 +51,15 @@ const SingleExtensionServices = () => {
   const { isOpen, toggleModal } = useModal();
   const {
     getExtensionById,
-    getComments,
     createExtensionLog,
     createComment,
     updateExtensionStatus,
+    updateExtensionById,
   } = useExtension();
 
   const { data: extension, isLoading } = useQuery({
     queryKey: ["extension", extension_id],
     queryFn: () => getExtensionById(extension_id),
-    enabled: !!extension_id,
-  });
-
-  const { data: comments } = useQuery({
-    queryKey: ["extension-comments", extension_id],
-    queryFn: () => getComments(extension_id),
     enabled: !!extension_id,
   });
 
@@ -148,7 +143,7 @@ const SingleExtensionServices = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["extension-comments", extension_id],
+        queryKey: ["extension", extension_id],
       });
       toast.success("New comment added");
 
@@ -166,6 +161,34 @@ const SingleExtensionServices = () => {
     onError: (error) => {
       const message = error.response.data.message;
       toast.error(message);
+    },
+  });
+
+  const { mutateAsync: addKeywords } = useMutation({
+    mutationFn: (updatedValues) =>
+      updateExtensionById(extension_id, updatedValues),
+
+    onSuccess: (values) => {
+      queryClient.invalidateQueries({ queryKey: ["extension", values._id] });
+      toast.success("Updated successfully", {
+        id: notificationRef.current,
+      });
+
+      // const sendNotif = {
+      //   sender: current_user,
+      //   receiver: receiverIds,
+      //   extension_id,
+      //   action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
+      //   isRead: false,
+      // };
+
+      // sendNotification(sendNotif);
+    },
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message, {
+        id: notificationRef.current,
+      });
     },
   });
 
@@ -191,6 +214,10 @@ const SingleExtensionServices = () => {
     }
   };
 
+  const handleAddKeywords = async (values) => {
+    await addKeywords(values);
+  };
+
   return (
     <UserLayout>
       {isLoading ? (
@@ -208,8 +235,8 @@ const SingleExtensionServices = () => {
             />
             <BackLink href="/proponent/extension-services" />
           </SectionHeader>
-          <FormProvider {...methods}>
-            <div className="flex items-center gap-x-4">
+          <div className="flex items-center gap-x-4">
+            <FormProvider {...methods}>
               <Heading
                 as="h4"
                 title="Status"
@@ -222,12 +249,19 @@ const SingleExtensionServices = () => {
                 withCustomOnChange
                 handleChange={handleChangeStatus}
               />
-            </div>
-          </FormProvider>
+            </FormProvider>
+
+            {status === "completed" ? (
+              <KeywordsModal
+                onSubmit={handleAddKeywords}
+                previousKeywords={data?.keywords}
+              />
+            ) : null}
+          </div>
           <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
             <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
               <ExtensionServicesDetails data={extension} />
-              <Comments extension_id={extension_id} data={comments}>
+              <Comments extension_id={extension_id} data={extension?.comments}>
                 <CommentForm onSubmitComment={sendNewComment} />
               </Comments>
             </div>

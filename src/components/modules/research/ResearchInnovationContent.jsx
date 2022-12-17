@@ -3,7 +3,7 @@ import * as Table from "@/components/elements/table";
 import useRoles from "@/hooks/useRoles";
 import StatusCard, { TStatusCardProps } from "@/components/elements/StatusCard";
 import { formattedDate } from "@/utils/utils";
-import { capitalize } from "lodash-es";
+import { capitalize, startCase } from "lodash-es";
 import { Avatar, AvatarGroup } from "@mui/material";
 
 const ResearchInnovationContent = ({
@@ -61,9 +61,9 @@ const ResearchInnovationContent = ({
             return (
               <Avatar
                 key={value._id}
-                title={capitalize(name)}
+                title={startCase(name)}
                 src={value?.image?.url}
-                alt={capitalize(name)}
+                alt={startCase(name)}
               />
             );
           })}

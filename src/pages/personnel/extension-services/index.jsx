@@ -48,7 +48,11 @@ const ExtensionServices = () => {
     <UserLayout>
       <div className="flex items-center justify-between mt-20 mb-20">
         <div className="sm:flex-auto">
-          <Heading as="h1" title="Projects" className="text-3xl font-bold" />
+          <Heading
+            as="h1"
+            title="Extension Services"
+            className="text-2xl font-bold"
+          />
         </div>
       </div>
 
@@ -65,7 +69,7 @@ const ExtensionServices = () => {
             <ExtensionServicesContent key={exec._id} {...exec} />
           ))
         ) : (
-          <Skeleton columns={7} rows={5} isLoading={isLoading} />
+          <Skeleton columns={8} rows={5} isLoading={isLoading} />
         )}
       </ExtensionServicesTable>
 

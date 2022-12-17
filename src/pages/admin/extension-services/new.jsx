@@ -109,7 +109,13 @@ const NewExtensionServices = () => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Input name="project_duration" label="Project Duration" />
+                <Form.Input
+                  name="project_duration"
+                  label="Project Duration"
+                  validation={{
+                    required: "This field is required",
+                  }}
+                />
               </Form.Group>
               <Form.Group>
                 <Form.Input

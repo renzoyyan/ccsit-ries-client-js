@@ -49,24 +49,23 @@ const SingleResearchInnovation = () => {
   const { isConfirmed } = useConfirm();
   const {
     getResearchById,
-    getComments,
     createComment,
     createResearchLog,
     updateResearchStatus,
   } = useResearch();
   const { isOpen, toggleModal } = useModal();
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["research", research_id],
     queryFn: () => getResearchById(research_id),
     enabled: !!research_id,
   });
 
-  const { data: comments } = useQuery({
-    queryKey: ["comments", research_id],
-    queryFn: () => getComments(research_id),
-    enabled: !!research_id,
-  });
+  // const { data: comments } = useQuery({
+  //   queryKey: ["comments", research_id],
+  //   queryFn: () => getComments(research_id),
+  //   enabled: !!research_id,
+  // });
 
   const receiverIds = data?.proponents?.map((p) => p._id);
 
@@ -179,7 +178,7 @@ const SingleResearchInnovation = () => {
 
     onSuccess: (values) => {
       queryClient.invalidateQueries({
-        queryKey: ["comments", research_id],
+        queryKey: ["research", research_id],
       });
       toast.success("New comment added");
 
@@ -279,7 +278,7 @@ const SingleResearchInnovation = () => {
       <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
         <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
           <ResearchInnovationDetails data={data} />
-          <Comments research_id={research_id} data={comments}>
+          <Comments research_id={research_id} data={data?.comments}>
             <CommentForm onSubmitComment={sendNewComment} />
           </Comments>
         </div>

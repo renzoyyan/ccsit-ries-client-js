@@ -112,8 +112,7 @@ const NewExtensionServices = () => {
           <form>
             <div
               className={classNames(
-                "flex flex-wrap justify-between item-center mb-8",
-                flagValue !== "new" ? "space-y-4 sm:space-y-0" : ""
+                "flex flex-wrap justify-between item-center mb-8"
               )}
             >
               <Heading
@@ -122,7 +121,7 @@ const NewExtensionServices = () => {
                 className="font-medium"
               />
               {flagValue !== "new" ? (
-                <div className="flex items-center gap-x-4">
+                <div className="flex items-center mt-4 gap-x-4 sm:mt-0">
                   <Heading
                     as="h4"
                     title="Status"
@@ -194,12 +193,22 @@ const NewExtensionServices = () => {
                   label="Project Budget"
                   validation={{
                     required: "This field is required",
+                    pattern: {
+                      value: /^\d+$/,
+                      message: "This field should have digits only",
+                    },
                   }}
                 />
               </Form.Group>
 
               <Form.Group>
-                <Form.Input name="project_duration" label="Project Duration" />
+                <Form.Input
+                  name="project_duration"
+                  label="Project Duration"
+                  validation={{
+                    required: "This field is required",
+                  }}
+                />
               </Form.Group>
               <Form.Group>
                 <Form.Input name="sdg" label="SDG" />

@@ -13,17 +13,21 @@ const KeywordsInput = ({
   placeholder = "Press enter or comma to add keyword",
   ...inputProps
 }) => {
-  const [keywords, setKeywords] = useState([]);
-  const [keywordError, setKeywordError] = useState("");
-
   const {
     formState: { errors },
     setValue,
     control,
+    watch,
   } = useFormContext();
+  const currentKeywords = watch("keywords");
+
+  const [keywords, setKeywords] = useState(currentKeywords);
+  const [keywordError, setKeywordError] = useState("");
 
   const handleAddition = (e) => {
     const value = e.target.value;
+
+    if (value === "") return setKeywordError("This field is required");
 
     if (value !== "" && value !== ",") {
       switch (e.key) {
@@ -94,7 +98,7 @@ const KeywordsInput = ({
             onKeyPress={(e) => e.key === "Enter" && e.preventDefault()}
             className={classNames(
               className,
-              errors[name] && "form-error",
+              (errors[name] || keywordError) && "form-error",
               "form-control placeholder:text-sm"
             )}
             placeholder={placeholder}
@@ -105,9 +109,7 @@ const KeywordsInput = ({
           />
         )}
       />
-
       {keywordError && <p className="error-msg">{keywordError}</p>}
-
       <div className="flex flex-wrap gap-2">
         {keywords.map((keyword, idx) => (
           <Keyword
@@ -117,7 +119,6 @@ const KeywordsInput = ({
           />
         ))}
       </div>
-
       {errors[name] && (
         <div className="error-msg">
           <ErrorMessage errors={errors} name={name} />

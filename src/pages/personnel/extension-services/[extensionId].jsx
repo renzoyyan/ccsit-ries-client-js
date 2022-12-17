@@ -14,7 +14,7 @@ import useExtension from "@/hooks/useExtension";
 
 import Logs from "@/components/modules/logs/Logs";
 const SingleExtensionServices = () => {
-  const { getExtensionById, getComments } = useExtension();
+  const { getExtensionById } = useExtension();
 
   const router = useRouter();
   const extension_id = router.query.extensionId;
@@ -23,12 +23,6 @@ const SingleExtensionServices = () => {
     queryKey: ["research", extension_id],
     queryFn: () => getExtensionById(extension_id),
     enabled: !!extension_id,
-  });
-
-  const { data: comments } = useQuery({
-    queryKey: ["comments", research_id],
-    queryFn: () => getComments(research_id),
-    enabled: !!research_id,
   });
 
   return (
@@ -56,7 +50,7 @@ const SingleExtensionServices = () => {
       <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
         <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
           <ExtensionServicesDetails data={extension} />
-          <Comments isView data={comments} />
+          <Comments isView data={extension?.comments} />
         </div>
 
         <ActivityLogs>

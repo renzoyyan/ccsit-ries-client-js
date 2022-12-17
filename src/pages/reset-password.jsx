@@ -83,6 +83,10 @@ const ForgotPasswordPage = () => {
                     className="py-3 bg-gray-100"
                     validation={{
                       required: "This field is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must have at least 6 characters",
+                      },
                     }}
                     autoComplete="on"
                   />
@@ -94,6 +98,10 @@ const ForgotPasswordPage = () => {
                     label="Repeat password"
                     className="py-3 bg-gray-100"
                     validation={{
+                      minLength: {
+                        value: 6,
+                        message: "Password must have at least 6 characters",
+                      },
                       validate: {
                         isEmpty: (value) => !!value || "This field is required",
                         isMatchPassword: (value) =>
@@ -136,5 +144,5 @@ export const getServerSideProps = async (ctx) => {
     };
   }
 
-  return { props: { data, email } };
+  return { props: {} };
 };
