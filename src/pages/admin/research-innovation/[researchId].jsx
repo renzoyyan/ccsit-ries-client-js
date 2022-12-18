@@ -79,7 +79,7 @@ const SingleResearchInnovation = () => {
     }
   }, [methods, data]);
 
-  const { mutateAsync: addLog } = useMutation({
+  const { mutateAsync: addLog, isSuccess } = useMutation({
     mutationFn: (values) => createResearchLog(research_id, values),
 
     onSuccess: () => {
@@ -99,39 +99,6 @@ const SingleResearchInnovation = () => {
       sendNotification(sendNotif);
     },
 
-    onError: (error) => {
-      const message = error.response.data.message;
-      toast.error(message, {
-        id: notificationRef.current,
-      });
-    },
-  });
-
-  const { mutateAsync: approveProposal } = useMutation({
-    mutationFn: (status) => updateResearchStatus(research_id, status),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["research", research_id] });
-      toast.success("Successfully saved", {
-        id: notificationRef.current,
-      });
-
-      const sendNotif = {
-        sender: current_user,
-        receiver: receiverIds,
-        research_id,
-        action_type: NOTIFICATION_ACTION_TYPE.APPROVE,
-        isRead: false,
-      };
-
-      sendNotification(sendNotif);
-
-      addLog({
-        log_title: "Approved proposal",
-        date_completion: new Date(),
-        ongoing: false,
-      });
-    },
     onError: (error) => {
       const message = error.response.data.message;
       toast.error(message, {
@@ -208,19 +175,6 @@ const SingleResearchInnovation = () => {
     toggleModal();
   };
 
-  const handleApproval = async () => {
-    const confirm = await isConfirmed(
-      "Are you sure you want to approve this proposal? Once approved status will be automatically change to proposal.",
-      "Proposal Approval"
-    );
-
-    if (confirm) {
-      const status = "proposal";
-
-      await approveProposal(status);
-    }
-  };
-
   const handleChangeStatus = async (val) => {
     if (status === val) return;
 
@@ -242,21 +196,7 @@ const SingleResearchInnovation = () => {
           className="max-w-xl text-xl font-bold lg:text-2xl text-bc-primary"
           title={data?.research_title ?? ""}
         />
-        <div className="space-x-4">
-          <BackLink
-            href={`/admin/research-innovation`}
-            className={classNames(
-              status === "pending"
-                ? "text-gray-500 bg-transparent shadow-[unset] hover:bg-transparent !px-6 focus:ring-[unset] hover:underline focus:ring-0"
-                : ""
-            )}
-          />
-          {status === "pending" ? (
-            <Button className="btn-success" onClick={() => handleApproval()}>
-              Approve
-            </Button>
-          ) : null}
-        </div>
+        <BackLink href={`/admin/research-innovation`} />
       </SectionHeader>
 
       <FormProvider {...methods}>
@@ -269,7 +209,6 @@ const SingleResearchInnovation = () => {
           <Listbox
             options={statusOptions}
             name="status"
-            disabled={status === "pending"}
             withCustomOnChange
             handleChange={handleChangeStatus}
           />
@@ -296,6 +235,7 @@ const SingleResearchInnovation = () => {
               onSubmit={handleLogSubmit}
               isOpen={isOpen}
               toggleModal={toggleModal}
+              isSuccess={isSuccess}
             />
           </div>
 

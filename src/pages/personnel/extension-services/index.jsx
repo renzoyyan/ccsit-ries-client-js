@@ -56,7 +56,9 @@ const ExtensionServices = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div
+        className="flex flex-wrap-reverse items-center justify-between gap-6"
+      >
         <FormProvider {...methods}>
           <SearchBar />
           <StatusDropdown />

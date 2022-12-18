@@ -5,9 +5,9 @@ const ResearchInnovationTable = ({ children }) => {
     <Table.Container>
       <Table.Head>
         <Table.Row>
-          <Table.Header className="tbl-header sm:pl-6" title="Flag" />
+          {/* <Table.Header className="tbl-header sm:pl-6" title="Flag" /> */}
           <Table.Header
-            className="w-1/4 pr-48 tbl-header"
+            className="pr-48 sm:pl-6 tbl-header"
             title="Research Title"
           />
           <Table.Header className="tbl-header" title="Proponent(s)" />

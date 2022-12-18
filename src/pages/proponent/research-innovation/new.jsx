@@ -26,6 +26,7 @@ import useResearch from "@/hooks/useResearch";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
 import { values } from "lodash-es";
+import NumberFormat from "@/components/forms/NumberFormat";
 
 const defaultValues = {
   flag: "new",
@@ -34,10 +35,11 @@ const defaultValues = {
   research_agenda: "",
   proponents: [],
   project_duration: "",
-  project_budget: 0,
+  project_budget: "",
   implementing_agencies: [],
   collaborating_agencies: [],
   status: "proposal",
+  keywords: [],
 };
 
 const NewResearchInnovation = () => {
@@ -195,17 +197,7 @@ const NewResearchInnovation = () => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Input
-                  name="project_budget"
-                  label="Project Budget"
-                  validation={{
-                    required: "This field is required",
-                    pattern: {
-                      value: /^\d+$/,
-                      message: "This field should have digits only",
-                    },
-                  }}
-                />
+                <NumberFormat name="project_budget" label="Project Budget" />
               </Form.Group>
 
               <Form.Group>

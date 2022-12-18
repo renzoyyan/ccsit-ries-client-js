@@ -121,77 +121,75 @@ const ProponentProfile = () => {
           </div>
           <div className="mt-5 md:col-span-2 md:mt-0">
             <FormProvider {...personalMethods}>
-              <form>
-                <div className="overflow-hidden shadow sm:rounded-md">
-                  <div className="px-4 py-5 bg-white sm:p-6">
-                    <div className="grid gap-6 lg:grid-cols-2">
-                      <Form.Group>
-                        <Form.Input
-                          name="first_name"
-                          label="First name"
-                          disabled={!isEditPersonal}
-                          validation={{
-                            required: "This field is required",
-                          }}
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Input
-                          name="last_name"
-                          label="Last name"
-                          disabled={!isEditPersonal}
-                          validation={{
-                            required: "This field is required",
-                          }}
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Input
-                          name="suffix"
-                          label="Suffix (optional)"
-                          disabled={!isEditPersonal}
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Input
-                          name="doctorate_degree"
-                          label="Doctorate Degree"
-                          disabled={!isEditPersonal}
-                        />
-                      </Form.Group>
-                    </div>
-                  </div>
-                  <div className="px-4 py-3 space-x-4 text-right bg-gray-50 sm:px-6">
-                    {/* <Button className="px-4 btn-primary">Save</Button> */}
-                    {isEditPersonal ? (
-                      <div className="space-x-4">
-                        <Button
-                          type="submit"
-                          className="px-4 text-gray-800 bg-white btn-primary ring-1 ring-gray-300 hover:bg-gray-50 focus:ring-[unset]"
-                          onClick={handleEditPersonal}
-                        >
-                          Discard
-                        </Button>
-                        <Button
-                          type="submit"
-                          className="px-4 btn-primary"
-                          onClick={handleSubmitPersonal(onSubmitCallback)}
-                          disabled={isSubmittingPersonal}
-                        >
-                          Save
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        className="px-4 btn-primary"
-                        onClick={handleEditPersonal}
-                      >
-                        Edit
-                      </Button>
-                    )}
+              <div className="overflow-hidden shadow sm:rounded-md">
+                <div className="px-4 py-5 bg-white sm:p-6">
+                  <div className="grid gap-6 lg:grid-cols-2">
+                    <Form.Group>
+                      <Form.Input
+                        name="first_name"
+                        label="First name"
+                        disabled={!isEditPersonal}
+                        validation={{
+                          required: "This field is required",
+                        }}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Input
+                        name="last_name"
+                        label="Last name"
+                        disabled={!isEditPersonal}
+                        validation={{
+                          required: "This field is required",
+                        }}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Input
+                        name="suffix"
+                        label="Suffix (optional)"
+                        disabled={!isEditPersonal}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Input
+                        name="doctorate_degree"
+                        label="Doctorate Degree"
+                        disabled={!isEditPersonal}
+                      />
+                    </Form.Group>
                   </div>
                 </div>
-              </form>
+                <div className="px-4 py-3 space-x-4 text-right bg-gray-50 sm:px-6">
+                  {/* <Button className="px-4 btn-primary">Save</Button> */}
+                  {isEditPersonal ? (
+                    <div className="space-x-4">
+                      <Button
+                        type="submit"
+                        className="px-4 text-gray-800 bg-white btn-primary ring-1 ring-gray-300 hover:bg-gray-50 focus:ring-[unset]"
+                        onClick={handleEditPersonal}
+                      >
+                        Discard
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="px-4 btn-primary"
+                        onClick={handleSubmitPersonal(onSubmitCallback)}
+                        disabled={isSubmittingPersonal}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      className="px-4 btn-primary"
+                      onClick={handleEditPersonal}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                </div>
+              </div>
             </FormProvider>
           </div>
         </div>
@@ -216,59 +214,57 @@ const ProponentProfile = () => {
         </div>
         <div className="mt-5 md:col-span-2 md:mt-0">
           <FormProvider {...accountMethods}>
-            <form>
-              <div className="shadow sm:overflow-hidden sm:rounded-md">
-                <div className="px-4 py-5 space-y-6 bg-white sm:p-6">
-                  <SingleFileUpload
-                    name="image"
-                    imgWidth={50}
-                    imgHeight={50}
-                    btnText="Change"
-                    btnColor="secondary"
-                    withLabel
-                    disabled={!isEdit}
-                  />
-                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    <Form.Group>
-                      <Form.Input
-                        name="username"
-                        label="Username"
-                        disabled={!isEdit}
-                      />
-                    </Form.Group>
-                  </div>
-                </div>
-                <div className="px-4 py-3 space-x-4 text-right bg-gray-50 sm:px-6">
-                  {/* <Button className="px-4 btn-primary">Save</Button> */}
-                  {isEdit ? (
-                    <div className="space-x-4">
-                      <Button
-                        type="submit"
-                        className="px-4 text-gray-800 bg-white btn-primary ring-1 ring-gray-300 hover:bg-gray-50 focus:ring-[unset]"
-                        onClick={handleEditAccount}
-                      >
-                        Discard
-                      </Button>
-                      <Button
-                        type="submit"
-                        className="px-4 btn-primary"
-                        onClick={handleSubmitAccount(onSubmitCallback)}
-                        disabled={isSubmittingAccount}
-                      >
-                        {isSubmittingAccount ? "Saving" : "Save"}
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      className="px-4 btn-primary"
-                      onClick={handleEditAccount}
-                    >
-                      Edit
-                    </Button>
-                  )}
+            <div className="shadow sm:overflow-hidden sm:rounded-md">
+              <div className="px-4 py-5 space-y-6 bg-white sm:p-6">
+                <SingleFileUpload
+                  name="image"
+                  imgWidth={50}
+                  imgHeight={50}
+                  btnText="Change"
+                  btnColor="secondary"
+                  withLabel
+                  disabled={!isEdit}
+                />
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <Form.Group>
+                    <Form.Input
+                      name="username"
+                      label="Username"
+                      disabled={!isEdit}
+                    />
+                  </Form.Group>
                 </div>
               </div>
-            </form>
+              <div className="px-4 py-3 space-x-4 text-right bg-gray-50 sm:px-6">
+                {/* <Button className="px-4 btn-primary">Save</Button> */}
+                {isEdit ? (
+                  <div className="space-x-4">
+                    <Button
+                      type="submit"
+                      className="px-4 text-gray-800 bg-white btn-primary ring-1 ring-gray-300 hover:bg-gray-50 focus:ring-[unset]"
+                      onClick={handleEditAccount}
+                    >
+                      Discard
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="px-4 btn-primary"
+                      onClick={handleSubmitAccount(onSubmitCallback)}
+                      disabled={isSubmittingAccount}
+                    >
+                      {isSubmittingAccount ? "Saving" : "Save"}
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    className="px-4 btn-primary"
+                    onClick={handleEditAccount}
+                  >
+                    Edit
+                  </Button>
+                )}
+              </div>
+            </div>
           </FormProvider>
         </div>
       </div>

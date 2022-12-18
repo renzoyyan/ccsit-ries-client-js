@@ -16,7 +16,7 @@ const defaultValues = {
   ongoing: false,
 };
 
-const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
+const LogModal = ({ onSubmit, isOpen, toggleModal, isSuccess, disabled }) => {
   const methods = useForm({ defaultValues });
 
   const {
@@ -35,20 +35,33 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, disabled }) => {
     setValue("date_completion", "");
   }, [setValue, isOnGoing]);
 
+  useEffect(() => {
+    if (!isSuccess) return;
+
+    reset();
+  }, [isSuccess, reset]);
+
   const onSubmitLog = (values) => {
     onSubmit(values);
-    reset();
   };
 
   return (
     <>
-      <Button type="button" onClick={toggleModal} disabled={disabled}>
+      <Button
+        type="button"
+        onClick={toggleModal}
+        disabled={disabled}
+        className="flex items-center overflow-hidden transition-all duration-200 cursor-pointer group"
+      >
         <PlusCircleIcon
           className={classNames(
-            "w-6 h-6 text-gray-900",
+            "w-7 h-7 text-gray-900 group-hover:text-bc-primary translate-x-8 group-hover:rotate-90 group-hover:translate-x-0 transition-all duration-300 ease-in-out",
             disabled ? "text-gray-500" : ""
           )}
         />
+        <span className="block ml-2 transition-all group-hover:text-bc-primary duration-300 ease-in-out text-sm font-medium translate-x-[2em] group-hover:translate-x-[-.25em]">
+          Add
+        </span>
       </Button>
       <Modal
         isOpen={isOpen}

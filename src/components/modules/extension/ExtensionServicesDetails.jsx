@@ -1,12 +1,8 @@
-import { PaperClipIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import Heading from "@/components/elements/Heading";
 import * as Detail from "@/components/elements/detail";
-import { dummy_proponents } from "@/utils/utils";
 import Link from "next/link";
 import useRoles from "@/hooks/useRoles";
-
-const attachments = [{ name: "resume_front_end_developer.pdf", href: "#" }];
 
 const ExtensionServicesDetails = ({ data }) => {
   const { isAdmin, isProponent } = useRoles();
@@ -52,10 +48,7 @@ const ExtensionServicesDetails = ({ data }) => {
               text={data?.project_duration ?? "N/A"}
               listClassName="normal-case"
             />
-            <Detail.List
-              label="SDG"
-              text={data?.sdg !== "" ? data?.sdg : "N/A"}
-            />
+            <Detail.List label="SDG" text={data?.sdg ?? "N/A"} />
             <Detail.List label="Proponents(s)">
               <dd className="mt-1 text-gray-900">
                 <ul role="list">

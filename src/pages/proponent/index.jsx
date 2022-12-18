@@ -16,7 +16,7 @@ const PatientHomePage = () => {
     <div className="h-screen overflow-y-hidden">
       <UserNavbar showLinks={false} />
       <div className="bg-gradient-to-tr from-[#d3e4ff] to-[#eff3f5] h-full">
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full wrapper">
           <div className="mb-16 text-center">
             <Image
               src={"/assets/logo.svg"}
@@ -37,16 +37,16 @@ const PatientHomePage = () => {
               make a <span className="text-bc-tertiary">change</span>.
             </p>
 
-            <div className="mt-10 space-x-4 space-y-4">
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
               <Link href="/proponent/research-innovation">
-                <a className="inline-flex items-center justify-center px-10 py-5 font-medium text-white bg-blue-500 rounded-md gap-x-2 hover:bg-blue-600">
-                  <DocumentDuplicateIcon className="w-5 h-5 text-white" />
+                <a className="inline-flex items-center justify-center w-full px-4 py-5 font-medium text-white bg-blue-500 rounded-md sm:w-64 gap-x-2 hover:bg-blue-600">
+                  <DocumentDuplicateIcon className="flex-shrink-0 w-5 h-5 text-white" />
                   <span> Research & Innovation</span>
                 </a>
               </Link>
               <Link href="/proponent/extension-services">
-                <a className="inline-flex items-center justify-center px-10 py-5 font-medium text-white bg-blue-500 rounded-md gap-x-2 hover:bg-blue-600">
-                  <RectangleStackIcon className="w-5 h-5 text-white" />
+                <a className="inline-flex items-center justify-center w-full px-4 py-5 font-medium text-white bg-blue-500 rounded-md sm:w-56 gap-x-2 hover:bg-blue-600">
+                  <RectangleStackIcon className="flex-shrink-0 w-5 h-5 text-white" />
                   <span> Extension Services</span>
                 </a>
               </Link>

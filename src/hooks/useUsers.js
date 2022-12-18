@@ -12,7 +12,7 @@ const useUsers = () => {
   };
 
   const getUsers = async (params) => {
-    const { data } = await api.get("/api/users?page=1&limit=10", {
+    const { data } = await api.get("/api/users", {
       params,
       ...config,
     });

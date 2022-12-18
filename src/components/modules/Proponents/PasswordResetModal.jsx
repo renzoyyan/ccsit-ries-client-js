@@ -38,7 +38,7 @@ const PasswordResetModal = ({ disabled }) => {
 
   let new_password = watch("new_password");
 
-  const { mutateAsync: updatePassword } = useMutation({
+  const { mutate: updatePassword } = useMutation({
     mutationFn: (values) => updateUserDetails(current_user, values),
 
     onSuccess: (values) => {
@@ -60,8 +60,8 @@ const PasswordResetModal = ({ disabled }) => {
     },
   });
 
-  const onSubmitPassword = async (values) => {
-    await updatePassword(values);
+  const onSubmitPassword = (values) => {
+    updatePassword(values);
   };
 
   return (

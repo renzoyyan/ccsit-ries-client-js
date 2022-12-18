@@ -27,6 +27,7 @@ import useExtension from "@/hooks/useExtension";
 import useProponents from "@/hooks/useProponents";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
+import NumberFormat from "@/components/forms/NumberFormat";
 
 const defaultValues = {
   file: null,
@@ -43,6 +44,7 @@ const defaultValues = {
   target_beneficiaries: [],
   keywords: [],
   status: "proposal",
+  sdg: "",
 };
 
 const EditExtensionServicesPage = () => {
@@ -230,17 +232,7 @@ const EditExtensionServicesPage = () => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Input
-                  name="project_budget"
-                  label="Project Budget"
-                  validation={{
-                    required: "This field is required",
-                    pattern: {
-                      value: /^\d+$/,
-                      message: "This field should have digits only",
-                    },
-                  }}
-                />
+                <NumberFormat name="project_budget" label="Project Budget" />
               </Form.Group>
 
               <Form.Group>

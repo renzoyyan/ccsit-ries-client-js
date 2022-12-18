@@ -26,6 +26,7 @@ import KeywordsInput from "@/components/forms/KeywordsInput";
 import { getAuthSession } from "@/utils/auth";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
+import NumberFormat from "@/components/forms/NumberFormat";
 
 const defaultValues = {
   flag: "new",
@@ -210,17 +211,17 @@ const NewResearchInnovation = () => {
               </Form.Group>
 
               <Form.Group>
+                <NumberFormat name="project_budget" label="Project Budget" />
+              </Form.Group>
+
+              <Form.Group>
                 <Form.Input
-                  name="project_budget"
-                  label="Project Budget"
+                  name="project_duration"
+                  label="Project Duration"
                   validation={{
                     required: "This field is required",
                   }}
                 />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Input name="project_duration" label="Project Duration" />
               </Form.Group>
 
               <Form.Group>

@@ -21,7 +21,7 @@ const KeywordsInput = ({
   } = useFormContext();
   const currentKeywords = watch("keywords");
 
-  const [keywords, setKeywords] = useState(currentKeywords);
+  const [keywords, setKeywords] = useState(currentKeywords ?? []);
   const [keywordError, setKeywordError] = useState("");
 
   const handleAddition = (e) => {
@@ -111,7 +111,7 @@ const KeywordsInput = ({
       />
       {keywordError && <p className="error-msg">{keywordError}</p>}
       <div className="flex flex-wrap gap-2">
-        {keywords.map((keyword, idx) => (
+        {keywords?.map((keyword, idx) => (
           <Keyword
             key={idx}
             keyword={keyword}

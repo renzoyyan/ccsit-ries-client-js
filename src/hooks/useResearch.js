@@ -25,6 +25,7 @@ const useResearch = () => {
       implementing_agencies,
       collaborating_agencies,
       status,
+      keywords,
     } = values;
 
     let formData = new FormData();
@@ -39,6 +40,7 @@ const useResearch = () => {
     formData.append("project_duration", project_duration);
     formData.append("project_budget", project_budget);
     formData.append("status", statusValue);
+    formData.append("keywords", JSON.stringify(keywords));
     formData.append(
       "implementing_agencies",
       JSON.stringify(implementing_agencies)

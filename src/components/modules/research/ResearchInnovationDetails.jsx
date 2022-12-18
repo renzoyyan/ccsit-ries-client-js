@@ -3,7 +3,6 @@ import * as Detail from "@/components/elements/detail";
 import useRoles from "@/hooks/useRoles";
 import EditLink from "../../elements/links/EditLink";
 import _ from "lodash-es";
-import { NumericFormat } from "react-number-format";
 
 const ResearchInnovationDetails = ({ data }) => {
   const { isProponent, isAdmin } = useRoles();
@@ -18,11 +17,8 @@ const ResearchInnovationDetails = ({ data }) => {
     proponents,
     collaborating_agencies,
     implementing_agencies,
-    created_by,
     keywords,
   } = data ?? {};
-
-  const createdBy = `${created_by?.first_name} ${created_by?.last_name}`;
 
   const path = isAdmin
     ? `/admin/research-innovation/edit/${_id}`
@@ -59,15 +55,10 @@ const ResearchInnovationDetails = ({ data }) => {
               className="pr-4"
             />
 
-            <Detail.List label="Project Budget">
-              <NumericFormat
-                value={project_budget}
-                allowLeadingZeros
-                thousandSeparator=","
-                disabled
-                className="bg-white"
-              />
-            </Detail.List>
+            <Detail.List
+              label="Project Budget"
+              text={project_budget ?? "N/A"}
+            />
 
             <Detail.List
               label="Project Duration"
@@ -123,7 +114,7 @@ const ResearchInnovationDetails = ({ data }) => {
 
             <Detail.List label="Keywords">
               <dd className="mt-1 text-gray-900">
-                <ul role="list" className="flex items-center gap-2">
+                <ul role="list" className="flex flex-wrap items-center gap-2">
                   {keywords?.length ? (
                     keywords?.map((keyword, idx) => (
                       <div

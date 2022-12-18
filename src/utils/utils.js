@@ -100,7 +100,6 @@ export const statusOptions = [
 
 export const filterStatusOptions = [
   { value: "all", label: "All" },
-  { value: "pending", label: "Pending" },
   { value: "proposal", label: "Proposal" },
   { value: "ongoing", label: "Ongoing" },
   { value: "completed", label: "Completed" },
@@ -206,17 +205,4 @@ export const notificationActionMsg = (action_type) => {
   }
 };
 
-export const labels = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+export const labels = ["Proposal", "Ongoing", "Completed"];

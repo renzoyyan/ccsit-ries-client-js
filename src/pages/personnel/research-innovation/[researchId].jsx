@@ -49,8 +49,8 @@ const SingleResearchInnovation = () => {
         </h3>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
-        <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
+      <div className="grid grid-cols-1 gap-6 mx-auto mt-8 xl:grid-flow-col-dense xl:grid-cols-3">
+        <div className="space-y-6 xl:col-span-2 xl:col-start-1">
           <ResearchInnovationDetails data={research} />
           <Comments isView data={research?.comments} />
         </div>

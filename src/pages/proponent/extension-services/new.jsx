@@ -23,6 +23,7 @@ import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import useProponents from "@/hooks/useProponents";
 import useExtension from "@/hooks/useExtension";
+import NumberFormat from "@/components/forms/NumberFormat";
 
 const defaultValues = {
   file: null,
@@ -31,7 +32,7 @@ const defaultValues = {
   extension_title: "",
   extension_agenda: "",
   project_duration: "",
-  project_budget: 0,
+  project_budget: "",
   proponents: [],
   implementing_agencies: [],
   collaborating_agencies: [],
@@ -188,17 +189,7 @@ const NewExtensionServices = () => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Input
-                  name="project_budget"
-                  label="Project Budget"
-                  validation={{
-                    required: "This field is required",
-                    pattern: {
-                      value: /^\d+$/,
-                      message: "This field should have digits only",
-                    },
-                  }}
-                />
+                <NumberFormat name="project_budget" label="Project Budget" />
               </Form.Group>
 
               <Form.Group>

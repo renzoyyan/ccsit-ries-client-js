@@ -14,95 +14,16 @@ const ExtensionBarChart = ({ date }) => {
     labels,
     datasets: [
       {
-        label: "Pending",
+        label: "Number of Extension Services Projects",
         data: [
-          getExtensionAnalytics("January", "pending"),
-          getExtensionAnalytics("February", "pending"),
-          getExtensionAnalytics("March", "pending"),
-          getExtensionAnalytics("April", "pending"),
-          getExtensionAnalytics("May", "pending"),
-          getExtensionAnalytics("June", "pending"),
-          getExtensionAnalytics("July", "pending"),
-          getExtensionAnalytics("August", "pending"),
-          getExtensionAnalytics("September", "pending"),
-          getExtensionAnalytics("October", "pending"),
-          getExtensionAnalytics("November", "pending"),
-          getExtensionAnalytics("December", "pending"),
+          getExtensionAnalytics("proposal"),
+          getExtensionAnalytics("ongoing"),
+          getExtensionAnalytics("completed"),
         ],
-        backgroundColor: "#fed7aa",
-        borderColor: "#f97316",
+        backgroundColor: ["#fde68a", "#bae6fd", "#bbf7d0"],
+        borderColor: ["#f59e0b", "#0ea5e9", "#22c55e"],
         borderRadius: 5,
         borderWidth: 2,
-        borderSkipped: false,
-        maxBarThickness: 40,
-      },
-      {
-        label: "Proposal",
-        data: [
-          getExtensionAnalytics("January", "proposal"),
-          getExtensionAnalytics("February", "proposal"),
-          getExtensionAnalytics("March", "proposal"),
-          getExtensionAnalytics("April", "proposal"),
-          getExtensionAnalytics("May", "proposal"),
-          getExtensionAnalytics("June", "proposal"),
-          getExtensionAnalytics("July", "proposal"),
-          getExtensionAnalytics("August", "proposal"),
-          getExtensionAnalytics("September", "proposal"),
-          getExtensionAnalytics("October", "proposal"),
-          getExtensionAnalytics("November", "proposal"),
-          getExtensionAnalytics("December", "proposal"),
-        ],
-        backgroundColor: "#fde68a",
-        borderColor: "#f59e0b",
-        borderRadius: 5,
-        borderWidth: 2,
-        borderSkipped: false,
-        maxBarThickness: 40,
-      },
-      {
-        label: "Ongoing",
-        data: [
-          getExtensionAnalytics("January", "ongoing"),
-          getExtensionAnalytics("February", "ongoing"),
-          getExtensionAnalytics("March", "ongoing"),
-          getExtensionAnalytics("April", "ongoing"),
-          getExtensionAnalytics("May", "ongoing"),
-          getExtensionAnalytics("June", "ongoing"),
-          getExtensionAnalytics("July", "ongoing"),
-          getExtensionAnalytics("August", "ongoing"),
-          getExtensionAnalytics("September", "ongoing"),
-          getExtensionAnalytics("October", "ongoing"),
-          getExtensionAnalytics("November", "ongoing"),
-          getExtensionAnalytics("December", "ongoing"),
-        ],
-        backgroundColor: "#bae6fd",
-        borderColor: "#0ea5e9",
-        borderRadius: 5,
-        borderWidth: 2,
-        borderSkipped: false,
-        maxBarThickness: 40,
-      },
-      {
-        label: "Completed",
-        data: [
-          getExtensionAnalytics("January", "completed"),
-          getExtensionAnalytics("February", "completed"),
-          getExtensionAnalytics("March", "completed"),
-          getExtensionAnalytics("April", "completed"),
-          getExtensionAnalytics("May", "completed"),
-          getExtensionAnalytics("June", "completed"),
-          getExtensionAnalytics("July", "completed"),
-          getExtensionAnalytics("August", "completed"),
-          getExtensionAnalytics("September", "completed"),
-          getExtensionAnalytics("October", "completed"),
-          getExtensionAnalytics("November", "completed"),
-          getExtensionAnalytics("December", "completed"),
-        ],
-        backgroundColor: "#bbf7d0",
-        borderColor: "#22c55e",
-        borderRadius: 5,
-        borderWidth: 2,
-        borderSkipped: false,
         maxBarThickness: 40,
       },
     ],
@@ -129,20 +50,11 @@ const ExtensionBarChart = ({ date }) => {
 
   return (
     <div className="p-8 space-y-10 bg-white rounded-md shadow-md">
-      <div className="flex flex-wrap items-center justify-between gap-6">
-        <Heading
-          as="h2"
-          title="Extension Services Summary"
-          className="font-medium text-gray-800"
-        />
-
-        <div className="grid grid-cols-4">
-          <Legend title="Pending" />
-          <Legend title="Proposal" />
-          <Legend title="Ongoing" />
-          <Legend title="Completed" />
-        </div>
-      </div>
+      <Heading
+        as="h2"
+        title="Extension Services Summary"
+        className="font-medium text-gray-800"
+      />
 
       <div className="w-full h-[418px]">
         <BarChart data={extensionBarChart} customOptions={options} />

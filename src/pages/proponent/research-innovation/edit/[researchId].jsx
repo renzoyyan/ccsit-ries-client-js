@@ -19,6 +19,7 @@ import {
 } from "@/utils/utils";
 import FormContainer from "@/components/elements/FormContainer";
 import KeywordsInput from "@/components/forms/KeywordsInput";
+import NumberFormat from "@/components/forms/NumberFormat";
 import UserLayout from "@/components/layouts/users/UserLayout";
 import { getAuthSession } from "@/utils/auth";
 import useResearch from "@/hooks/useResearch";
@@ -213,17 +214,7 @@ const NewResearchInnovation = () => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Input
-                  name="project_budget"
-                  label="Project Budget"
-                  validation={{
-                    required: "This field is required",
-                    pattern: {
-                      value: /^\d+$/,
-                      message: "This field should have digits only",
-                    },
-                  }}
-                />
+                <NumberFormat name="project_budget" label="Project Budget" />
               </Form.Group>
 
               <Form.Group>

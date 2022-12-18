@@ -77,7 +77,7 @@ const SingleResearchInnovation = () => {
   }, [methods, data]);
 
   // mutations
-  const { mutateAsync: addLog } = useMutation({
+  const { mutateAsync: addLog, isSuccess } = useMutation({
     mutationFn: (values) => createResearchLog(research_id, values),
 
     onSuccess: (values) => {
@@ -177,15 +177,15 @@ const SingleResearchInnovation = () => {
         id: notificationRef.current,
       });
 
-      // const sendNotif = {
-      //   sender: current_user,
-      //   receiver: receiverIds,
-      //   research_id,
-      //   action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
-      //   isRead: false,
-      // };
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
+        isRead: false,
+      };
 
-      // sendNotification(sendNotif);
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;
@@ -255,7 +255,6 @@ const SingleResearchInnovation = () => {
               <Listbox
                 options={statusOptions}
                 name="status"
-                disabled={status === "pending"}
                 withCustomOnChange
                 handleChange={handleChangeStatus}
               />
@@ -268,8 +267,8 @@ const SingleResearchInnovation = () => {
               />
             ) : null}
           </div>
-          <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
-            <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
+          <div className="grid grid-cols-1 gap-6 mx-auto mt-8 xl:grid-flow-col-dense xl:grid-cols-3">
+            <div className="space-y-6 xl:col-span-2 xl:col-start-1">
               <ResearchInnovationDetails data={data} />
               <Comments research_id={research_id} data={data?.comments}>
                 <CommentForm onSubmitComment={sendNewComment} />
@@ -289,11 +288,9 @@ const SingleResearchInnovation = () => {
                   onSubmit={handleLogSubmit}
                   isOpen={isOpen}
                   toggleModal={toggleModal}
-                  disabled={status === "pending"}
+                  isSuccess={isSuccess}
                 />
               </div>
-
-              {status === "pending" ? <InformationAlert /> : null}
 
               {/* Activity Feed */}
               <div className="mt-8">

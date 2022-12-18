@@ -32,7 +32,7 @@ const UserProfileDropdown = () => {
             objectFit="cover"
           />
 
-          <div className="text-left capitalize">
+          <div className="hidden text-left capitalize md:block">
             <h4 className="-mb-2 text-sm font-medium">{`${
               user?.first_name ?? ""
             } ${user?.last_name ?? ""}`}</h4>
@@ -41,7 +41,7 @@ const UserProfileDropdown = () => {
             </span>
           </div>
 
-          <ChevronDownIcon className="w-5 h-5 text-gray-600" />
+          <ChevronDownIcon className="hidden w-5 h-5 text-gray-600 md:block" />
         </Menu.Button>
       </div>
       <Transition

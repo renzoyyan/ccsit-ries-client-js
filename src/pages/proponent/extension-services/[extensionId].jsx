@@ -77,7 +77,7 @@ const SingleExtensionServices = () => {
   }, [methods, extension]);
 
   // mutations
-  const { mutateAsync: addLog } = useMutation({
+  const { mutateAsync: addLog, isSuccess } = useMutation({
     mutationFn: (values) => createExtensionLog(extension_id, values),
 
     onSuccess: () => {
@@ -174,15 +174,15 @@ const SingleExtensionServices = () => {
         id: notificationRef.current,
       });
 
-      // const sendNotif = {
-      //   sender: current_user,
-      //   receiver: receiverIds,
-      //   extension_id,
-      //   action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
-      //   isRead: false,
-      // };
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        extension_id,
+        action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
+        isRead: false,
+      };
 
-      // sendNotification(sendNotif);
+      sendNotification(sendNotif);
     },
     onError: (error) => {
       const message = error.response.data.message;
@@ -245,7 +245,6 @@ const SingleExtensionServices = () => {
               <Listbox
                 options={statusOptions}
                 name="status"
-                disabled={status === "pending"}
                 withCustomOnChange
                 handleChange={handleChangeStatus}
               />
@@ -258,8 +257,8 @@ const SingleExtensionServices = () => {
               />
             ) : null}
           </div>
-          <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
-            <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
+          <div className="grid grid-cols-1 gap-6 mx-auto mt-8 xl:grid-flow-col-dense xl:grid-cols-3">
+            <div className="space-y-6 xl:col-span-2 xl:col-start-1">
               <ExtensionServicesDetails data={extension} />
               <Comments extension_id={extension_id} data={extension?.comments}>
                 <CommentForm onSubmitComment={sendNewComment} />
@@ -279,11 +278,9 @@ const SingleExtensionServices = () => {
                   onSubmit={handleLogSubmit}
                   isOpen={isOpen}
                   toggleModal={toggleModal}
-                  disabled={status === "pending"}
+                  isSuccess={isSuccess}
                 />
               </div>
-
-              {status === "pending" ? <InformationAlert /> : null}
 
               {/* Activity Logs */}
               <div className="mt-8">

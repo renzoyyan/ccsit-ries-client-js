@@ -49,8 +49,8 @@ const ResearchInnovationContent = ({
 
   return (
     <Table.Row variant={"striped"}>
-      <td className="tbl-data sm:pl-6">{flag}</td>
-      <td className="tbl-data" style={{ whiteSpace: "unset" }}>
+      {/* <td className="tbl-data sm:pl-6">{flag}</td> */}
+      <td className="tbl-data sm:pl-6" style={{ whiteSpace: "unset" }}>
         {research_title}
       </td>
       <td className="tbl-data">
@@ -69,8 +69,12 @@ const ResearchInnovationContent = ({
           })}
         </AvatarGroup>
       </td>
-      <td className="tbl-data">{research_agenda}</td>
-      <td className="lowercase tbl-data">{project_duration}</td>
+      <td className="tbl-data whitespace-nowrap xl:whitespace-normal">
+        {research_agenda}
+      </td>
+      <td className="lowercase tbl-data whitespace-nowrap xl:whitespace-normal">
+        {project_duration}
+      </td>
       <td className="tbl-data">{formattedDate(created_at)}</td>
       <td className="tbl-data">
         <StatusCard status={status} withLabel={false} />
