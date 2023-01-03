@@ -18,7 +18,7 @@ const StatusCard = ({ status, withLabel = false }) => {
       {withLabel && <p className="text-sm font-medium text-gray-500">Status</p>}
       <div
         className={classNames(
-          "px-3 py-2 text-xs 2xl:text-sm font-medium rounded-full inline-block capitalize",
+          "px-3 py-1 text-xs  font-medium rounded-lg inline-block capitalize",
           statusColor(status)
         )}
       >

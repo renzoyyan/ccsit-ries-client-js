@@ -151,11 +151,11 @@ const NewResearchInnovation = () => {
       <FormContainer>
         <FormProvider {...methods}>
           <form>
-            <div className="flex justify-between item-center">
+            <div className="flex justify-between mb-10 item-start">
               <Heading
                 as="h3"
                 title="Basic Information"
-                className="mb-8 font-medium"
+                className="font-medium"
               />
               <div className="flex items-center gap-x-4">
                 <Heading
@@ -172,21 +172,28 @@ const NewResearchInnovation = () => {
                 </Form.Group>
               </div>
             </div>
-            <div className="flex items-center mb-10 gap-x-4">
-              <Form.Group>
-                <Form.Input type="radio" name="flag" label="New" value="new" />
-              </Form.Group>
-              <Form.Group>
-                <Form.Input
-                  type="radio"
-                  name="flag"
-                  label="Existing"
-                  value="existing"
-                />
-              </Form.Group>
-            </div>
 
-            {/* <FileUpload name="file" /> */}
+            <div className="mb-10 space-y-2">
+              <label className="label">Flag</label>
+              <div className="flex items-center gap-x-4">
+                <Form.Group>
+                  <Form.Input
+                    type="radio"
+                    name="flag"
+                    label="New"
+                    value="new"
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Input
+                    type="radio"
+                    name="flag"
+                    label="Existing"
+                    value="existing"
+                  />
+                </Form.Group>
+              </div>
+            </div>
 
             <div className="grid items-start grid-cols-1 mt-12 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
               <Form.Group className="md:col-span-2">

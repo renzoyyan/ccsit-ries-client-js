@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { classNames } from "@/utils/utils";
 import { Fragment, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { capitalize } from "lodash-es";
+import { capitalize, startCase } from "lodash-es";
 
 const Listbox = ({
   options = [],
@@ -23,6 +23,8 @@ const Listbox = ({
       setValue(name, "");
     }
   }, [setValue, name, value]);
+
+  const getLabel = options?.find((opt) => opt.value === value);
 
   return (
     <Controller
@@ -50,7 +52,7 @@ const Listbox = ({
                   disabled ? "text-gray-500" : "text-gray-700"
                 }`}
               >
-                {capitalize(value)}
+                {startCase(getLabel?.label || "Pending")}
               </span>
               <span className="flex items-center flex-shrink-0 pointer-events-none ">
                 <ChevronDownIcon
@@ -68,11 +70,7 @@ const Listbox = ({
               )}
             >
               {options?.map((option, idx) => (
-                <ListBox.Option
-                  key={option.value}
-                  value={option.value}
-                  as={Fragment}
-                >
+                <ListBox.Option key={idx} value={option.value} as={Fragment}>
                   {({ active, selected }) => (
                     <li
                       className={classNames(

@@ -5,7 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 const SearchBar = () => {
   return (
     <Form.Group>
-      <div className="relative inline-block w-full shadow-sm group sm:w-64">
+      <div className="relative block w-full shadow-sm group md:w-96 lg:w-full xl:sm-64">
         <MagnifyingGlassIcon className="absolute inset-x-0 w-5 h-5 ml-2 text-gray-400 -translate-y-1/2 top-1/2 bottom-1/2 group-focus-within:text-bc-primary" />
 
         <Form.Input

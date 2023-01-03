@@ -257,6 +257,7 @@ const SingleResearchInnovation = () => {
                 name="status"
                 withCustomOnChange
                 handleChange={handleChangeStatus}
+                disabled={status === "pending"}
               />
             </FormProvider>
 
@@ -289,8 +290,11 @@ const SingleResearchInnovation = () => {
                   isOpen={isOpen}
                   toggleModal={toggleModal}
                   isSuccess={isSuccess}
+                  disabled={status === "pending"}
                 />
               </div>
+
+              {status === "pending" ? <InformationAlert /> : null}
 
               {/* Activity Feed */}
               <div className="mt-8">

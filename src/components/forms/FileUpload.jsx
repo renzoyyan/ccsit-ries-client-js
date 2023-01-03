@@ -10,7 +10,6 @@ import { partial } from "filesize";
 const MAX_SIZE_FILE = 10485760;
 const ACCEPTED_FILE_TYPE = {
   "application/pdf": [".pdf"],
-  "application/docx": [".docx"],
 };
 
 const size = partial({ base: 2, standard: "jedec" });
@@ -18,10 +17,11 @@ const size = partial({ base: 2, standard: "jedec" });
 const FileUpload = ({
   multiple = false,
   name = "",
-  label = "",
+  label = "Add proposal",
   className = "",
   width,
   validation,
+  acceptFileType = ACCEPTED_FILE_TYPE,
   ...props
 }) => {
   const { setValue, watch, control } = useFormContext();
@@ -39,7 +39,7 @@ const FileUpload = ({
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
     useDropzone({
       onDrop,
-      accept: ACCEPTED_FILE_TYPE,
+      accept: acceptFileType,
       maxSize: MAX_SIZE_FILE,
     });
 
@@ -61,7 +61,7 @@ const FileUpload = ({
           if (e.code === "file-invalid-type") {
             return (
               <li key={e.code} className="error-msg">
-                File type must be PDF, DOCX
+                File type is not allowed
               </li>
             );
           }
@@ -79,6 +79,7 @@ const FileUpload = ({
           rules={validation}
           render={({ field: { onChange, onBlur }, fieldState: { error } }) => (
             <>
+              <label className="mb-2 label">{label}</label>
               <div
                 {...getRootProps()}
                 className={classNames(
@@ -97,12 +98,8 @@ const FileUpload = ({
                 <div className="flex flex-col items-center justify-center text-xs font-medium text-com2">
                   <ArrowUpTrayIcon className="w-6 h-6 text-gray-500" />
                   <div className="mt-4 mb-2 text-gray-500">
-                    <span className="px-2 py-1 bg-white rounded-md cursor-pointer">
-                      Upload a file
-                    </span>
-                    or drag and drop
+                    Upload file or drag and drop
                   </div>
-                  <span className="text-xs text-gray-500">PDF, DOCX</span>
                 </div>
               </div>
 

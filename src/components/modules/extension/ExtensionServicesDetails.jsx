@@ -28,6 +28,14 @@ const ExtensionServicesDetails = ({ data }) => {
               text={data?.extension_type ?? "N/A"}
             />
             <Detail.List
+              label="Publication Status"
+              text={data?.publication_status ? "Yes" : "No"}
+            />
+            <Detail.List
+              label="Presentation Status"
+              text={data?.presentation_status ? "Yes" : "No"}
+            />
+            <Detail.List
               label="Extension Title"
               text={data?.extension_title ?? "N/A"}
             />

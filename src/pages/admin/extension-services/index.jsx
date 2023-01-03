@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { FormProvider, useForm } from "react-hook-form";
 import { Pagination } from "@mui/material";
+import { useRef } from "react";
+import { toast } from "react-hot-toast";
 
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import Heading from "@/components/elements/Heading";
@@ -11,11 +13,12 @@ import useExtension from "@/hooks/useExtension";
 import ExtensionServicesContent from "@/components/modules/extension/ExtensionServicesContent";
 import Skeleton from "@/components/elements/skeleton/Skeleton";
 import { getAuthSession } from "@/utils/auth";
-import { filterStatusOptions, Roles } from "@/utils/utils";
-import * as Form from "@/components/forms";
+import { Roles } from "@/utils/utils";
 import usePagination from "@/hooks/usePagination";
 import useDebounce from "@/hooks/useDebounce";
 import StatusDropdown from "@/components/modules/StatusDropdown";
+import FilterDate from "@/components/elements/FilterDate";
+import ExportButton from "@/components/elements/ExportButton";
 
 const defaultValues = {
   status: "all",
@@ -23,12 +26,17 @@ const defaultValues = {
 };
 
 const ExtensionServicesPage = () => {
+  const pdfRef = useRef();
   const methods = useForm({ defaultValues });
-  const [status, search] = methods.watch(["status", "search"]);
+  const [status, search, created_at] = methods.watch([
+    "status",
+    "search",
+    "created_at",
+  ]);
 
   const debouncedSearch = useDebounce(search, 500);
   const { page, limit, handlePagination } = usePagination();
-  const { getAllExtension } = useExtension();
+  const { getAllExtension, exportExtensionPDF } = useExtension();
 
   const filterStatus = status === "all" ? null : status;
 
@@ -37,6 +45,7 @@ const ExtensionServicesPage = () => {
     limit,
     status: filterStatus,
     search: debouncedSearch,
+    date: created_at,
   };
 
   const { data, isLoading } = useQuery({
@@ -57,13 +66,30 @@ const ExtensionServicesPage = () => {
         />
       </div>
 
-      <div className="flex flex-wrap-reverse items-center justify-between gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-6">
         <FormProvider {...methods}>
           <SearchBar />
-          <StatusDropdown />
+          <div className="inline-flex items-center gap-x-4">
+            {/* <Input type="month" name="created_at" placeholder="Select date" /> */}
+            <FilterDate name="created_at" />
+            <StatusDropdown />
+
+            <ExportButton
+              pdfRef={pdfRef}
+              exportCallback={() =>
+                extension?.length > 0
+                  ? exportExtensionPDF(pdfRef, {
+                      date: filters.date === "" ? null : filters.date,
+                      status: filters.status,
+                    })
+                  : toast.error(
+                      "There was no data found. PDF cannot be generated."
+                    )
+              }
+            />
+          </div>
         </FormProvider>
       </div>
-
       <ExtensionServicesTable>
         {extension?.length > 0 && !isLoading ? (
           extension?.map((exec, idx) => (

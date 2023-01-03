@@ -15,6 +15,7 @@ import Skeleton from "@/components/elements/skeleton/Skeleton";
 import UserModal from "@/components/modules/users/UserModal";
 import * as Form from "@/components/forms";
 import usePagination from "@/hooks/usePagination";
+import { useRouter } from "next/router";
 
 const defaultValues = {
   role: "all",
@@ -23,6 +24,9 @@ const defaultValues = {
 const Users = () => {
   const { page, limit, handlePagination } = usePagination();
   const { getUsers } = useUsers();
+
+  const router = useRouter();
+  const email_verified = router.query?.email_verified;
 
   const methods = useForm({ defaultValues });
 
@@ -33,6 +37,7 @@ const Users = () => {
     page,
     limit,
     role: filterRole,
+    email_verified,
   };
 
   const { data, isLoading } = useQuery({
@@ -42,14 +47,25 @@ const Users = () => {
   });
 
   const users = data?.docs;
+
   return (
     <AdminLayout>
       <div className="flex items-center justify-between mt-20 mb-20">
         <div className="sm:flex-auto">
-          <Heading as="h1" title="Users" className="text-2xl font-bold" />
+          <Heading
+            as="h1"
+            title={
+              email_verified === "true"
+                ? "Verified Users"
+                : email_verified === "false"
+                ? "Unverified Users"
+                : "Users"
+            }
+            className="text-2xl font-bold"
+          />
         </div>
 
-        <UserModal />
+        {email_verified ? null : <UserModal />}
       </div>
 
       <FormProvider {...methods}>

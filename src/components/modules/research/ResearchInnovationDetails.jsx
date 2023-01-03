@@ -18,6 +18,8 @@ const ResearchInnovationDetails = ({ data }) => {
     collaborating_agencies,
     implementing_agencies,
     keywords,
+    publication_status,
+    presentation_status,
   } = data ?? {};
 
   const path = isAdmin
@@ -39,27 +41,31 @@ const ResearchInnovationDetails = ({ data }) => {
         </div>
         <div className="px-4 py-5 border-t border-gray-200 sm:px-6">
           <Detail.Lists className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+            <Detail.List label="Flag" text={flag ?? "N/A"} />
+
             <Detail.List
-              label="Flag"
-              text={flag ?? "N/A"}
-              className="xl:col-span-2"
+              label="Publication Status"
+              text={publication_status ? "Yes" : "No"}
             />
+
             {/* <Detail.List label="Status" text={_.capitalize(status) ?? "N/A"} /> */}
             <Detail.List
               label="Research Title"
               text={research_title ?? "N/A"}
             />
             <Detail.List
+              label="Presentation Status"
+              text={presentation_status ? "Yes" : "No"}
+            />
+            <Detail.List
               label="Research Agenda"
               text={research_agenda ?? "N/A"}
               className="pr-4"
             />
-
             <Detail.List
               label="Project Budget"
               text={project_budget ?? "N/A"}
             />
-
             <Detail.List
               label="Project Duration"
               text={project_duration ?? "N/A"}
@@ -95,7 +101,6 @@ const ResearchInnovationDetails = ({ data }) => {
                 </ul>
               </dd>
             </Detail.List>
-
             <Detail.List label="Collaborating Agency(ies)">
               <dd className="mt-1 text-gray-900">
                 <ul role="list">
@@ -111,7 +116,6 @@ const ResearchInnovationDetails = ({ data }) => {
                 </ul>
               </dd>
             </Detail.List>
-
             <Detail.List label="Keywords">
               <dd className="mt-1 text-gray-900">
                 <ul role="list" className="flex flex-wrap items-center gap-2">
@@ -132,7 +136,6 @@ const ResearchInnovationDetails = ({ data }) => {
                 </ul>
               </dd>
             </Detail.List>
-
             {/* <Detail.List label="Created by" text={createdBy ?? "N/A"} /> */}
           </Detail.Lists>
         </div>

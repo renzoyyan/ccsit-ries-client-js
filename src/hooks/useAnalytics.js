@@ -3,11 +3,11 @@ import api from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
 import moment from "moment";
 
-const useAnalytics = (date) => {
+const useAnalytics = (period) => {
   const { access_token } = useAuth();
 
-  const getAnalytics = async (date) => {
-    const { data } = await api.get(`/api/analytics?date=${date}`, {
+  const getAnalytics = async (period) => {
+    const { data } = await api.get(`/api/analytics?period=${period}`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
@@ -16,11 +16,9 @@ const useAnalytics = (date) => {
     return data;
   };
 
-  const filterDate = moment(date).format();
-
   const { data: analytics } = useQuery({
-    queryKey: ["analytics", filterDate],
-    queryFn: () => getAnalytics(filterDate),
+    queryKey: ["analytics", period],
+    queryFn: () => getAnalytics(period),
     keepPreviousData: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,

@@ -247,6 +247,7 @@ const SingleExtensionServices = () => {
                 name="status"
                 withCustomOnChange
                 handleChange={handleChangeStatus}
+                disabled={status === "pending"}
               />
             </FormProvider>
 
@@ -279,9 +280,11 @@ const SingleExtensionServices = () => {
                   isOpen={isOpen}
                   toggleModal={toggleModal}
                   isSuccess={isSuccess}
+                  disabled={status === "pending"}
                 />
               </div>
 
+              {status === "pending" ? <InformationAlert /> : null}
               {/* Activity Logs */}
               <div className="mt-8">
                 <Logs logs={extension?.logs} />

@@ -8,7 +8,7 @@ const StatusDropdown = () => {
       <Heading
         as="h3"
         title="Status"
-        className="text-lg font-medium text-gray-700"
+        className="text-sm font-medium text-gray-500"
       />
       <Form.Listbox options={filterStatusOptions} name="status" />
     </Form.Group>

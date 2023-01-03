@@ -50,7 +50,7 @@ const ExtensionServices = () => {
 
   return (
     <UserLayout>
-      <div className="flex flex-wrap items-center justify-between my-10 lg:my-20 gap-y-4">
+      <div className="flex flex-wrap items-center justify-between my-14 lg:my-20 gap-y-4">
         <div className="sm:flex-auto">
           <Heading
             as="h1"

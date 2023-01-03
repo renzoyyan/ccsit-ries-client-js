@@ -153,18 +153,27 @@ const NewResearchInnovation = () => {
                 </div>
               ) : null}
             </div>
-            <div className="flex items-center mb-10 gap-x-4">
-              <Form.Group>
-                <Form.Input type="radio" name="flag" label="New" value="new" />
-              </Form.Group>
-              <Form.Group>
-                <Form.Input
-                  type="radio"
-                  name="flag"
-                  label="Existing"
-                  value="existing"
-                />
-              </Form.Group>
+
+            <div className="mb-10 space-y-2">
+              <label className="label">Flag</label>
+              <div className="flex items-center gap-x-4">
+                <Form.Group>
+                  <Form.Input
+                    type="radio"
+                    name="flag"
+                    label="New"
+                    value="new"
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Input
+                    type="radio"
+                    name="flag"
+                    label="Existing"
+                    value="existing"
+                  />
+                </Form.Group>
+              </div>
             </div>
 
             <FileUpload

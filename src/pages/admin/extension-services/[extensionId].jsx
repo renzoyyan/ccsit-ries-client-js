@@ -13,7 +13,6 @@ import ActivityLogs from "@/components/modules/logs/ActivityLogs";
 import BackLink from "@/components/elements/links/BackLink";
 import useExtension from "@/hooks/useExtension";
 import useModal from "@/hooks/useModal";
-import useLogs from "@/hooks/useLogs";
 import LogModal from "@/components/modules/logs/modal/LogModal";
 import Logs from "@/components/modules/logs/Logs";
 import { getAuthSession } from "@/utils/auth";
@@ -22,20 +21,21 @@ import {
   isFile,
   NOTIFICATION_ACTION_TYPE,
   Roles,
-  statusOptions,
 } from "@/utils/utils";
-import { Listbox } from "@/components/forms";
 import Button from "@/components/elements/Button";
 import useConfirm from "@/hooks/useConfirm";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
 import CommentForm from "@/components/modules/comments/CommentForm";
-import KeywordsModal from "@/components/elements/modal/KeywordsModal";
+import StatusListbox from "@/components/modules/listbox/StatusListbox";
+import PublicationStatus from "@/components/modules/listbox/PublicationListbox";
+import PresentationStatus from "@/components/modules/listbox/PresentationListbox";
 
 const defaultValues = {
   status: "",
+  publication_status: false,
+  presentation_status: false,
 };
-
 const SingleExtensionServices = () => {
   const notificationRef = useRef(null);
   const queryClient = useQueryClient();
@@ -58,7 +58,7 @@ const SingleExtensionServices = () => {
     createComment,
   } = useExtension();
 
-  const { data: extension, isLoading } = useQuery({
+  const { data: extension } = useQuery({
     queryKey: ["extension", extension_id],
     queryFn: () => getExtensionById(extension_id),
     enabled: !!extension_id,
@@ -71,12 +71,18 @@ const SingleExtensionServices = () => {
   });
   const methods = useForm({ defaultValues });
 
-  const status = methods.watch("status");
+  const [status, publication_status, presentation_status] = methods.watch([
+    "status",
+    "publication_status",
+    "presentation_status",
+  ]);
   const receiverIds = extension?.proponents?.map((p) => p._id);
 
   useEffect(() => {
     if (extension) {
       methods.setValue("status", extension?.status);
+      methods.setValue("publication_status", extension?.publication_status);
+      methods.setValue("presentation_status", extension?.presentation_status);
     }
   }, [methods, extension]);
 
@@ -108,8 +114,41 @@ const SingleExtensionServices = () => {
     },
   });
 
-  const { mutateAsync: updateStatus } = useMutation({
+  const { mutateAsync: approveProposal } = useMutation({
     mutationFn: (status) => updateExtensionStatus(extension_id, status),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["extension", extension_id] });
+      toast.success("Successfully saved", {
+        id: notificationRef.current,
+      });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        extension_id,
+        action_type: NOTIFICATION_ACTION_TYPE.APPROVE,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
+
+      addLog({
+        log_title: "Confirmed proposal",
+        date_completion: new Date(),
+        ongoing: false,
+      });
+    },
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message, {
+        id: notificationRef.current,
+      });
+    },
+  });
+
+  const { mutateAsync: updateStatus } = useMutation({
+    mutationFn: (values) => updateExtensionStatus(extension_id, values),
     onSuccess: (values) => {
       queryClient.invalidateQueries({ queryKey: ["extension", values._id] });
       toast.success("Status changed", {
@@ -124,13 +163,15 @@ const SingleExtensionServices = () => {
         isRead: false,
       };
 
-      sendNotification(sendNotif);
+      if (status !== values.status) {
+        sendNotification(sendNotif);
 
-      addLog({
-        log_title: `Change status to ${values.status}`,
-        date_completion: new Date(),
-        ongoing: false,
-      });
+        addLog({
+          log_title: `Change status to ${values.status}`,
+          date_completion: new Date(),
+          ongoing: false,
+        });
+      }
     },
 
     onError: (error) => {
@@ -176,7 +217,20 @@ const SingleExtensionServices = () => {
     toggleModal();
   };
 
-  const handleChangeStatus = async (val) => {
+  const handleApproval = async () => {
+    const confirm = await isConfirmed(
+      "Are you sure you want to approve this proposal? Once approved status will be automatically change to proposal.",
+      "Proposal Approval"
+    );
+
+    if (confirm) {
+      const status = "proposal";
+
+      await approveProposal(status);
+    }
+  };
+
+  const handleChangeProjectStatus = async (val) => {
     if (status === val) return;
 
     const confirm = await isConfirmed(
@@ -185,34 +239,73 @@ const SingleExtensionServices = () => {
     );
 
     if (confirm) {
-      await updateStatus(val);
+      let value = { status: val };
+      await updateStatus(value);
+    }
+  };
+
+  const handlePublicationStatus = async (val) => {
+    if (publication_status === val) return;
+
+    const confirm = await isConfirmed(
+      "Are you sure you want to update the status?",
+      "Change status"
+    );
+
+    if (confirm) {
+      let value = { publication_status: val };
+      await updateStatus(value);
+    }
+  };
+
+  const handlePresentationStatus = async (val) => {
+    if (presentation_status === val) return;
+
+    const confirm = await isConfirmed(
+      "Are you sure you want to update the status?",
+      "Change status"
+    );
+
+    if (confirm) {
+      let value = { presentation_status: val };
+      await updateStatus(value);
     }
   };
 
   return (
     <AdminLayout>
-      <SectionHeader className="items-center justify-between mt-16 mb-8 sm:flex sm:mb-20">
+      <SectionHeader className="flex flex-wrap-reverse items-center justify-between mt-16 mb-8 gap-y-10 sm:mb-20">
         <Heading
           as="h3"
           className="max-w-xl text-xl font-bold lg:text-2xl text-bc-primary"
           title={extension?.extension_title ?? ""}
         />
-        <BackLink href={`/admin/extension-services`} />
+        <div className="space-x-4">
+          <BackLink
+            href={`/admin/extension-services`}
+            className={classNames(
+              status === "pending"
+                ? "text-gray-500 bg-transparent shadow-[unset] hover:bg-transparent !px-6 focus:ring-[unset] hover:underline focus:ring-0"
+                : ""
+            )}
+          />
+          {status === "pending" ? (
+            <Button className="btn-success" onClick={() => handleApproval()}>
+              Confirm
+            </Button>
+          ) : null}
+        </div>
       </SectionHeader>
 
       <FormProvider {...methods}>
-        <div className="flex items-center gap-x-4">
-          <Heading
-            as="h4"
-            title="Status"
-            className="text-sm font-medium text-gray-600"
+        <div className="flex flex-wrap gap-6 mt-24">
+          <StatusListbox
+            onChange={handleChangeProjectStatus}
+            disabled={status === "pending"}
           />
-          <Listbox
-            options={statusOptions}
-            name="status"
-            withCustomOnChange
-            handleChange={handleChangeStatus}
-          />
+
+          <PublicationStatus onChange={handlePublicationStatus} />
+          <PresentationStatus onChange={handlePresentationStatus} />
         </div>
       </FormProvider>
 

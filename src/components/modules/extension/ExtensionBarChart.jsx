@@ -5,10 +5,10 @@ import useAnalytics from "@/hooks/useAnalytics";
 import { labels } from "@/utils/utils";
 import moment from "moment";
 
-const ExtensionBarChart = ({ date }) => {
-  const { getExtensionAnalytics } = useAnalytics(date);
+const ExtensionBarChart = ({ period }) => {
+  const { getExtensionAnalytics } = useAnalytics(period);
 
-  const getYear = moment(date, "YYYY").format("YYYY");
+  const periodLabel = ["January to June", "July to December"];
 
   const extensionBarChart = {
     labels,
@@ -16,12 +16,13 @@ const ExtensionBarChart = ({ date }) => {
       {
         label: "Number of Extension Services Projects",
         data: [
+          getExtensionAnalytics("pending"),
           getExtensionAnalytics("proposal"),
           getExtensionAnalytics("ongoing"),
           getExtensionAnalytics("completed"),
         ],
-        backgroundColor: ["#fde68a", "#bae6fd", "#bbf7d0"],
-        borderColor: ["#f59e0b", "#0ea5e9", "#22c55e"],
+        backgroundColor: ["#fed7aa", "#fde68a", "#bae6fd", "#bbf7d0"],
+        borderColor: ["#f97316", "#f59e0b", "#0ea5e9", "#22c55e"],
         borderRadius: 5,
         borderWidth: 2,
         maxBarThickness: 40,
@@ -36,7 +37,7 @@ const ExtensionBarChart = ({ date }) => {
       },
       title: {
         display: true,
-        text: `Year ${getYear}`,
+        text: `${periodLabel[period]} Period`,
         font: {
           size: 14,
         },
@@ -49,10 +50,10 @@ const ExtensionBarChart = ({ date }) => {
   };
 
   return (
-    <div className="p-8 space-y-10 bg-white rounded-md shadow-md">
+    <div className="w-full p-8 space-y-10 bg-white rounded-md shadow-md xl:w-1/2">
       <Heading
         as="h2"
-        title="Extension Services Summary"
+        title="Extension Services Projects"
         className="font-medium text-gray-800"
       />
 

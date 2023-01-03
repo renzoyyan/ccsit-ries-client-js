@@ -102,10 +102,10 @@ const useExtension = () => {
     return data;
   };
 
-  const updateExtensionStatus = async (extension_id, status) => {
+  const updateExtensionStatus = async (extension_id, values) => {
     const { data } = await api.patch(
       `/api/extension/change-status/${extension_id}`,
-      { status: status },
+      values,
       config
     );
 
@@ -114,13 +114,13 @@ const useExtension = () => {
 
   // EXTENSION LOG API
   const createExtensionLog = async (extension_id, values) => {
-    const { log_title, date_completion, ongoing, file } = values;
+    const { log_title, date_completion, publication_url, file } = values;
 
     let formData = new FormData();
 
     formData.append("log_title", log_title);
     formData.append("date_completion", date_completion);
-    formData.append("ongoing", ongoing);
+    formData.append("publication_url", publication_url);
     if (isFile(file)) formData.append("file", file);
 
     const { data } = await api.post(
@@ -158,6 +158,31 @@ const useExtension = () => {
     return data;
   };
 
+  const exportExtensionPDF = (pdfRef, params) => {
+    const date = new Date();
+    api
+      .get(`${process.env.CCSIT_RIES}/api/extension/export-pdf`, {
+        params,
+        ...config,
+        responseType: "blob",
+        "Content-Type": "application/pdf",
+        Accept: "application/pdf",
+      })
+      .then((response) => response.data)
+      .then((blob) => {
+        const href = window.URL.createObjectURL(blob);
+        const a = pdfRef.current;
+        a.download = `extension-services-${
+          params?.date || params?.status || date.getFullYear()
+        }.pdf`;
+        a.href = href;
+        a.click();
+        a.href = "";
+      })
+
+      .catch((error) => console.error(error));
+  };
+
   return {
     createExtension,
     createExtensionLog,
@@ -169,6 +194,7 @@ const useExtension = () => {
     getExtensionLogsById,
     updateExtensionById,
     updateExtensionStatus,
+    exportExtensionPDF,
   };
 };
 

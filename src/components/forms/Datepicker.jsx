@@ -5,7 +5,15 @@ import { ErrorMessage } from "@hookform/error-message";
 import DatePicker from "react-date-picker/dist/entry.nostyle";
 import { Controller, useFormContext } from "react-hook-form";
 
-const Datepicker = ({ name = "", label = "", id, validation, disabled }) => {
+const Datepicker = ({
+  name = "",
+  label = "",
+  id,
+  validation,
+  disabled,
+  format = "y-MM-d",
+  ...props
+}) => {
   const {
     control,
     formState: { errors },
@@ -47,13 +55,13 @@ const Datepicker = ({ name = "", label = "", id, validation, disabled }) => {
               />
             }
             className={classNames(
-              "form-control",
               errors[name] &&
                 "ring-red-500 border-red-500 focus:border-red-500 focus-within:ring-red-500 focus-within:border-red-500"
             )}
-            format="y-MM-dd"
+            format={format}
             autoComplete="off"
             disabled={disabled}
+            {...props}
           />
         )}
       />

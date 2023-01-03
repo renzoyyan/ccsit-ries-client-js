@@ -5,10 +5,10 @@ import useAnalytics from "@/hooks/useAnalytics";
 import { labels } from "@/utils/utils";
 import moment from "moment";
 
-const ResearchBarChart = ({ date }) => {
-  const { getResearchAnalytics } = useAnalytics(date);
+const ResearchBarChart = ({ period }) => {
+  const { getResearchAnalytics } = useAnalytics(period);
 
-  const getYear = moment(date, "YYYY").format("YYYY");
+  const periodLabel = ["January to June", "July to December"];
 
   const researchBarChart = {
     labels,
@@ -16,12 +16,13 @@ const ResearchBarChart = ({ date }) => {
       {
         label: "Number of Research Projects",
         data: [
+          getResearchAnalytics("pending"),
           getResearchAnalytics("proposal"),
           getResearchAnalytics("ongoing"),
           getResearchAnalytics("completed"),
         ],
-        backgroundColor: ["#fde68a", "#bae6fd", "#bbf7d0"],
-        borderColor: ["#f59e0b", "#0ea5e9", "#22c55e"],
+        backgroundColor: ["#fed7aa", "#fde68a", "#bae6fd", "#bbf7d0"],
+        borderColor: ["#f97316", "#f59e0b", "#0ea5e9", "#22c55e"],
         borderRadius: 5,
         borderWidth: 2,
         maxBarThickness: 40,
@@ -36,7 +37,7 @@ const ResearchBarChart = ({ date }) => {
       },
       title: {
         display: true,
-        text: `Year ${getYear}`,
+        text: `${periodLabel[period]} Period`,
         font: {
           size: 14,
         },
@@ -49,10 +50,10 @@ const ResearchBarChart = ({ date }) => {
   };
 
   return (
-    <div className="p-8 space-y-10 bg-white rounded-md shadow-md">
+    <div className="w-full p-8 space-y-10 bg-white rounded-md shadow-md xl:w-1/2">
       <Heading
         as="h2"
-        title="Research and Innovation Summary"
+        title="Research and Innovation Projects"
         className="font-medium text-gray-800"
       />
 

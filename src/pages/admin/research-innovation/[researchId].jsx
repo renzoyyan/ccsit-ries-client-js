@@ -29,12 +29,18 @@ import useConfirm from "@/hooks/useConfirm";
 import CommentForm from "@/components/modules/comments/CommentForm";
 import { useAuth } from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
+import StatusListbox from "@/components/modules/listbox/StatusListbox";
+import PublicationStatus from "@/components/modules/listbox/PublicationListbox";
+import PresentationStatus from "@/components/modules/listbox/PresentationListbox";
 
 const defaultValues = {
   status: "",
+  publication_status: false,
+  presentation_status: false,
 };
 
 const SingleResearchInnovation = () => {
+  let sendNotif;
   const notificationRef = useRef(null);
   const queryClient = useQueryClient();
 
@@ -47,13 +53,13 @@ const SingleResearchInnovation = () => {
 
   // hooks
   const { isConfirmed } = useConfirm();
+  const { isOpen, toggleModal } = useModal();
   const {
     getResearchById,
     createComment,
     createResearchLog,
     updateResearchStatus,
   } = useResearch();
-  const { isOpen, toggleModal } = useModal();
 
   const { data } = useQuery({
     queryKey: ["research", research_id],
@@ -61,21 +67,21 @@ const SingleResearchInnovation = () => {
     enabled: !!research_id,
   });
 
-  // const { data: comments } = useQuery({
-  //   queryKey: ["comments", research_id],
-  //   queryFn: () => getComments(research_id),
-  //   enabled: !!research_id,
-  // });
-
   const receiverIds = data?.proponents?.map((p) => p._id);
 
   const methods = useForm({ defaultValues });
 
-  const status = methods.watch("status");
+  const [status, publication_status, presentation_status] = methods.watch([
+    "status",
+    "publication_status",
+    "presentation_status",
+  ]);
 
   useEffect(() => {
     if (data) {
       methods.setValue("status", data?.status);
+      methods.setValue("publication_status", data?.publication_status);
+      methods.setValue("presentation_status", data?.presentation_status);
     }
   }, [methods, data]);
 
@@ -107,6 +113,39 @@ const SingleResearchInnovation = () => {
     },
   });
 
+  const { mutateAsync: approveProposal } = useMutation({
+    mutationFn: (status) => updateResearchStatus(research_id, status),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["research", research_id] });
+      toast.success("Successfully saved", {
+        id: notificationRef.current,
+      });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: receiverIds,
+        research_id,
+        action_type: NOTIFICATION_ACTION_TYPE.APPROVE,
+        isRead: false,
+      };
+
+      sendNotification(sendNotif);
+
+      addLog({
+        log_title: "Approved proposal",
+        date_completion: new Date(),
+        ongoing: false,
+      });
+    },
+    onError: (error) => {
+      const message = error.response.data.message;
+      toast.error(message, {
+        id: notificationRef.current,
+      });
+    },
+  });
+
   const { mutateAsync: updateStatus } = useMutation({
     mutationFn: (status) => updateResearchStatus(research_id, status),
 
@@ -124,13 +163,15 @@ const SingleResearchInnovation = () => {
         isRead: false,
       };
 
-      sendNotification(sendNotif);
+      if (status !== values.status) {
+        sendNotification(sendNotif);
 
-      addLog({
-        log_title: `Change status to ${values.status}`,
-        date_completion: new Date(),
-        ongoing: false,
-      });
+        addLog({
+          log_title: `Change status to ${values.status}`,
+          date_completion: new Date(),
+          ongoing: false,
+        });
+      }
     },
     onError: (error) => {
       const message = error.response.data.message;
@@ -175,7 +216,20 @@ const SingleResearchInnovation = () => {
     toggleModal();
   };
 
-  const handleChangeStatus = async (val) => {
+  const handleApproval = async () => {
+    const confirm = await isConfirmed(
+      "Are you sure you want to approve this proposal? Once approved status will be automatically change to proposal.",
+      "Proposal Approval"
+    );
+
+    if (confirm) {
+      const status = "proposal";
+
+      await approveProposal(status);
+    }
+  };
+
+  const handleChangeProjectStatus = async (val) => {
     if (status === val) return;
 
     const confirm = await isConfirmed(
@@ -184,36 +238,75 @@ const SingleResearchInnovation = () => {
     );
 
     if (confirm) {
-      await updateStatus(val);
+      let value = { status: val };
+      await updateStatus(value);
     }
   };
 
+  const handlePublicationStatus = async (val) => {
+    if (publication_status === val) return;
+
+    const confirm = await isConfirmed(
+      "Are you sure you want to update the status?",
+      "Change status"
+    );
+
+    if (confirm) {
+      let value = { publication_status: val };
+      await updateStatus(value);
+    }
+  };
+
+  const handlePresentationStatus = async (val) => {
+    if (presentation_status === val) return;
+
+    const confirm = await isConfirmed(
+      "Are you sure you want to update the status?",
+      "Change status"
+    );
+
+    if (confirm) {
+      let value = { presentation_status: val };
+      await updateStatus(value);
+    }
+  };
   return (
     <AdminLayout>
-      <SectionHeader className="items-center justify-between mt-16 mb-8 sm:flex sm:mb-20">
+      <SectionHeader className="flex flex-wrap-reverse items-center justify-between mt-16 mb-8 gap-y-10 sm:mb-20">
         <Heading
           as="h3"
           className="max-w-xl text-xl font-bold lg:text-2xl text-bc-primary"
           title={data?.research_title ?? ""}
         />
-        <BackLink href={`/admin/research-innovation`} />
+        <div className="space-x-4">
+          <BackLink
+            href={`/admin/research-innovation`}
+            className={classNames(
+              status === "pending"
+                ? "text-gray-500 bg-transparent shadow-[unset] hover:bg-transparent !px-6 focus:ring-[unset] hover:underline focus:ring-0"
+                : ""
+            )}
+          />
+          {status === "pending" ? (
+            <Button className="btn-success" onClick={() => handleApproval()}>
+              Approve
+            </Button>
+          ) : null}
+        </div>
       </SectionHeader>
 
       <FormProvider {...methods}>
-        <div className="flex items-center gap-x-4">
-          <Heading
-            as="h4"
-            title="Status"
-            className="text-sm font-medium text-gray-600"
+        <div className="flex flex-wrap gap-6 mt-24">
+          <StatusListbox
+            onChange={handleChangeProjectStatus}
+            disabled={status === "pending"}
           />
-          <Listbox
-            options={statusOptions}
-            name="status"
-            withCustomOnChange
-            handleChange={handleChangeStatus}
-          />
+
+          <PublicationStatus onChange={handlePublicationStatus} />
+          <PresentationStatus onChange={handlePresentationStatus} />
         </div>
       </FormProvider>
+
       <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
         <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
           <ResearchInnovationDetails data={data} />

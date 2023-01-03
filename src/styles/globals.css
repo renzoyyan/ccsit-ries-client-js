@@ -26,7 +26,7 @@
   }
 
   .label {
-    @apply inline-block text-sm text-gray-700;
+    @apply inline-block text-sm font-medium text-gray-700;
   }
 
   .tbl {

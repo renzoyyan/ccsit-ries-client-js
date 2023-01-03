@@ -39,7 +39,7 @@ const defaultValues = {
   project_sites: [],
   target_beneficiaries: [],
   sdg: "",
-  status: "proposal",
+  status: "pending",
   keywords: [],
 };
 

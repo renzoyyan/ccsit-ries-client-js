@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { Pagination } from "@mui/material";
 import Image from "next/image";
+import { useRef } from "react";
+import { toast } from "react-hot-toast";
 
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import Heading from "@/components/elements/Heading";
@@ -15,6 +17,8 @@ import { getAuthSession } from "@/utils/auth";
 import usePagination from "@/hooks/usePagination";
 import StatusDropdown from "@/components/modules/StatusDropdown";
 import useDebounce from "@/hooks/useDebounce";
+import FilterDate from "@/components/elements/FilterDate";
+import ExportButton from "@/components/elements/ExportButton";
 
 const defaultValues = {
   status: "all",
@@ -22,12 +26,17 @@ const defaultValues = {
 };
 
 const ResearchInnovation = () => {
+  const pdfRef = useRef();
   const methods = useForm({ defaultValues });
-  const [status, search] = methods.watch(["status", "search"]);
+  const [status, search, created_at] = methods.watch([
+    "status",
+    "search",
+    "created_at",
+  ]);
 
   const debouncedSearch = useDebounce(search, 500);
   const { page, limit, handlePagination } = usePagination();
-  const { getAllResearch } = useResearch();
+  const { getAllResearch, exportResearchPDF } = useResearch();
 
   const filterStatus = status === "all" ? null : status;
 
@@ -36,6 +45,7 @@ const ResearchInnovation = () => {
     limit,
     status: filterStatus,
     search: debouncedSearch,
+    date: created_at,
   };
 
   const { data, isLoading } = useQuery({
@@ -56,10 +66,27 @@ const ResearchInnovation = () => {
         />
       </div>
 
-      <div className="flex flex-wrap-reverse items-center justify-between gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-6">
         <FormProvider {...methods}>
           <SearchBar />
-          <StatusDropdown />
+          <div className="inline-flex items-center gap-x-4">
+            {/* <Input type="month" name="created_at" placeholder="Select date" /> */}
+            <FilterDate name="created_at" />
+            <StatusDropdown />
+            <ExportButton
+              pdfRef={pdfRef}
+              exportCallback={() =>
+                research?.length > 0
+                  ? exportResearchPDF(pdfRef, {
+                      date: filters.date === "" ? null : filters.date,
+                      status: filters.status,
+                    })
+                  : toast.error(
+                      "There was no data found. PDF cannot be generated."
+                    )
+              }
+            />
+          </div>
         </FormProvider>
       </div>
 

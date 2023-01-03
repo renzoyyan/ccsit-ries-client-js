@@ -1,6 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import api from "@/utils/api";
 import { isFile } from "@/utils/utils";
+import moment from "moment";
 
 const useResearch = () => {
   const { access_token } = useAuth();
@@ -89,10 +90,10 @@ const useResearch = () => {
     return data;
   };
 
-  const updateResearchStatus = async (research_id, status) => {
+  const updateResearchStatus = async (research_id, values) => {
     const { data } = await api.patch(
       `/api/research/change-status/${research_id}`,
-      { status: status },
+      values,
       config
     );
 
@@ -123,13 +124,13 @@ const useResearch = () => {
   // RESEARCH LOG API
 
   const createResearchLog = async (research_id, values) => {
-    const { log_title, date_completion, ongoing, file } = values;
+    const { log_title, date_completion, publication_url, file } = values;
 
     let formData = new FormData();
 
     formData.append("log_title", log_title);
     formData.append("date_completion", date_completion);
-    formData.append("ongoing", ongoing);
+    formData.append("publication_url", publication_url);
     if (isFile(file)) formData.append("file", file);
 
     const { data } = await api.post(
@@ -140,11 +141,69 @@ const useResearch = () => {
 
     return data;
   };
+
   const getResearchLogsById = async (id) => {
     const { data } = await api.get(`/api/log/research/${id}`, config);
 
     return data;
   };
+
+  // EXPORT CSV
+
+  const exportCsvResearch = (csvRef, params) => {
+    api
+      .get(`${process.env.CCSIT_RIES}/api/research/export`, {
+        params,
+        ...config,
+      })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const href = window.URL.createObjectURL(blob);
+        const a = csvRef.current;
+        a.download = "research-innovation.csv";
+        a.href = href;
+        a.click();
+        a.href = "";
+      })
+      .catch((error) => console.log(error));
+    // fetch(`${process.env.CCSIT_RIES}/api/research/export`, config)
+    //   .then((response) => response.blob())
+    //   .then((blob) => {
+    //     const href = window.URL.createObjectURL(blob);
+    //     const a = csvRef.current;
+    //     a.download = "research-innovation.csv";
+    //     a.href = href;
+    //     a.click();
+    //     a.href = "";
+    //   })
+    //   .catch((error) => console.log(error));
+  };
+
+  const exportResearchPDF = (pdfRef, params) => {
+    const date = new Date();
+    api
+      .get(`${process.env.CCSIT_RIES}/api/research/export-pdf`, {
+        params,
+        ...config,
+        responseType: "blob",
+        "Content-Type": "application/pdf",
+        Accept: "application/pdf",
+      })
+      .then((response) => response.data)
+      .then((blob) => {
+        const href = window.URL.createObjectURL(blob);
+        const a = pdfRef.current;
+        a.download = `research-innovation-${
+          params?.date || params?.status || date.getFullYear()
+        }.pdf`;
+        a.href = href;
+        a.click();
+        a.href = "";
+      })
+
+      .catch((error) => console.error(error));
+  };
+
   return {
     access_token,
     createResearch,
@@ -157,6 +216,8 @@ const useResearch = () => {
     getResearchLogsById,
     updateResearchById,
     updateResearchStatus,
+    exportCsvResearch,
+    exportResearchPDF,
   };
 };
 
