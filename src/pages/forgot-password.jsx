@@ -15,7 +15,7 @@ const defaultValues = {
 
 let pageUrl =
   process.env.NODE_ENV === "production"
-    ? ``
+    ? `https://ccsit-ries-client-js.vercel.app/reset-password`
     : "http://localhost:3000/reset-password";
 
 const ForgotPasswordPage = () => {
