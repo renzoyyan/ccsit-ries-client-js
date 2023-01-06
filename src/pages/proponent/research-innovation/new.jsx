@@ -38,7 +38,7 @@ const defaultValues = {
   project_budget: "",
   implementing_agencies: [],
   collaborating_agencies: [],
-  status: "proposal",
+  status: "pending",
   keywords: [],
 };
 
