@@ -13,7 +13,10 @@ const defaultValues = {
   email: "",
 };
 
-let pageUrl = "http://localhost:3000/reset-password";
+let pageUrl =
+  process.env.NODE_ENV === "production"
+    ? ``
+    : "http://localhost:3000/reset-password";
 
 const ForgotPasswordPage = () => {
   const [message, setMessage] = useState("");

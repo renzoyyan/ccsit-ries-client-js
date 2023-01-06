@@ -1,4 +1,6 @@
 import React from "react";
+import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
 
 import SectionHeader from "@/components/elements/SectionHeader";
 import Heading from "@/components/elements/Heading";
@@ -10,9 +12,6 @@ import UserLayout from "@/components/layouts/users/UserLayout";
 import { Roles } from "@/utils/utils";
 import { getAuthSession } from "@/utils/auth";
 import useResearch from "@/hooks/useResearch";
-import useLogs from "@/hooks/useLogs";
-import { useRouter } from "next/router";
-import { useQuery } from "@tanstack/react-query";
 import Logs from "@/components/modules/logs/Logs";
 
 const SingleResearchInnovation = () => {

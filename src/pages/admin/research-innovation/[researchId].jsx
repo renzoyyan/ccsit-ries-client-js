@@ -289,7 +289,7 @@ const SingleResearchInnovation = () => {
           />
           {status === "pending" ? (
             <Button className="btn-success" onClick={() => handleApproval()}>
-              Approve
+              Confirm
             </Button>
           ) : null}
         </div>
