@@ -20,9 +20,9 @@ const CommentForm = ({ onSubmitComment }) => {
   const { user } = useAuth();
 
   const sendComment = async (values) => {
-    await onSubmitComment(values);
-
     reset();
+
+    await onSubmitComment(values);
   };
 
   const content = watch("content");

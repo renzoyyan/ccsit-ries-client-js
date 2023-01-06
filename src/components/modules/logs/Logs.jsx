@@ -30,7 +30,12 @@ const Logs = ({ logs }) => {
                       {log.log_title}
                     </p>
                     {log?.file?.url ? (
-                      <a href={log.file.url} download>
+                      <a
+                        href={log.file.url}
+                        download
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         <button
                           type="button"
                           className="block text-xs font-medium cursor-pointer text-bc-tertiary hover:underline"

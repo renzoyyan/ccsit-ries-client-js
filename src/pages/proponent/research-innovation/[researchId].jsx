@@ -43,7 +43,7 @@ const SingleResearchInnovation = () => {
   const research_id = router.query.researchId;
 
   // context
-  const { current_user } = useAuth();
+  const { current_user, user } = useAuth();
   const { sendNotification } = useContext(SocketContext);
 
   // hooks
@@ -144,11 +144,48 @@ const SingleResearchInnovation = () => {
   const { mutateAsync: sendNewComment } = useMutation({
     mutationFn: (values) => createComment(research_id, values),
 
-    onSuccess: (values) => {
-      queryClient.invalidateQueries({
-        queryKey: ["research", research_id],
-      });
-      toast.success("New comment added");
+    onMutate: async (values) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ["research", research_id] });
+
+      // Snapshot the previous value
+      const previousComments = queryClient.getQueryData([
+        "research",
+        research_id,
+      ]);
+
+      let newComment = {
+        content: values.content,
+        created_at: new Date(),
+        comment_by: {
+          first_name: user?.first_name,
+          last_name: user?.last_name,
+        },
+      };
+      // Optimistically update to the new value
+      queryClient.setQueryData(["research", research_id], (old) => ({
+        ...old,
+        comments: [...old.comments, newComment],
+      }));
+
+      // Return a context object with the snapshotted value
+      return { previousComments, newComment };
+    },
+
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(
+        ["research", context.newComment._id],
+        context.previousComments
+      );
+
+      const message = err.response.data.message;
+      toast.error(message);
+    },
+
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["research", research_id] });
 
       const sendNotif = {
         sender: current_user,
@@ -159,11 +196,6 @@ const SingleResearchInnovation = () => {
       };
 
       sendNotification(sendNotif);
-    },
-
-    onError: (error) => {
-      const message = error.response.data.message;
-      toast.error(message);
     },
   });
 

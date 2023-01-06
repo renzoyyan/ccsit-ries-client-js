@@ -32,7 +32,14 @@ const Comment = ({ comment_by, created_at, content }) => {
           </h3>
           <span>&middot;</span>
           {/* <span className="font-medium text-gray-500">{props.date}</span> */}
-          <TimeAgo date={created_at} />
+          <TimeAgo
+            date={created_at}
+            formatter={(value, unit, suffix) => {
+              if (unit === "second") return "just now";
+              const plural = value !== 1 ? "s" : "";
+              return `${value} ${unit}${plural} ${suffix}`;
+            }}
+          />
         </div>
         <div className="mt-1 text-sm text-gray-700">
           <p>{content}</p>
