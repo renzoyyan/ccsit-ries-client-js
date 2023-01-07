@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import socketIO from "socket.io-client";
 
 const COMMENT_EVENT = "comments";
-const SOCKET_IO_SERVER = "http://localhost:5000";
+const SOCKET_IO_SERVER = process.env.CCSIT_RIES;
 
 const useComment = (project_id) => {
   const [comments, setComments] = useState([]);
