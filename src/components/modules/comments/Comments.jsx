@@ -26,8 +26,8 @@ const Comments = ({
           </div>
           <div className="px-4 py-6 sm:px-6">
             <ul role="list" className="space-y-8">
-              {data?.map((comment) => (
-                <Comment key={comment._id} {...comment} />
+              {data?.map((comment, idx) => (
+                <Comment key={comment._id || idx} {...comment} />
               ))}
             </ul>
           </div>

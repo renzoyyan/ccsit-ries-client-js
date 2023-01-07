@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { useRouter } from "next/router";
 
 import SectionHeader from "@/components/elements/SectionHeader";
@@ -14,6 +14,7 @@ import FileUpload from "@/components/forms/FileUpload";
 import {
   classNames,
   extension_types_opts,
+  NOTIFICATION_ACTION_TYPE,
   research_agenda_opts,
   Roles,
   statusOptions,
@@ -24,6 +25,8 @@ import { getAuthSession } from "@/utils/auth";
 import useProponents from "@/hooks/useProponents";
 import useExtension from "@/hooks/useExtension";
 import NumberFormat from "@/components/forms/NumberFormat";
+import { SocketContext } from "@/context/SocketContext";
+import { useAuth } from "@/context/AuthContext";
 
 const defaultValues = {
   file: null,
@@ -47,6 +50,10 @@ const NewExtensionServices = () => {
   const router = useRouter();
   const notificationRef = useRef(null);
 
+  // context
+  const { sendNotification } = useContext(SocketContext);
+  const { current_user, user } = useAuth();
+
   const { proponentOptions } = useProponents();
   const { createExtension } = useExtension();
   const queryClient = useQueryClient();
@@ -58,18 +65,36 @@ const NewExtensionServices = () => {
     formState: { isSubmitting },
   } = methods;
 
-  const [statusValue, flagValue] = watch(["status", "flag"]);
+  const [statusValue, flagValue, proponentIds] = watch([
+    "status",
+    "flag",
+    "proponents",
+  ]);
 
   const isStatusCompleted = statusValue.toLowerCase() === "completed";
 
   const { mutateAsync } = useMutation({
-    mutationFn: createExtension,
-    onSuccess: () => {
+    mutationFn: (values) => createExtension(values),
+
+    onSuccess: (values) => {
       queryClient.invalidateQueries("extension");
       router.replace(`/proponent/extension-services`);
       toast.success("New extension saved", {
         id: notificationRef.current,
       });
+
+      const sendNotif = {
+        sender: current_user,
+        receiver: proponentIds,
+        extension_id: values.new_extension._id,
+        action_type: NOTIFICATION_ACTION_TYPE.PROJECT.CREATED,
+        isRead: false,
+        text: "New Extension Proposal",
+        role: user?.role,
+        file: values?.log?.file?.url,
+      };
+
+      sendNotification(sendNotif);
     },
 
     onError: (error) => {

@@ -55,7 +55,7 @@ const Logs = ({ logs }) => {
                     <h4>
                       by:{" "}
                       <span className="capitalize">
-                        {`${log.created_by.first_name} ${log.created_by.last_name}`}
+                        {`${log?.created_by?.first_name} ${log?.created_by?.last_name}`}
                       </span>
                     </h4>
 

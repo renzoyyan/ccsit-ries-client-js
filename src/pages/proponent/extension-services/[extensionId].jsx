@@ -43,7 +43,7 @@ const SingleExtensionServices = () => {
   const extension_id = router.query.extensionId;
 
   // context
-  const { current_user } = useAuth();
+  const { current_user, user } = useAuth();
   const { sendNotification } = useContext(SocketContext);
 
   // hooks
@@ -80,7 +80,7 @@ const SingleExtensionServices = () => {
   const { mutateAsync: addLog, isSuccess } = useMutation({
     mutationFn: (values) => createExtensionLog(extension_id, values),
 
-    onSuccess: () => {
+    onSuccess: (values) => {
       queryClient.invalidateQueries(["extension", extension_id]);
       toast.success("New log saved", {
         id: notificationRef.current,
@@ -92,6 +92,9 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.LOG.ADDED,
         isRead: false,
+        text: "Activity Log",
+        role: user?.role,
+        file: values?.file?.url,
       };
 
       sendNotification(sendNotif);
@@ -119,6 +122,8 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.CHANGE_STATUS[values.status],
         isRead: false,
+        text: `Change status to ${values.status}`,
+        role: user?.role,
       };
 
       sendNotification(sendNotif);
@@ -141,11 +146,46 @@ const SingleExtensionServices = () => {
   const { mutateAsync: sendNewComment } = useMutation({
     mutationFn: (values) => createComment(extension_id, values),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onMutate: async () => {
+      await queryClient.cancelQueries({
         queryKey: ["extension", extension_id],
       });
-      toast.success("New comment added");
+
+      const previousComments = queryClient.getQueryData([
+        "extension",
+        extension_id,
+      ]);
+
+      let newComment = {
+        content: values.content,
+        created_at: new Date(),
+        comment_by: {
+          first_name: user?.first_name,
+          last_name: user?.last_name,
+        },
+      };
+
+      queryClient.setQueryData(["extension", extension_id], (old) => ({
+        ...old,
+        comments: [...old.comments, newComment],
+      }));
+
+      return { previousComments, newComment };
+    },
+
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(
+        ["research", context.newComment._id],
+        context.previousComments
+      );
+
+      const message = err.response.data.message;
+      toast.error(message);
+    },
+
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["extension", extension_id] });
 
       const sendNotif = {
         sender: current_user,
@@ -153,14 +193,11 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.COMMENTED,
         isRead: false,
+        text: "New comment",
+        role: user?.role,
       };
 
       sendNotification(sendNotif);
-    },
-
-    onError: (error) => {
-      const message = error.response.data.message;
-      toast.error(message);
     },
   });
 
@@ -180,6 +217,8 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
         isRead: false,
+        text: "New keywords",
+        role: user?.role,
       };
 
       sendNotification(sendNotif);

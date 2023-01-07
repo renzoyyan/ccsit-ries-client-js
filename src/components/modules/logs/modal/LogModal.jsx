@@ -106,14 +106,10 @@ const LogModal = ({ onSubmit, isOpen, toggleModal, isSuccess, disabled }) => {
                       isSameOrAfter: (date) => {
                         const today = moment(new Date());
 
-                        if (!isOnGoing) {
-                          return (
-                            today.isAfter(date) ||
-                            "This field must be either the other day or today"
-                          );
-                        }
-
-                        return true;
+                        return (
+                          today.isAfter(date) ||
+                          "This field must be either the other day or today"
+                        );
                       },
                     },
                   }}

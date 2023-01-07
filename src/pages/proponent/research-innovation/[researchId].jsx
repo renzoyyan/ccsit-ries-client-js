@@ -81,7 +81,6 @@ const SingleResearchInnovation = () => {
     mutationFn: (values) => createResearchLog(research_id, values),
 
     onSuccess: (values) => {
-      console.log(values);
       queryClient.invalidateQueries({
         queryKey: ["research", research_id],
       });
@@ -95,6 +94,9 @@ const SingleResearchInnovation = () => {
         research_id,
         action_type: NOTIFICATION_ACTION_TYPE.LOG.ADDED,
         isRead: false,
+        text: "Activity Log",
+        role: user?.role,
+        file: values?.file?.url,
       };
 
       sendNotification(sendNotif);
@@ -122,6 +124,8 @@ const SingleResearchInnovation = () => {
         research_id,
         action_type: NOTIFICATION_ACTION_TYPE.CHANGE_STATUS[values.status],
         isRead: false,
+        text: `Change status to ${values.status}`,
+        role: user?.role,
       };
 
       sendNotification(sendNotif);
@@ -193,6 +197,8 @@ const SingleResearchInnovation = () => {
         research_id,
         action_type: NOTIFICATION_ACTION_TYPE.COMMENTED,
         isRead: false,
+        text: "New comment",
+        role: user?.role,
       };
 
       sendNotification(sendNotif);
@@ -214,7 +220,9 @@ const SingleResearchInnovation = () => {
         receiver: receiverIds,
         research_id,
         action_type: NOTIFICATION_ACTION_TYPE.KEYWORDS,
+        text: "New keywords",
         isRead: false,
+        role: user?.role,
       };
 
       sendNotification(sendNotif);

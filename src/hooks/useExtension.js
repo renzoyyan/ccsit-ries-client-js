@@ -31,6 +31,7 @@ const useExtension = () => {
       status,
     } = values;
 
+    console.log(values);
     const formData = new FormData();
     const statusValue = flag === "new" ? "pending" : status;
 
@@ -74,10 +75,10 @@ const useExtension = () => {
   };
 
   const getCurrentUserExtensionProjects = async (params) => {
-    const { data } = await api.get(
-      "/api/extension/user-extensions?page=1&limit=10",
-      { params, ...config }
-    );
+    const { data } = await api.get("/api/extension/user-extensions", {
+      params,
+      ...config,
+    });
 
     return data;
   };

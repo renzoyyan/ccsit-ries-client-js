@@ -8,7 +8,10 @@ const nextConfig = {
   },
 
   env: {
-    CCSIT_RIES: process.env.NEXT_PUBLIC_CCSIT_RIES_API_DOMAIN,
+    CCSIT_RIES:
+      process.env.NODE_ENV === "production"
+        ? process.env.NEXT_PUBLIC_CCSIT_RIES_API_DOMAIN
+        : "http://localhost:5000",
   },
 };
 

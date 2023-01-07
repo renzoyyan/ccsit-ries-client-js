@@ -49,7 +49,7 @@ const NewResearchInnovation = () => {
 
   // context
   const { sendNotification } = useContext(SocketContext);
-  const { current_user } = useAuth();
+  const { current_user, user } = useAuth();
 
   // hooks
   const { proponentOptions } = useProponents();
@@ -71,6 +71,7 @@ const NewResearchInnovation = () => {
 
   const { mutateAsync } = useMutation({
     mutationFn: createResearch,
+
     onSuccess: (values) => {
       queryClient.invalidateQueries(["research"]);
       router.replace(`/proponent/research-innovation`);
@@ -84,6 +85,9 @@ const NewResearchInnovation = () => {
         research_id: values.new_research._id,
         action_type: NOTIFICATION_ACTION_TYPE.PROJECT.CREATED,
         isRead: false,
+        text: "New Research Proposal",
+        role: user?.role,
+        file: values?.log?.file?.url,
       };
 
       sendNotification(sendNotif);
