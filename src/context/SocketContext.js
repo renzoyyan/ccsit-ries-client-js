@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import socketIo from "socket.io-client";
 import { useAuth } from "./AuthContext";
 
-const baseURL = process.env.CCSIT_RIES;
+const baseURL = "https://ccsit-ries.onrender.com";
 
 export const SocketContext = createContext();
 
