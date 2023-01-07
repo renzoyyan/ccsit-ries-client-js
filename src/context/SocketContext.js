@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import socketIo from "socket.io-client";
 import { useAuth } from "./AuthContext";
 
-const baseURL = "http://localhost:5000";
+const baseURL = process.env.CCSIT_RIES;
 
 export const SocketContext = createContext();
 
