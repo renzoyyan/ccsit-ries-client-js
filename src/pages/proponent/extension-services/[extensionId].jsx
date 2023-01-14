@@ -175,7 +175,7 @@ const SingleExtensionServices = () => {
 
     onError: (err, newComment, context) => {
       queryClient.setQueryData(
-        ["research", context.newComment._id],
+        ["extension", context.newComment._id],
         context.previousComments
       );
 

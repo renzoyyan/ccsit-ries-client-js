@@ -15,14 +15,23 @@ import StatusDropdown from "@/components/modules/StatusDropdown";
 import usePagination from "@/hooks/usePagination";
 import useDebounce from "@/hooks/useDebounce";
 import { Pagination } from "@mui/material";
+import AuthorFilter from "@/components/modules/AuthorFilter";
+import FilterDate from "@/components/elements/FilterDate";
 
 const defaultValues = {
   status: "all",
   search: null,
+  author: null,
 };
+
 const ExtensionServices = () => {
   const methods = useForm({ defaultValues });
-  const [status, search] = methods.watch(["status", "search"]);
+  const [status, search, created_at, author] = methods.watch([
+    "status",
+    "search",
+    "created_at",
+    "author",
+  ]);
 
   const { getAllExtension } = useExtension();
   const { page, limit, handlePagination } = usePagination();
@@ -33,8 +42,10 @@ const ExtensionServices = () => {
   let filters = {
     page,
     limit,
+    author,
     status: filterStatus,
     search: debouncedSearch,
+    date: created_at,
   };
 
   const { data, isLoading } = useQuery({
@@ -56,12 +67,14 @@ const ExtensionServices = () => {
         </div>
       </div>
 
-      <div
-        className="flex flex-wrap-reverse items-center justify-between gap-6"
-      >
+      <div className="flex flex-wrap items-center justify-between gap-6">
         <FormProvider {...methods}>
           <SearchBar />
-          <StatusDropdown />
+          <div className="inline-flex items-center gap-x-4">
+            <AuthorFilter />
+            <FilterDate name="created_at" />
+            <StatusDropdown />
+          </div>
         </FormProvider>
       </div>
 

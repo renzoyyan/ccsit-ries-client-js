@@ -1,39 +1,96 @@
-import Button from "@/components/elements/Button";
-import React, { useContext, useEffect } from "react";
+/*
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+*/
+import { Fragment, useState } from "react";
+import {
+  Dialog,
+  Disclosure,
+  Menu,
+  Popover,
+  Transition,
+} from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import AuthorFilter from "@/components/modules/AuthorFilter";
 import { FormProvider, useForm } from "react-hook-form";
-import * as Form from "@/components/forms";
 
-import { SocketContext } from "@/context/SocketContext";
-import { useAuth } from "@/context/AuthContext";
+const sortOptions = [
+  { name: "Most Popular", href: "#" },
+  { name: "Best Rating", href: "#" },
+  { name: "Newest", href: "#" },
+];
+const filters = [
+  {
+    id: "category",
+    name: "Category",
+    options: [
+      { value: "tees", label: "Tees" },
+      { value: "crewnecks", label: "Crewnecks" },
+      { value: "hats", label: "Hats" },
+    ],
+  },
+  {
+    id: "brand",
+    name: "Brand",
+    options: [
+      { value: "clothing-company", label: "Clothing Company" },
+      { value: "fashion-inc", label: "Fashion Inc." },
+      { value: "shoes-n-more", label: "Shoes 'n More" },
+    ],
+  },
+  {
+    id: "color",
+    name: "Color",
+    options: [
+      { value: "white", label: "White" },
+      { value: "black", label: "Black" },
+      { value: "grey", label: "Grey" },
+    ],
+  },
+  {
+    id: "sizes",
+    name: "Sizes",
+    options: [
+      { value: "s", label: "S" },
+      { value: "m", label: "M" },
+      { value: "l", label: "L" },
+    ],
+  },
+];
 
-const defaultValues = {
-  content: "",
-};
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
-const ExperimentPage = () => {
-  const { socket } = useContext(SocketContext);
-  const { current_user } = useAuth();
+export default function Example() {
+  const [open, setOpen] = useState(false);
 
-  const methods = useForm({ defaultValues });
+  const methods = useForm();
 
   const { handleSubmit } = methods;
 
-  const onSubmit = ({ content }) => {
-    socket.emit("send-notification", {
-      content,
-      user_id: current_user,
-    });
-  };
+  const handleFilter = async (values) => console.log(values);
 
-  useEffect(() => {
-    if (!socket) return;
+  return (
+    <div className="flex items-center justify-center">
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(handleFilter)}>
+          <AuthorFilter />
 
-    socket.on("receive-notification", (data) => {
-      console.log("receive", data);
-    });
-  }, [socket]);
-
-  return <div>Hello</div>;
-};
-
-export default ExperimentPage;
+          <button type="submit">Submit</button>
+        </form>
+      </FormProvider>
+    </div>
+  );
+}

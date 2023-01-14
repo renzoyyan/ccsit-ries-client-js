@@ -44,7 +44,7 @@ const SingleExtensionServices = () => {
   const extension_id = router.query.extensionId;
 
   // context
-  const { current_user } = useAuth();
+  const { current_user, user } = useAuth();
   const { sendNotification } = useContext(SocketContext);
 
   // hooks
@@ -64,11 +64,6 @@ const SingleExtensionServices = () => {
     enabled: !!extension_id,
   });
 
-  const { data: comments } = useQuery({
-    queryKey: ["extension-comments", extension_id],
-    queryFn: () => getComments(extension_id),
-    enabled: !!extension_id,
-  });
   const methods = useForm({ defaultValues });
 
   const [status, publication_status, presentation_status] = methods.watch([
@@ -101,6 +96,7 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.LOG.ADDED,
         isRead: false,
+        role: "admin",
       };
 
       sendNotification(sendNotif);
@@ -129,6 +125,7 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.APPROVE,
         isRead: false,
+        role: "admin",
       };
 
       sendNotification(sendNotif);
@@ -161,6 +158,7 @@ const SingleExtensionServices = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.CHANGE_STATUS[values.status],
         isRead: false,
+        role: "admin",
       };
 
       if (status !== values.status) {
@@ -185,26 +183,62 @@ const SingleExtensionServices = () => {
   const { mutateAsync: sendNewComment } = useMutation({
     mutationFn: (values) => createComment(extension_id, values),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["extension-comments", extension_id],
+    onMutate: async (values) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: ["extension", extension_id],
       });
-      toast.success("New comment added");
 
-      const sendNotif = {
-        sender: current_user,
-        receiver: receiverIds,
+      // Snapshot the previous value
+      const previousComments = queryClient.getQueryData([
+        "extension",
         extension_id,
-        action_type: NOTIFICATION_ACTION_TYPE.COMMENTED,
-        isRead: false,
-      };
+      ]);
 
-      sendNotification(sendNotif);
+      let newComment = {
+        content: values.content,
+        created_at: new Date(),
+        comment_by: {
+          first_name: user?.first_name,
+          last_name: user?.last_name,
+        },
+      };
+      // Optimistically update to the new value
+      queryClient.setQueryData(["extension", extension_id], (old) => ({
+        ...old,
+        comments: [...old.comments, newComment],
+      }));
+
+      // Return a context object with the snapshotted value
+      return { previousComments, newComment };
     },
 
-    onError: (error) => {
-      const message = error.response.data.message;
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(
+        ["extension", context.newComment._id],
+        context.previousComments
+      );
+
+      const message = err.response.data.message;
       toast.error(message);
+    },
+
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["extension", extension_id] });
+
+      // const sendNotif = {
+      //   sender: current_user,
+      //   receiver: receiverIds,
+      //   extension_id,
+      //   action_type: NOTIFICATION_ACTION_TYPE.COMMENTED,
+      //   isRead: false,
+      //   text: "New comment",
+      //   role: "admin",
+      // };
+
+      // sendNotification(sendNotif);
     },
   });
 
@@ -224,7 +258,7 @@ const SingleExtensionServices = () => {
     );
 
     if (confirm) {
-      const status = "proposal";
+      const status = { status: "proposal" };
 
       await approveProposal(status);
     }
@@ -291,7 +325,7 @@ const SingleExtensionServices = () => {
           />
           {status === "pending" ? (
             <Button className="btn-success" onClick={() => handleApproval()}>
-              Confirm
+              Approve
             </Button>
           ) : null}
         </div>
@@ -312,7 +346,7 @@ const SingleExtensionServices = () => {
       <div className="grid grid-cols-1 gap-6 mx-auto mt-8 2xl:grid-flow-col-dense 2xl:grid-cols-3">
         <div className="space-y-6 2xl:col-span-2 2xl:col-start-1">
           <ExtensionServicesDetails data={extension} />
-          <Comments extension_id={extension_id} data={comments}>
+          <Comments extension_id={extension_id} data={extension?.comments}>
             <CommentForm onSubmitComment={sendNewComment} />
           </Comments>
         </div>

@@ -107,6 +107,7 @@ const EditExtensionServicePage = () => {
         extension_id,
         action_type: NOTIFICATION_ACTION_TYPE.PROJECT.UPDATED,
         isRead: false,
+        role: "admin",
       };
 
       sendNotification(sendNotif);

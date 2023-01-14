@@ -19,19 +19,22 @@ import useDebounce from "@/hooks/useDebounce";
 import StatusDropdown from "@/components/modules/StatusDropdown";
 import FilterDate from "@/components/elements/FilterDate";
 import ExportButton from "@/components/elements/ExportButton";
+import AuthorFilter from "@/components/modules/AuthorFilter";
 
 const defaultValues = {
   status: "all",
   search: null,
+  author: null,
 };
 
 const ExtensionServicesPage = () => {
   const pdfRef = useRef();
   const methods = useForm({ defaultValues });
-  const [status, search, created_at] = methods.watch([
+  const [status, search, created_at, author] = methods.watch([
     "status",
     "search",
     "created_at",
+    "author",
   ]);
 
   const debouncedSearch = useDebounce(search, 500);
@@ -43,6 +46,7 @@ const ExtensionServicesPage = () => {
   let filters = {
     page,
     limit,
+    author,
     status: filterStatus,
     search: debouncedSearch,
     date: created_at,
@@ -70,7 +74,7 @@ const ExtensionServicesPage = () => {
         <FormProvider {...methods}>
           <SearchBar />
           <div className="inline-flex items-center gap-x-4">
-            {/* <Input type="month" name="created_at" placeholder="Select date" /> */}
+            <AuthorFilter />
             <FilterDate name="created_at" />
             <StatusDropdown />
 

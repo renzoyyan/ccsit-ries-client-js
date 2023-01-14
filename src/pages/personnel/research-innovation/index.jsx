@@ -15,15 +15,23 @@ import Skeleton from "@/components/elements/skeleton/Skeleton";
 import StatusDropdown from "@/components/modules/StatusDropdown";
 import useDebounce from "@/hooks/useDebounce";
 import usePagination from "@/hooks/usePagination";
+import AuthorFilter from "@/components/modules/AuthorFilter";
+import FilterDate from "@/components/elements/FilterDate";
 
 const defaultValues = {
   status: "all",
   search: null,
+  author: null,
 };
 
 const ResearchInnovation = () => {
   const methods = useForm({ defaultValues });
-  const [status, search] = methods.watch(["status", "search"]);
+  const [status, search, created_at, author] = methods.watch([
+    "status",
+    "search",
+    "created_at",
+    "author",
+  ]);
 
   const { getAllResearch } = useResearch();
   const { page, limit, handlePagination } = usePagination();
@@ -33,8 +41,10 @@ const ResearchInnovation = () => {
   let filters = {
     page,
     limit,
+    author,
     status: filterStatus,
     search: debouncedSearch,
+    date: created_at,
   };
 
   const { data, isLoading } = useQuery({
@@ -57,12 +67,14 @@ const ResearchInnovation = () => {
         </div>
       </div>
 
-      <div
-        className="flex flex-wrap-reverse items-center justify-between gap-6"
-      >
+      <div className="flex flex-wrap items-center justify-between gap-6">
         <FormProvider {...methods}>
           <SearchBar />
-          <StatusDropdown />
+          <div className="inline-flex items-center gap-x-4">
+            <AuthorFilter />
+            <FilterDate name="created_at" />
+            <StatusDropdown />
+          </div>
         </FormProvider>
       </div>
 

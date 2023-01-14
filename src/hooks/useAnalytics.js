@@ -21,31 +21,29 @@ const useAnalytics = (period) => {
     queryFn: () => getAnalytics(period),
     keepPreviousData: true,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   const getResearchAnalytics = (status) => {
-    // const numberOfResearchByMonth = analytics?.research?.filter(
-    //   (r) => moment(r.created_at).format("MMMM") === month
-    // );
+    if (!analytics) return;
+    const filteredStatus = analytics?.totalResearchByStatus?.filter(
+      (r) => r._id === status
+    );
 
-    const numberOfResearchByStatus = analytics?.research?.filter(
-      (r) => r.status === status
-    )?.length;
+    const numberOfResearchByStatus = filteredStatus[0]?.totalCount || 0;
 
     return numberOfResearchByStatus;
   };
 
   const getExtensionAnalytics = (status) => {
-    // const numberOfResearchByMonth = analytics?.extension?.filter(
-    //   (r) => moment(r.created_at).format("MMMM") === month
-    // );
+    if (!analytics) return;
+    const filteredStatus = analytics?.totalExtensionByStatus?.filter(
+      (e) => e._id === status
+    );
 
-    const numberOfResearchByStatus = analytics?.extension?.filter(
-      (r) => r.status === status
-    )?.length;
+    const numberOfExtensionsByStatus = filteredStatus[0]?.totalCount || 0;
 
-    return numberOfResearchByStatus;
+    return numberOfExtensionsByStatus;
   };
 
   const totalResearch = analytics?.totalResearch;
