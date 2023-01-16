@@ -124,8 +124,8 @@ export const filterByPeriod = [
   { value: 1, label: "July to December" },
 ];
 
-export const formattedDate = (date) => {
-  return date ? moment(date).format("YYYY-MM-DD") : "";
+export const formattedDate = (date, format = "YYYY-MM-DD") => {
+  return date ? moment(date).format(format) : "";
 };
 
 export const Roles = {

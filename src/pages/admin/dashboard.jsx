@@ -1,20 +1,16 @@
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
 
 import { getAuthSession } from "@/utils/auth";
-import { filterByPeriod, Roles } from "@/utils/utils";
+import { filterByPeriod, formattedDate, Roles } from "@/utils/utils";
 import { useState } from "react";
 
 import SectionHeader from "@/components/elements/SectionHeader";
 import {
-  CalendarIcon,
-  PlusIcon,
   ChartBarIcon,
   ChartPieIcon,
   UsersIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
-
-import dynamic from "next/dynamic";
 
 import DashboardCard from "@/components/modules/DashboardCard";
 
@@ -23,13 +19,29 @@ import ResearchBarChart from "@/components/modules/research/ResearchBarChart";
 import ExtensionBarChart from "@/components/modules/extension/ExtensionBarChart";
 import { FormProvider, useForm } from "react-hook-form";
 import { Listbox } from "@/components/forms";
+import dynamic from "next/dynamic";
+import moment from "moment";
+
+const Datepicker = dynamic(() => import("@/components/forms/Datepicker"), {
+  ssr: false,
+});
+
+const defaultValues = {
+  period: 0,
+  year: moment().format(),
+};
 
 const Dashboard = () => {
-  const methods = useForm({ defaultValues: { period: 0 } });
-  const watchPeriod = methods.watch("period");
+  const methods = useForm({ defaultValues });
+  const [watchPeriod, year] = methods.watch(["period", "year"]);
+
+  const params = {
+    period: watchPeriod,
+    year: formattedDate(year, "yyyy") || null,
+  };
 
   const { totalResearch, totalExtension, totalUsers, verifiedUsers } =
-    useAnalytics(watchPeriod);
+    useAnalytics(params);
 
   return (
     <AdminLayout>
@@ -71,13 +83,19 @@ const Dashboard = () => {
       <div className="flex items-center mt-16 gap-x-2">
         <p className="font-medium text-gray-600">Filter by period</p>
         <FormProvider {...methods}>
-          <Listbox name="period" options={filterByPeriod} />
+          <Listbox name="period" options={filterByPeriod} className="!py-3" />
+          <Datepicker
+            name="year"
+            format="yyyy"
+            maxDetail="decade"
+            showClearIcon={false}
+          />
         </FormProvider>
       </div>
 
       <div className="flex flex-wrap gap-6 mt-10 xl:flex-nowrap">
-        <ResearchBarChart period={watchPeriod} />
-        <ExtensionBarChart period={watchPeriod} />
+        <ResearchBarChart period={watchPeriod} year={year} />
+        <ExtensionBarChart period={watchPeriod} year={year} />
       </div>
     </AdminLayout>
   );

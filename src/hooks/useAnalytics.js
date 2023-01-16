@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
-import moment from "moment";
+import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
-const useAnalytics = (period) => {
+const useAnalytics = (params) => {
   const { access_token } = useAuth();
 
-  const getAnalytics = async (period) => {
-    const { data } = await api.get(`/api/analytics?period=${period}`, {
+  const getAnalytics = async (params) => {
+    const { data } = await api.get(`/api/analytics`, {
+      params,
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
@@ -17,31 +19,31 @@ const useAnalytics = (period) => {
   };
 
   const { data: analytics } = useQuery({
-    queryKey: ["analytics", period],
-    queryFn: () => getAnalytics(period),
+    queryKey: ["analytics", params],
+    queryFn: () => getAnalytics(params),
     keepPreviousData: true,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
 
   const getResearchAnalytics = (status) => {
-    if (!analytics) return;
-    const filteredStatus = analytics?.totalResearchByStatus?.filter(
-      (r) => r._id === status
+    if (analytics?.length === 0) return;
+    const filteredStatus = analytics?.totalResearchByStatus?.find(
+      (e) => e._id === status
     );
 
-    const numberOfResearchByStatus = filteredStatus[0]?.totalCount || 0;
+    const numberOfResearchByStatus = filteredStatus?.totalCount || 0;
 
     return numberOfResearchByStatus;
   };
 
   const getExtensionAnalytics = (status) => {
-    if (!analytics) return;
-    const filteredStatus = analytics?.totalExtensionByStatus?.filter(
+    if (analytics?.length === 0) return;
+    const filteredStatus = analytics?.totalExtensionByStatus?.find(
       (e) => e._id === status
     );
 
-    const numberOfExtensionsByStatus = filteredStatus[0]?.totalCount || 0;
+    const numberOfExtensionsByStatus = filteredStatus?.totalCount || 0;
 
     return numberOfExtensionsByStatus;
   };

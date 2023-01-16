@@ -13,6 +13,7 @@ const Listbox = ({
   disabled = false,
   withCustomOnChange = false,
   handleChange = () => {},
+  className = "",
 }) => {
   const { control, setValue, watch } = useFormContext();
 
@@ -44,7 +45,8 @@ const Listbox = ({
             <ListBox.Button
               className={classNames(
                 "relative flex items-center justify-between w-full gap-2 px-4 gap-x-6 py-2 text-left bg-white rounded-lg focus:outline-none focus-visible:border-bc-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-bc-primary sm:text-sm ring-1 ring-gray-300",
-                disabled ? "cursor-default" : "cursor-pointer"
+                disabled ? "cursor-default" : "cursor-pointer",
+                className
               )}
             >
               <span

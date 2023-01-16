@@ -1,7 +1,7 @@
 import { classNames } from "@/utils/utils";
 import { CalendarDaysIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { ErrorMessage } from "@hookform/error-message";
-// import moment from 'moment'
+
 import DatePicker from "react-date-picker/dist/entry.nostyle";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -12,11 +12,13 @@ const Datepicker = ({
   validation,
   disabled,
   format = "y-MM-d",
+  showClearIcon = true,
   ...props
 }) => {
   const {
     control,
     formState: { errors },
+    setValue,
   } = useFormContext();
 
   return (
@@ -32,17 +34,17 @@ const Datepicker = ({
           <DatePicker
             onChange={(date) => {
               field.onChange(date);
-              // setValue(field.name, date);
+              setValue(field.name, date);
             }}
             value={field.value ? new Date(field.value) : null}
             clearIcon={
-              !field.value ? null : (
+              !field.value || !showClearIcon ? null : (
                 <PlusIcon
                   className={classNames(
                     "w-5 h-5 rotate-45 text-gray-500",
                     !disabled ? "hover:text-bc-primary" : null
                   )}
-                  style={{ display: disabled && "none" }}
+                  style={{ display: (disabled || showClearIcon) && "none" }}
                 />
               )
             }

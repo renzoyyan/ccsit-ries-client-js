@@ -1,12 +1,17 @@
 import BarChart from "../charts/BarChart";
-import Legend from "../Legend";
 import Heading from "@/components/elements/Heading";
 import useAnalytics from "@/hooks/useAnalytics";
-import { labels } from "@/utils/utils";
-import moment from "moment";
+import { formattedDate, labels } from "@/utils/utils";
 
-const ExtensionBarChart = ({ period }) => {
-  const { getExtensionAnalytics } = useAnalytics(period);
+const ExtensionBarChart = ({ period, year }) => {
+  const formattedYear = formattedDate(year, "yyyy");
+
+  const params = {
+    period,
+    year: formattedYear || null,
+  };
+
+  const { getExtensionAnalytics } = useAnalytics(params);
 
   const periodLabel = ["January to June", "July to December"];
 
@@ -37,7 +42,7 @@ const ExtensionBarChart = ({ period }) => {
       },
       title: {
         display: true,
-        text: `${periodLabel[period]} Period`,
+        text: `${periodLabel[period]} Period - Year ${formattedYear}`,
         font: {
           size: 14,
         },
